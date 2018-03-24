@@ -1,0 +1,40 @@
+<mat-toolbar color="primary">
+  <button mat-button>
+    <mat-icon class="toolbar-icon">lock_open</mat-icon>
+  </button>
+  <span>ログイン</span>
+  <span class="fill-remaining-space"></span>
+</mat-toolbar>
+<div class="out-toolbar">
+  <mat-horizontal-stepper>
+    <mat-step label="アカウントを登録">
+      <mat-form-field fxFill>
+        <input matInput placeholder="アカウント名" [(ngModel)]="name">
+      </mat-form-field>
+      <mat-form-field fxFill>
+        <input matInput type="password" placeholder="パスワード" [(ngModel)]="newPassword">
+      </mat-form-field>
+      <mat-form-field fxFill matTooltip="空の場合、自動で生成します。">
+        <input matInput placeholder="秘密鍵" [(ngModel)]="privateKey">
+      </mat-form-field>
+      <button mat-raised-button color="warn" fxFill (click)="addWallet()" [disabled]="adding">アカウントを登録</button>
+    </mat-step>
+    <mat-step label="ログイン">
+      <mat-form-field fxFill>
+        <mat-select placeholder="アカウントを選択" [(ngModel)]="selectedIndex">
+          <mat-option *ngFor="let wallet of wallets; let i = index" [value]="i">{{wallet.address.pretty()}} {{wallet.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br />
+      <mat-form-field fxFill>
+        <input matInput type="password" [(ngModel)]="password" placeholder="パスワード" />
+      </mat-form-field>
+      <button mat-raised-button color="accent" fxFill (click)="submitLogin()">ログイン</button>
+      <br />
+      <div flexLayout="row" fxFill>
+        <button mat-raised-button color="warn" fxFlex="50" (click)="delete()">アカウントを削除</button>
+        <button mat-raised-button color="warn" fxFlex="50">秘密鍵をバックアップ</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>

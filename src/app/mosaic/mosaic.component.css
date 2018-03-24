@@ -1,0 +1,19 @@
+
+mat-grid-tile-header {
+    z-index: 1;
+}
+
+.tile-image {
+    height: 100%;
+}
+
+.tile-image img {
+    display: block;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.qr-image {
+    display: block;
+    margin: 0 auto;
+}

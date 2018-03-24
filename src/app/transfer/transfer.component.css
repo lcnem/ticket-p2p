@@ -1,0 +1,10 @@
+.avatar-svg {
+    position: relative;
+    margin-top: -50%;
+    top: 50%;
+    width: 100%;
+}
+
+.price-input {
+    width: 100%;
+}

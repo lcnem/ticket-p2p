@@ -1,0 +1,47 @@
+<mat-toolbar color="primary">
+  <button mat-button>
+    <mat-icon routerLink="/">arrow_back</mat-icon>
+  </button>
+
+  <span>送信</span>
+  <span class="fill-remaining-space"></span>
+  <button mat-button matTooltip="送信" (click)="transfer()" [disabled]="sending">
+    <mat-icon>send</mat-icon>
+  </button>
+</mat-toolbar>
+<div class="out-toolbar">
+  <mat-form-field fxFill>
+    <input matInput placeholder="送信先アドレス" [(ngModel)]="address">
+    <button mat-button matSuffix matTooltip="エイリアスを解決" (click)="resolveAlias()">@</button>
+  </mat-form-field>
+
+  <div fxLayout="row wrap" fxLayoutAlign="space-around">
+    <mat-card fxFlex="33.3" fxFlex.sm="50" fxFlex.xs="100" *ngFor="let mosaic of transferMosaics; let i = index">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <img class="avatar-svg" [src]="mosaic.imageUrl" />
+        </div>
+        <mat-card-title>{{mosaic.translation['ja'].name}}</mat-card-title>
+        <mat-card-subtitle>{{mosaic.namespace}}:{{mosaic.name}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-form-field class="price-input">
+        <input matInput type="number" placeholder="額" [disabled]="sending" [(ngModel)]="price[i]" />
+        <span matSuffix>{{mosaic.unit}}</span>
+      </mat-form-field>
+    </mat-card>
+  </div>
+  <br />
+  <div fxLayout="row">
+    <mat-form-field fxFlex="50">
+      <mat-select placeholder="モザイク" [(ngModel)]="selectedIndex">
+        <mat-option *ngFor="let mosaic of selectedMosaics; let i = index" [value]="i">{{mosaic.translation['ja'].name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button color="accent" fxFlex="50" [disabled]="sending" (click)="addMosaic(selectedIndex)">モザイク追加</button>
+  </div>
+  <br />
+  <mat-form-field fxFill>
+    <input matInput placeholder="メッセージ" [disabled]="sending" [(ngModel)]="message">
+  </mat-form-field>
+  <mat-checkbox fxFill [disabled]="sending" [(ngModel)]="encrypt">メッセージを暗号化する</mat-checkbox>
+</div>

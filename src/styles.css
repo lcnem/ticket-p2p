@@ -1,1 +1,43 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body{
+    height: 100%;
+    margin: 0;
+}
+
+.out-toolbar {
+    padding-top: 80px;
+    padding-right: 16px;
+    padding-left: 16px;
+}
+
+mat-toolbar {
+    position: fixed;
+    top: 0;
+    z-index: 100;
+}
+
+mat-toolbar button {
+    padding: 0 14px;
+}
+
+mat-sidenav {
+    width: 200px;
+    padding-top: 80px;
+}
+
+mat-toolbar *{
+    color:white;
+}
+
+.fill-remaining-space{
+    flex: 1 1 auto;
+}
+
+.progress {
+    overflow: hidden;
+}
+
+mat-spinner {
+    margin: 0 auto;
+}

@@ -1,0 +1,50 @@
+<mat-toolbar color="primary">
+    <button mat-button>
+        <mat-icon routerLink="/">arrow_back</mat-icon>
+    </button>
+    <span *ngIf="mosaic">{{mosaic.namespace}}:{{mosaic.name}}</span>
+    <span class="fill-remaining-space"></span>
+    <mat-slide-toggle matTooltip="ホームに登録" [(ngModel)]="selected"></mat-slide-toggle>
+</mat-toolbar>
+
+<div class="out-toolbar">
+    <div class="progress">
+        <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
+    </div>
+    <ng-template #loaded>
+        <div fxFill>
+            <mat-grid-list cols="1" rowHeight="16:9">
+                <mat-grid-tile>
+                    <mat-grid-tile-header>
+                        <h2 class="mat-h2">{{mosaic.translation['ja'].name}}</h2>
+                    </mat-grid-tile-header>
+                    <div class="tile-image">
+                        <img [src]="mosaic.imageUrl" />
+                    </div>
+                    <mat-grid-tile-footer>
+                        <h3 class="mat-h3">{{mosaic.translation['ja'].description}}</h3>
+                        <span class="fill-remaining-space"></span>
+                        <a [href]="mosaic.site" target="_blank" class="mat-caption">{{mosaic.issuer}}</a>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+        <mat-tab-group fxFill>
+            <mat-tab label="専用QRコード">
+                <img class="qr-image" [src]="qrUrlExclusive" />
+            </mat-tab>
+            <mat-tab label="汎用QRコード">
+                <img class="qr-image" [src]="qrUrl" />
+            </mat-tab>
+        </mat-tab-group>
+        <mat-form-field fxFill>
+            <input matInput type="number" placeholder="額" [(ngModel)]="price"  />
+            <span matSuffix>{{mosaic.unit}}</span>
+        </mat-form-field>
+        <mat-form-field fxFill>
+            <input matInput placeholder="メッセージ" [(ngModel)]="message" />
+        </mat-form-field>
+        <button mat-button color="accent" fxFill (click)="generateQr()">QRコードを生成</button>
+    </ng-template>
+    <br />
+</div>

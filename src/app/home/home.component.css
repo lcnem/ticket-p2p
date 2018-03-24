@@ -1,0 +1,17 @@
+mat-card {
+    padding: 0;
+}
+
+mat-grid-tile-header {
+    z-index: 1;
+}
+
+.tile-image img {
+    position: relative;
+    top: 50%;
+    width: 100%;
+}
+
+.search-input * {
+    color: white;
+}
