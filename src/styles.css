@@ -24,6 +24,8 @@ mat-toolbar button {
 mat-sidenav {
     width: 200px;
     padding-top: 80px;
+    position: fixed;
+    overflow-y: scroll;
 }
 
 mat-toolbar *{

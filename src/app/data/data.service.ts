@@ -51,6 +51,7 @@ export class DataService {
         if (isNaN(num)) {
             return null;
         }
+        console.log(num);
         return num;
     }
 

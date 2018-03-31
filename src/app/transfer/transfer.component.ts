@@ -20,7 +20,8 @@ import {
     MosaicHttp,
     MosaicTransferable,
     MosaicId,
-    NamespaceHttp
+    NamespaceHttp,
+    XEM
 } from 'nem-library';
 import { MosaicData } from '../models/api';
 import { Invoice } from '../models/invoice';
@@ -121,14 +122,20 @@ export class TransferComponent implements OnInit {
 
             let transferable = new Array<MosaicTransferable>();
             let mosaicHttp = new MosaicHttp();
-            this.transferMosaics.forEach(async (m, i) => {
-                if (this.price[i]) {
+
+            for(let i = 0; i < this.transferMosaics.length; i++) {
+                if (this.price[i] != null) {
                     let mosaic = this.transferMosaics[i];
                     let mosaicId = new MosaicId(mosaic.namespace, mosaic.name);
-                    let amount = mosaic.getAmount(this.price[i]);
-                    transferable.push(await mosaicHttp.getMosaicTransferableWithAmount(mosaicId, amount).toPromise());
+                    let amount = mosaic.getAmount(this.price[i]) / Math.pow(10, mosaic.divisibility);console.log(amount)
+                    if (mosaicId.namespaceId == "nem" && mosaicId.name == "xem") {
+                        transferable.push(new XEM(amount));
+                    } else {
+                        let mosaicTransferable = await mosaicHttp.getMosaicTransferableWithAmount(mosaicId, amount).toPromise();
+                        transferable.push(mosaicTransferable);
+                    }
                 }
-            })
+            }
 
             let transaction = TransferTransaction.createWithMosaics(
                 TimeWindow.createWithDeadline(),
@@ -136,21 +143,24 @@ export class TransferComponent implements OnInit {
                 transferable,
                 message
             );
+            console.log(JSON.stringify(transaction));
 
             let transactionHttp = new TransactionHttp();
             let signed = this.dataService.currentAccount.signTransaction(transaction);
-            let result = await transactionHttp.announceTransaction(signed).toPromise();
-
-            if (result.message == "SUCCESS") {
+            transactionHttp.announceTransaction(signed).subscribe(observer => {
                 this.snackBar.open("送信に成功しました。", "", { duration: 2000 });
                 this.router.navigate(["/"]);
-            } else {
-                this.snackBar.open(result.message, "", { duration: 2000 });
-            }
+            }, error => {
+                this.snackBar.open(error.message, "", { duration: 2000 });
+            })
         } catch {
             this.snackBar.open("エラーが発生しました。", "", { duration: 2000 });
             this.sending = false;
             return;
         }
+    }
+
+    trackByIndex(index: number, obj: any): any {
+        return index;
     }
 }

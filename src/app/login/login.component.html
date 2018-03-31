@@ -33,7 +33,7 @@
       <br />
       <div flexLayout="row" fxFill>
         <button mat-raised-button color="warn" fxFlex="50" (click)="delete()">アカウントを削除</button>
-        <button mat-raised-button color="warn" fxFlex="50">秘密鍵をバックアップ</button>
+        <button mat-raised-button color="warn" fxFlex="50" (click)="backupPrivateKey()">秘密鍵をバックアップ</button>
       </div>
     </mat-step>
   </mat-horizontal-stepper>

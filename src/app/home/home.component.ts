@@ -23,8 +23,6 @@ import { MosaicData, MosaicTranslationData } from '../models/api';
 })
 export class HomeComponent implements OnInit {
     public loading = true;
-    public isToggle = false;
-    public isGuest = true;
 
     public mosaicName: string;
     public selectedMosaics: MosaicData[];
@@ -35,15 +33,14 @@ export class HomeComponent implements OnInit {
         private router: Router,
         public streamingService: StreamingService,
         public dataService: DataService
-    ) {    
+    ) {
     }
 
     ngOnInit() {
         if (this.dataService.walletIndex == null) {
-            this.loading = false;
+            this.router.navigate(["/login"]);
             return;
-        }
-        this.isGuest = false;
+        } 
         this.dataService.login().then(() => {
             this.selectedMosaics = this.dataService.selectedMosaicData;
             this.loadPrice();
@@ -70,10 +67,6 @@ export class HomeComponent implements OnInit {
                 this.displayPrice.push(m.getPrice(found.quantity));
             }
         });
-    }
-
-    public onToggle() {
-        this.isToggle = !this.isToggle;
     }
 
     public logout() {

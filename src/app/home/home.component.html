@@ -1,82 +1,67 @@
-<ng-template *ngIf="isGuest; else notGuest">
-    <mat-toolbar color="primary">
-        <button mat-button>
-            <mat-icon>apps</mat-icon>
-        </button>
+<mat-toolbar color="primary">
+    <button mat-button (click)="sidenav.toggle()">
+        <mat-icon *ngIf="!sidenav.opened">menu</mat-icon>
+        <mat-icon *ngIf="sidenav.opened">arrow_back</mat-icon>
+    </button>
 
-        <span>LCNEM Wallet</span>
-        <span class="fill-remaining-space"></span>
-        <button mat-button routerLink="/login" matTooltip="ログイン">
-            <mat-icon>lock_open</mat-icon>
-        </button>
-    </mat-toolbar>
-</ng-template>
-<ng-template #notGuest>
-    <mat-toolbar color="primary">
-        <button mat-button (click)="sidenav.toggle(); onToggle()">
-            <mat-icon *ngIf="!isToggle">menu</mat-icon>
-            <mat-icon *ngIf="isToggle">arrow_back</mat-icon>
-        </button>
+    <span>LCNEM Wallet</span>
+    <span class="fill-remaining-space"></span>
+    <button mat-button matTooltip="更新" (click)="refresh()">
+        <mat-icon>refresh</mat-icon>
+    </button>
+</mat-toolbar>
 
-        <span>LCNEM Wallet</span>
-        <span class="fill-remaining-space"></span>
-        <button mat-button matTooltip="更新" (click)="refresh()">
-            <mat-icon>refresh</mat-icon>
-        </button>
-    </mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav #sidenav>
+        <div fxLayout="column">
+            <button mat-button fxFlex="100" routerLink="/transfer">
+                <mat-icon>send</mat-icon>送信
+            </button>
+            <button mat-button fxFlex="100" routerLink="/history">
+                <mat-icon>history</mat-icon>履歴
+            </button>
+            <button mat-button fxFlex="100" routerLink="/scan">
+                <mat-icon>center_focus_strong</mat-icon>QRコードをスキャン
+            </button>
+            <button mat-button fxFlex="100" (click)="logout()">
+                <mat-icon>lock</mat-icon>ログアウト
+            </button>
+        </div>
 
-    <mat-sidenav-container>
-        <mat-sidenav #sidenav>
-            <div fxLayout="column">
-                <button mat-button fxFlex="100" routerLink="/transfer">
-                    <mat-icon>send</mat-icon>送信
-                </button>
-                <button mat-button fxFlex="100" routerLink="/history">
-                    <mat-icon>history</mat-icon>履歴
-                </button>
-                <button mat-button fxFlex="100" routerLink="/scan">
-                    <mat-icon>center_focus_strong</mat-icon>QRコードをスキャン
-                </button>
-                <button mat-button fxFlex="100" (click)="logout()">
-                    <mat-icon>lock</mat-icon>ログアウト
-                </button>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="out-toolbar">
+            <div class="progress">
+                <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
             </div>
-
-        </mat-sidenav>
-        <mat-sidenav-content>
-            <div class="out-toolbar">
-                <div class="progress">
-                    <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
-                </div>
-                <ng-template #loaded>
-                    <div fxLayout="row wrap">
-                        <div fxFlex="25" fxFlex.sm="33.3" fxFlex.xs="50" *ngFor="let mosaic of selectedMosaics; let i = index">
-                            <mat-card>
-                                <mat-grid-list cols="1" rowHeight="1:1">
-                                    <mat-grid-tile mat-ripple [routerLink]="['/mosaic', mosaic.namespace, mosaic.name]">
-                                        <mat-grid-tile-header>
-                                            <h2 class="mat-h2">{{mosaic.translation['ja'].name}}</h2>
-                                            <span class="fill-remaining-space"></span>
-                                            <caption class="mat-caption">{{mosaic.namespace}}:{{mosaic.name}}</caption>
-                                        </mat-grid-tile-header>
-                                        <div class="tile-image">
-                                            <img [src]="mosaic.imageUrl" />
-                                        </div>
-                                        <mat-grid-tile-footer>
-                                            <span class="fill-remaining-space"></span>
-                                            <h3 class="mat-h3">{{displayPrice[i]}} {{mosaic.unit}}</h3>
-                                        </mat-grid-tile-footer>
-                                    </mat-grid-tile>
-                                </mat-grid-list>
-                            </mat-card>
-                        </div>
+            <ng-template #loaded>
+                <div fxLayout="row wrap">
+                    <div fxFlex="25" fxFlex.sm="33.3" fxFlex.xs="50" *ngFor="let mosaic of selectedMosaics; let i = index">
+                        <mat-card>
+                            <mat-grid-list cols="1" rowHeight="1:1">
+                                <mat-grid-tile mat-ripple [routerLink]="['/mosaic', mosaic.namespace, mosaic.name]">
+                                    <mat-grid-tile-header>
+                                        <h2 class="mat-h2">{{mosaic.translation['ja'].name}}</h2>
+                                        <span class="fill-remaining-space"></span>
+                                        <caption class="mat-caption">{{mosaic.namespace}}:{{mosaic.name}}</caption>
+                                    </mat-grid-tile-header>
+                                    <div class="tile-image">
+                                        <img [src]="mosaic.imageUrl" />
+                                    </div>
+                                    <mat-grid-tile-footer>
+                                        <span class="fill-remaining-space"></span>
+                                        <h3 class="mat-h3">{{displayPrice[i]}} {{mosaic.unit}}</h3>
+                                    </mat-grid-tile-footer>
+                                </mat-grid-tile>
+                            </mat-grid-list>
+                        </mat-card>
                     </div>
-                    <mat-form-field fxFill>
-                        <input matInput placeholder="モザイク名" [(ngModel)]="mosaicName">
-                        <button mat-button matSuffix (click)="designate()">詳細を表示</button>
-                    </mat-form-field>
-                </ng-template>
-            </div>
-        </mat-sidenav-content>
-    </mat-sidenav-container>
-</ng-template>
+                </div>
+                <mat-form-field fxFill>
+                    <input matInput placeholder="モザイク名" [(ngModel)]="mosaicName">
+                    <button mat-button matSuffix (click)="designate()">詳細を表示</button>
+                </mat-form-field>
+            </ng-template>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

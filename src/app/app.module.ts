@@ -38,7 +38,6 @@ import { MosaicComponent } from './mosaic/mosaic.component';
 import { HomeComponent } from './home/home.component';
 
 import { FlexLayoutModule } from "@angular/flex-layout";
-import 'hammerjs';
 import { DataService } from './data/data.service';
 import { StreamingService } from "./streaming/streaming.service";
 import { HistoryComponent } from './history/history.component';

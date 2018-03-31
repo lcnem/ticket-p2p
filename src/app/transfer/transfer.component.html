@@ -11,12 +11,12 @@
 </mat-toolbar>
 <div class="out-toolbar">
   <mat-form-field fxFill>
-    <input matInput placeholder="送信先アドレス" [(ngModel)]="address">
+    <input matInput placeholder="送信先アドレス" [disabled]="sending" [(ngModel)]="address">
     <button mat-button matSuffix matTooltip="エイリアスを解決" (click)="resolveAlias()">@</button>
   </mat-form-field>
 
   <div fxLayout="row wrap" fxLayoutAlign="space-around">
-    <mat-card fxFlex="33.3" fxFlex.sm="50" fxFlex.xs="100" *ngFor="let mosaic of transferMosaics; let i = index">
+    <mat-card fxFlex="33.3" fxFlex.sm="50" fxFlex.xs="100" *ngFor="let mosaic of transferMosaics; let i = index; trackBy:trackByIndex;">
       <mat-card-header>
         <div mat-card-avatar>
           <img class="avatar-svg" [src]="mosaic.imageUrl" />
