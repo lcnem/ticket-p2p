@@ -9,13 +9,13 @@
   <mat-horizontal-stepper>
     <mat-step label="アカウントを登録">
       <mat-form-field fxFill>
-        <input matInput placeholder="アカウント名" [(ngModel)]="name">
+        <input matInput placeholder="アカウント名" [(ngModel)]="name" [disabled]="adding">
       </mat-form-field>
       <mat-form-field fxFill>
-        <input matInput type="password" placeholder="パスワード" [(ngModel)]="newPassword">
+        <input matInput type="password" placeholder="パスワード" [(ngModel)]="newPassword" [disabled]="adding">
       </mat-form-field>
       <mat-form-field fxFill matTooltip="空の場合、自動で生成します。">
-        <input matInput placeholder="秘密鍵" [(ngModel)]="privateKey">
+        <input matInput placeholder="秘密鍵" [(ngModel)]="privateKey" [disabled]="adding">
       </mat-form-field>
       <button mat-raised-button color="warn" fxFill (click)="addWallet()" [disabled]="adding">アカウントを登録</button>
     </mat-step>

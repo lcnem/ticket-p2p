@@ -85,7 +85,7 @@ export class TransferComponent implements OnInit {
     public async resolveAlias() {
         if (this.address.startsWith("@")) {
             let namespace = this.address.substr(1, this.address.length - 1);
-            let namespaceHttp = new NamespaceHttp();
+            let namespaceHttp = new NamespaceHttp(this.dataService.nodes);
 
             try {
                 let result = await namespaceHttp.getNamespace(namespace).toPromise();
@@ -121,7 +121,7 @@ export class TransferComponent implements OnInit {
             }
 
             let transferable = new Array<MosaicTransferable>();
-            let mosaicHttp = new MosaicHttp();
+            let mosaicHttp = new MosaicHttp(this.dataService.nodes);
 
             for(let i = 0; i < this.transferMosaics.length; i++) {
                 if (this.price[i] != null) {
@@ -145,7 +145,7 @@ export class TransferComponent implements OnInit {
             );
             console.log(JSON.stringify(transaction));
 
-            let transactionHttp = new TransactionHttp();
+            let transactionHttp = new TransactionHttp(this.dataService.nodes);
             let signed = this.dataService.currentAccount.signTransaction(transaction);
             transactionHttp.announceTransaction(signed).subscribe(observer => {
                 this.snackBar.open("送信に成功しました。", "", { duration: 2000 });

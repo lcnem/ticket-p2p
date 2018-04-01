@@ -12,6 +12,11 @@
         </mat-select>
     </mat-form-field>
     <div [hidden]="!hasCameras">
-        <zxing-scanner #scanner fxFill start="true" [device]="selectedDevice" (scanSuccess)="handleQrCodeResult($event)"></zxing-scanner>
+        <zxing-scanner #scanner
+            start="true"
+            [cssClass]="'scan-frame'"
+            [device]="selectedDevice"
+            (scanSuccess)="handleQrCodeResult($event)">
+        </zxing-scanner>
     </div>
 </div>

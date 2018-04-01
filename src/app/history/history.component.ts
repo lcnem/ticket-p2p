@@ -41,7 +41,7 @@ export class HistoryComponent implements OnInit {
         this.outgoingTransactions = new Array<Transaction>();
         this.unconfirmedTransactions = new Array<Transaction>();
 
-        var accountHttp = new AccountHttp();
+        var accountHttp = new AccountHttp(this.dataService.nodes);
 
         this.incomingTransactions = await accountHttp.incomingTransactions(this.address).toPromise();
 

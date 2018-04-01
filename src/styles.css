@@ -11,6 +11,10 @@ html, body{
     padding-left: 16px;
 }
 
+mat-sidenav-container {
+    min-height: 100%;
+}
+
 mat-toolbar {
     position: fixed;
     top: 0;
@@ -24,8 +28,8 @@ mat-toolbar button {
 mat-sidenav {
     width: 200px;
     padding-top: 80px;
-    position: fixed;
-    overflow-y: scroll;
+    position: fixed !important;
+    overflow-y: scroll !important;
 }
 
 mat-toolbar *{

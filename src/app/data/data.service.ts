@@ -10,7 +10,8 @@ import {
     SimpleWallet,
     Wallet,
     Account,
-    Password
+    Password,
+    ServerConfig
 } from "nem-library";
 import { LoginComponent } from '../login/login.component';
 import { MosaicData, MosaicTranslationData, LcnemApi } from '../models/api'
@@ -26,6 +27,19 @@ export class DataService {
     public currentAccount: Account;
     public selectedMosaicData: MosaicData[];
     public owned: Mosaic[];
+
+    public nodes: ServerConfig[] = [
+        {
+            protocol: "https",
+            domain: "nis2.wnsl.biz",
+            port: 7779
+        },
+        {
+            protocol: "https",
+            domain: "shibuya.supernode.me",
+            port: 7891
+        }
+    ];
 
     constructor(private http: HttpClient) {
         NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
@@ -47,11 +61,14 @@ export class DataService {
     }
 
     public get walletIndex(): number {
-        let num = Number(localStorage.getItem("WalletIndex"));
+        let str = localStorage.getItem("WalletIndex");
+        if(str == null) {
+            return null;
+        }
+        let num = Number(str);
         if (isNaN(num)) {
             return null;
         }
-        console.log(num);
         return num;
     }
 
@@ -73,7 +90,7 @@ export class DataService {
     }
 
     public async loadOwned() {
-        let accountHttp = new AccountHttp();
+        let accountHttp = new AccountHttp(this.nodes);
         this.owned = await accountHttp.getMosaicOwnedByAddress(this.currentAccount.address).toPromise();
     }
 
