@@ -1,6 +1,6 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" routerLink="/">
   <button mat-button>
-    <mat-icon routerLink="/">arrow_back</mat-icon>
+    <mat-icon>arrow_back</mat-icon>
   </button>
   <span>履歴</span>
   <span class="fill-remaining-space"></span>
@@ -16,13 +16,13 @@
     <div fxLayout="column">
       <mat-tab-group fxFlex="100">
         <mat-tab label="受信履歴">
-          <app-transaction [transactions]="incomingTransactions"></app-transaction>
+          <app-transaction *ngFor="let t of incomingTransactions" [transaction]="t"></app-transaction>
         </mat-tab>
         <mat-tab label="送信履歴">
-          <app-transaction [transactions]="outgoingTransactions"></app-transaction>
+          <app-transaction *ngFor="let t of outgoingTransactions" [transaction]="t"></app-transaction>
         </mat-tab>
         <mat-tab label="未承認取引">
-          <app-transaction [transactions]="unconfirmedTransactions"></app-transaction>
+          <app-transaction *ngFor="let t of unconfirmedTransactions" [transaction]="t"></app-transaction>
         </mat-tab>
       </mat-tab-group>
     </div>

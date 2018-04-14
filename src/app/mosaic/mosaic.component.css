@@ -17,3 +17,14 @@ mat-grid-tile-header {
     display: block;
     margin: 0 auto;
 }
+
+.price {
+    text-align: center;
+    font-size: 300%;
+}
+
+.send-button {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+}

@@ -6,16 +6,16 @@ export class Invoice {
 
     public constructor(
         public data: {
-        addr: string,
-        amount: number,
-        msg: string,
-        name: string
+            addr: string,
+            amount: number,
+            msg: string,
+            name: string
         }
     ) {
     }
 
     public static generate(address: string, amount: number, message: string, name: string) {
-        let invoice = new Invoice({addr: address, amount, msg: message, name});
+        let invoice = new Invoice({ addr: address, amount, msg: message, name });
         if (!invoice.data.amount) {
             invoice.data.amount = 0;
         }
@@ -23,17 +23,25 @@ export class Invoice {
     }
 
     public static read(json: string): Invoice {
-        let invoice = JSON.parse(json);
+        let decoded = decodeURI(json);
+        let invoice: any;
+        try {
+            console.log(decoded);
+            invoice = eval("(" + decoded + ")") 
+        }
+        catch {
+            return null;
+        }
         if (invoice.v != 2) {
             return null;
         }
-        if(invoice.type != 2) {
+        if (invoice.type != 2) {
             return null;
         }
         if (invoice.data == null) {
             return null;
         }
-        if(!isNumber(invoice.data.amount)) {
+        if (!isNumber(invoice.data.amount)) {
             return null;
         }
         return invoice;

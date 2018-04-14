@@ -24,9 +24,10 @@ import { MosaicData, MosaicTranslationData } from '../models/api';
 export class HomeComponent implements OnInit {
     public loading = true;
 
+    public searching = false;
+
     public mosaicName: string;
-    public selectedMosaics: MosaicData[];
-    public displayPrice: number[];
+    public ownedMosaics: MosaicData[];
 
     constructor(
         public snackBar: MatSnackBar,
@@ -42,8 +43,7 @@ export class HomeComponent implements OnInit {
             return;
         } 
         this.dataService.login().then(() => {
-            this.selectedMosaics = this.dataService.selectedMosaicData;
-            this.loadPrice();
+            this.ownedMosaics = this.dataService.ownedMosaicData;
 
             //this.streamingService.confirmedCallback = () => {
             //    this.snackBar.open("取引が承認されました。", "", { duration: 2000 });
@@ -57,18 +57,6 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    public loadPrice() {
-        this.displayPrice = new Array<number>();
-        this.selectedMosaics.forEach(m => {
-            let found = this.dataService.owned.find(o => o.mosaicId.namespaceId == m.namespace && o.mosaicId.name == m.name);
-            if (found == null) {
-                this.displayPrice.push(0);
-            } else {
-                this.displayPrice.push(m.getPrice(found.quantity));
-            }
-        });
-    }
-
     public logout() {
         this.streamingService.finishStreaming();
         this.dataService.logout();
@@ -79,10 +67,9 @@ export class HomeComponent implements OnInit {
         this.loading = true;
 
         await this.dataService.loadMosaicData();
-        await this.dataService.loadSelectedMosaicData();
         await this.dataService.loadOwned();
 
-        this.selectedMosaics = this.dataService.selectedMosaicData;
+        this.ownedMosaics = this.dataService.ownedMosaicData;
 
         this.loading = false;
     }

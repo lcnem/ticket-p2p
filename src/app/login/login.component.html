@@ -18,6 +18,12 @@
         <input matInput placeholder="秘密鍵" [(ngModel)]="privateKey" [disabled]="adding">
       </mat-form-field>
       <button mat-raised-button color="warn" fxFill (click)="addWallet()" [disabled]="adding">アカウントを登録</button>
+      <br />
+      <br />
+      <p class="mat-typography">登録していただくと、以下のアドレスから1xemプレゼントします。送金手数料としてお使いください。プレゼント用のアカウントの残高が不足すると、登録に失敗します。以下アドレスに寄付のご協力をお願いします。</p>
+      <mat-form-field fxFill>
+        <input matInput readonly placeholder="アドレス" value="ND46GN-35WWLC-PUCMH2-BNM4XV-HY2PGK-FNX6Q2-BKFE" />
+      </mat-form-field>
     </mat-step>
     <mat-step label="ログイン">
       <mat-form-field fxFill>

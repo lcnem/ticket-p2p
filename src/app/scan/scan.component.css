@@ -1,5 +1,13 @@
-.scan-frame {
-    max-width: 300px;
+zxing-scanner {
+    width: 300px;
     height: 300px;
     margin: 0 auto;
+    display: block;
+}
+
+.scan-frame {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    display: block;
 }

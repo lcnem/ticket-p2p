@@ -32,7 +32,7 @@ import { Invoice } from '../models/invoice';
     styleUrls: ['./transfer.component.css']
 })
 export class TransferComponent implements OnInit {
-    public selectedMosaics: MosaicData[];
+    public ownedMosaics: MosaicData[];
 
     public selectedIndex = 0;
     public address: string;
@@ -58,8 +58,9 @@ export class TransferComponent implements OnInit {
             return;
         }
         this.dataService.login().then(() => {
-            this.selectedMosaics = this.dataService.selectedMosaicData;
-            let json = this.route.snapshot.paramMap.get('json');
+            this.ownedMosaics = this.dataService.ownedMosaicData;
+            let json = this.route.snapshot.queryParamMap.get('json');
+            
             if (json != null) {
                 this.readInvoice(json);
             }
@@ -73,7 +74,7 @@ export class TransferComponent implements OnInit {
             return;
         }
         this.address = invoice.data.addr;
-        let mosaic = this.selectedMosaics.find(m => m.namespace + ":" + m.name == invoice.data.name);
+        let mosaic = this.dataService.mosaicData.find(m => m.namespace + ":" + m.name == invoice.data.name);
         if (mosaic == null) {
             mosaic = this.dataService.mosaicData.find(m => m.namespace == "nem" && m.name == "xem");
         }
@@ -99,7 +100,7 @@ export class TransferComponent implements OnInit {
     }
 
     public addMosaic(selectedIndex: number) {
-        this.transferMosaics.push(this.selectedMosaics[selectedIndex]);
+        this.transferMosaics.push(this.ownedMosaics[selectedIndex]);
         this.price.push(null);
     }
 
@@ -109,7 +110,7 @@ export class TransferComponent implements OnInit {
         try {
             let message: Message;
             if (this.encrypt) {
-                let recipient = await new AccountHttp().getFromAddress(new Address(this.address)).toPromise();
+                let recipient = await new AccountHttp(this.dataService.nodes).getFromAddress(new Address(this.address)).toPromise();
                 if (!recipient.publicAccount.hasPublicKey) {
                     this.snackBar.open("新規アドレスには暗号化メッセージを送信できません。", "", { duration: 2000 });
                     this.sending = false;

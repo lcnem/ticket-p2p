@@ -25,20 +25,100 @@ export class DataService {
     public mosaicData: MosaicData[];
 
     public currentAccount: Account;
-    public selectedMosaicData: MosaicData[];
+    public ownedMosaicData: MosaicData[];
     public owned: Mosaic[];
 
     public nodes: ServerConfig[] = [
         {
             protocol: "https",
-            domain: "nis2.wnsl.biz",
-            port: 7779
+            domain: "aqualife1.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "aqualife2.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "aqualife3.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "beny.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "happy.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "mnbhsgwbeta.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "mnbhsgwgamma.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "nemstrunk.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "nemstrunk2.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "nsm.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "kohkei.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "mttsukuba.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "pegatennnag.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "qora01.supernode.me",
+            port: 7891
         },
         {
             protocol: "https",
             domain: "shibuya.supernode.me",
             port: 7891
-        }
+        },
+        {
+            protocol: "https",
+            domain: "strategic-trader-1.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "strategic-trader-2.supernode.me",
+            port: 7891
+        },
+        {
+            protocol: "https",
+            domain: "thomas1.supernode.me.supernode.me",
+            port: 7891
+        },
     ];
 
     constructor(private http: HttpClient) {
@@ -84,14 +164,11 @@ export class DataService {
         localStorage.setItem("Password", password);
     }
 
-    public async loadSelectedMosaicData() {
-        let selectedMosaic = await LcnemApi.loadSelectedMosaic(this.http, this.currentAccount);
-        this.selectedMosaicData = this.mosaicData.filter(m => selectedMosaic.includes(m.namespace + ":" + m.name));
-    }
-
     public async loadOwned() {
         let accountHttp = new AccountHttp(this.nodes);
         this.owned = await accountHttp.getMosaicOwnedByAddress(this.currentAccount.address).toPromise();
+
+        this.ownedMosaicData = this.mosaicData.filter(m => this.owned.find(o => o.mosaicId.namespaceId == m.namespace && o.mosaicId.name == m.name));
     }
 
     public async login() {
@@ -107,7 +184,6 @@ export class DataService {
         this.currentAccount = SimpleWallet.readFromWLT(this.wallets[index]).open(new Password(this.password));
 
         await this.loadMosaicData();
-        await this.loadSelectedMosaicData();
         await this.loadOwned();
 
         this.initialized = true;

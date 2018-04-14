@@ -1,17 +1,27 @@
+.search-input * {
+    color: white;
+}
+
 mat-card {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 6px;
+    right: 6px;
     padding: 0;
 }
 
-mat-grid-tile-header {
-    z-index: 1;
+.mosaic-image {
+    height: 100%;
 }
 
-.tile-image img {
-    position: relative;
-    top: 50%;
-    width: 100%;
+.mosaic-image img {
+    display: block;
+    margin: 0 auto;
+    height: 100%;
 }
 
-.search-input * {
-    color: white;
+.price {
+    font-size: 2em;
+    text-align: center;
 }

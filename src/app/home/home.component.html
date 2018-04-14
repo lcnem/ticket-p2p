@@ -1,14 +1,23 @@
 <mat-toolbar color="primary">
-    <button mat-button (click)="sidenav.toggle()">
-        <mat-icon *ngIf="!sidenav.opened">menu</mat-icon>
-        <mat-icon *ngIf="sidenav.opened">arrow_back</mat-icon>
-    </button>
+    <mat-form-field fxFill color="accent" *ngIf="searching; else notSearching">
+        <input matInput placeholder="モザイク名" [(ngModel)]="mosaicName" (blur)="searching = false" (submit)="designate()">
+    </mat-form-field>
+    <ng-template #notSearching>
+        <button mat-button (click)="sidenav.toggle()">
+            <mat-icon *ngIf="!sidenav.opened">menu</mat-icon>
+            <mat-icon *ngIf="sidenav.opened">arrow_back</mat-icon>
+        </button>
 
-    <span>LCNEM Wallet</span>
-    <span class="fill-remaining-space"></span>
-    <button mat-button matTooltip="更新" (click)="refresh()">
-        <mat-icon>refresh</mat-icon>
-    </button>
+        <span>LCNEM Wallet</span>
+        <span class="fill-remaining-space"></span>
+        <button mat-button matTooltip="更新" (click)="refresh()">
+            <mat-icon>refresh</mat-icon>
+        </button>
+        <button mat-button matTooltip="検索" (click)="searching = true">
+            <mat-icon>search</mat-icon>
+        </button>
+    </ng-template>
+
 </mat-toolbar>
 <mat-sidenav-container>
     <mat-sidenav #sidenav>
@@ -34,31 +43,19 @@
             </div>
             <ng-template #loaded>
                 <div fxLayout="row wrap">
-                    <div fxFlex="25" fxFlex.sm="33.3" fxFlex.xs="50" *ngFor="let mosaic of selectedMosaics; let i = index">
-                        <mat-card>
-                            <mat-grid-list cols="1" rowHeight="1:1">
-                                <mat-grid-tile mat-ripple [routerLink]="['/mosaic', mosaic.namespace, mosaic.name]">
-                                    <mat-grid-tile-header>
-                                        <h2 class="mat-h2">{{mosaic.translation['ja'].name}}</h2>
-                                        <span class="fill-remaining-space"></span>
-                                        <caption class="mat-caption">{{mosaic.namespace}}:{{mosaic.name}}</caption>
-                                    </mat-grid-tile-header>
-                                    <div class="tile-image">
+                    <div fxFlex="25" fxFlex.sm="33.3" fxFlex.xs="50" *ngFor="let mosaic of ownedMosaics">
+                        <mat-grid-list cols="1" rowHeight="16:9">
+                            <mat-grid-tile>
+                                <mat-card mat-ripple [routerLink]="['/mosaic', mosaic.namespace, mosaic.name]" [matTooltip]="mosaic.translation['ja'].name">
+                                    <div class="mosaic-image">
                                         <img [src]="mosaic.imageUrl" />
                                     </div>
-                                    <mat-grid-tile-footer>
-                                        <span class="fill-remaining-space"></span>
-                                        <h3 class="mat-h3">{{displayPrice[i]}} {{mosaic.unit}}</h3>
-                                    </mat-grid-tile-footer>
-                                </mat-grid-tile>
-                            </mat-grid-list>
-                        </mat-card>
+                                </mat-card>
+                            </mat-grid-tile>
+                        </mat-grid-list>
                     </div>
                 </div>
-                <mat-form-field fxFill>
-                    <input matInput placeholder="モザイク名" [(ngModel)]="mosaicName">
-                    <button mat-button matSuffix (click)="designate()">詳細を表示</button>
-                </mat-form-field>
+
             </ng-template>
         </div>
     </mat-sidenav-content>

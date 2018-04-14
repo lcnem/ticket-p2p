@@ -11,7 +11,6 @@ import {
     MatCardModule,
     MatInputModule,
     MatSelectModule,
-    MatSlideToggleModule,
     MatIconModule,
     MatTooltipModule,
     MatFormFieldModule,
@@ -31,29 +30,22 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
+import { FlexLayoutModule } from "@angular/flex-layout";
+import { FormsModule } from '@angular/forms';
+
+import { DataService } from './data/data.service';
+import { StreamingService } from "./streaming/streaming.service";
+
 import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
 import { LoginComponent } from './login/login.component';
 import { TransferComponent } from './transfer/transfer.component';
 import { MosaicComponent } from './mosaic/mosaic.component';
 import { HomeComponent } from './home/home.component';
-
-import { FlexLayoutModule } from "@angular/flex-layout";
-import { DataService } from './data/data.service';
-import { StreamingService } from "./streaming/streaming.service";
 import { HistoryComponent } from './history/history.component';
-import { FormsModule } from '@angular/forms';
 import { TransactionComponent } from './history/transaction/transaction.component';
 import { ScanComponent } from './scan/scan.component';
 
-const appRoutes: Routes = [
-    { path: '', component: HomeComponent },
-    { path: 'login', component: LoginComponent },
-    { path: 'transfer', component: TransferComponent },
-    { path: 'scan', component: ScanComponent },
-    { path: 'history', component: HistoryComponent },
-    { path: 'mosaic/:namespace/:mosaic', component: MosaicComponent },
-    { path: '**', component: PageNotFoundComponent },
-];
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
     declarations: [
@@ -65,11 +57,11 @@ const appRoutes: Routes = [
         HomeComponent,
         HistoryComponent,
         TransactionComponent,
-        ScanComponent,
+        ScanComponent
     ],
     imports: [
         BrowserModule,
-        RouterModule.forRoot(appRoutes),
+        AppRoutingModule,
         FormsModule,
         BrowserAnimationsModule,
         ZXingScannerModule.forRoot(),
@@ -79,7 +71,6 @@ const appRoutes: Routes = [
         MatCardModule,
         MatInputModule,
         MatSelectModule,
-        MatSlideToggleModule,
         MatGridListModule,
         MatIconModule,
         MatTooltipModule,

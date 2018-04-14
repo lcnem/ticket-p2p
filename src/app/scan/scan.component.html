@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
-    <button mat-button>
-        <mat-icon routerLink="/">arrow_back</mat-icon>
+    <button mat-button routerLink="/">
+        <mat-icon>arrow_back</mat-icon>
     </button>
     <span>QRコードをスキャン</span>
     <span class="fill-remaining-space"></span>
@@ -11,12 +11,6 @@
             <mat-option *ngFor="let device of availableDevices" [value]="device.deviceId">{{ device.label }}</mat-option>
         </mat-select>
     </mat-form-field>
-    <div [hidden]="!hasCameras">
-        <zxing-scanner #scanner
-            start="true"
-            [cssClass]="'scan-frame'"
-            [device]="selectedDevice"
-            (scanSuccess)="handleQrCodeResult($event)">
-        </zxing-scanner>
-    </div>
+    <zxing-scanner #scanner start="true" [cssClass]="'scan-frame'" [device]="selectedDevice" (scanSuccess)="handleQrCodeResult($event)">
+    </zxing-scanner>
 </div>

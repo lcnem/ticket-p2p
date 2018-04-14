@@ -1,0 +1,23 @@
+mat-card {
+    margin: 6px;
+}
+
+.price {
+    font-size: 3em;
+    text-align: center;
+}
+
+.message {
+    text-align: center;
+}
+
+.avatar-svg {
+    position: relative;
+    margin-top: -50%;
+    top: 50%;
+    width: 100%;
+}
+
+.date {
+    text-align: right;
+}

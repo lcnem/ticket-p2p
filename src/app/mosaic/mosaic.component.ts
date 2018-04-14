@@ -19,13 +19,13 @@ import { Invoice } from '../models/invoice';
 export class MosaicComponent implements OnInit {
     public loading = true;
 
+    public address: Address;
+    public mosaic: MosaicData;
+    public owned = 0;
+
     public price = 0;
     public message = "";
 
-    public selected: boolean;
-
-    public address: Address;
-    public mosaic: MosaicData;
     public qrUrlExclusive: string;
     public qrUrl: string;
 
@@ -54,7 +54,10 @@ export class MosaicComponent implements OnInit {
             this.router.navigate(["/page-not-found"]);
             return;
         }
-        this.selected = this.dataService.selectedMosaicData.find(m => m.namespace == namespace && m.name == mosaic) != null;
+        let owned = this.dataService.owned.find(o => o.mosaicId.namespaceId == this.mosaic.namespace && o.mosaicId.name == this.mosaic.name);
+        if(owned) {
+            this.owned = this.mosaic.getPrice(owned.quantity);
+        }
 
         this.address = this.dataService.currentAccount.address;
         this.generateQr();
@@ -74,8 +77,8 @@ export class MosaicComponent implements OnInit {
         this.qrUrl = "http://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + encodeURI(location.protocol + "//" + location.host + '/transfer?json=' + qr);
     }
 
-    public async changeRegisration() {
-        await LcnemApi.changeSelectedMosaic(this.http, this.dataService.currentAccount, this.mosaic.namespace, this.mosaic.name, this.selected);
-        await this.dataService.loadSelectedMosaicData();
+    public send() {
+        var qr = Invoice.generate("", 0, "", this.mosaic.namespace + ':' + this.mosaic.name);
+        this.router.navigate(["/transfer"], { queryParams: {"json": qr}});
     }
 }

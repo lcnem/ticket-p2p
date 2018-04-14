@@ -1,13 +1,16 @@
-<mat-accordion>
-  <mat-expansion-panel *ngFor="let t of transactions">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{t.signer.address.pretty()}}
-      </mat-panel-title>
-      <mat-panel-description>
-        {{t.timeWindow.timeStamp.toLocalDate()}}  {{t.timeWindow.timeStamp.toLocalTime()}}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <pre><code>{{t | json}}</code></pre>
-  </mat-expansion-panel>
-</mat-accordion>
+<mat-card *ngFor="let p of price; let i = index">
+    <mat-card-header>
+        <div mat-card-avatar>
+            <img class="avatar-svg" [src]="mosaicData[i].imageUrl" />
+        </div>
+        <mat-card-title>{{mosaicData[i].translation['ja'].name}}</mat-card-title>
+        <mat-card-subtitle>{{mosaicData[i].namespace}}:{{mosaicData[i].name}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <p class="price">{{p}} {{mosaicData[i].unit}}</p>
+        <p class="message">{{message[i]}}</p>
+        <p>From: {{tt.signer.address.pretty()}}</p>
+        <p>To: {{tt.recipient.pretty()}}</p>
+        <p class="date">{{tt.timeWindow.timeStamp.toLocalDate()}} {{tt.timeWindow.timeStamp.toLocalTime()}}</p>
+    </mat-card-content>
+</mat-card>

@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
-  <button mat-button>
-    <mat-icon routerLink="/">arrow_back</mat-icon>
+  <button mat-button routerLink="/">
+    <mat-icon>arrow_back</mat-icon>
   </button>
 
   <span>送信</span>
@@ -34,7 +34,7 @@
   <div fxLayout="row">
     <mat-form-field fxFlex="50">
       <mat-select placeholder="モザイク" [(ngModel)]="selectedIndex">
-        <mat-option *ngFor="let mosaic of selectedMosaics; let i = index" [value]="i">{{mosaic.translation['ja'].name}}</mat-option>
+        <mat-option *ngFor="let mosaic of ownedMosaics; let i = index" [value]="i">{{mosaic.translation['ja'].name}}</mat-option>
       </mat-select>
     </mat-form-field>
     <button mat-button color="accent" fxFlex="50" [disabled]="sending" (click)="addMosaic(selectedIndex)">モザイク追加</button>
