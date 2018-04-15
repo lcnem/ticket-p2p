@@ -73,8 +73,8 @@ export class MosaicComponent implements OnInit {
         var amount = this.price * Math.pow(10, this.mosaic.divisibility) / this.mosaic.rate;
 
         var qr = Invoice.generate(this.address.plain(), amount, this.message, this.mosaic.namespace + ':' + this.mosaic.name);
-        this.qrUrlExclusive = "http://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + qr;
-        this.qrUrl = "http://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + encodeURI(location.protocol + "//" + location.host + '/transfer?json=' + qr);
+        this.qrUrlExclusive = "https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + qr;
+        this.qrUrl = "https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + encodeURI(location.protocol + "//" + location.host + '/transfer?json=' + qr);
     }
 
     public send() {

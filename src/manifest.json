@@ -1,0 +1,13 @@
+{
+  "short_name": "LCNEM Walet",
+  "name": "LCNEM Wallet",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "300x300"
+    }
+  ]
+}

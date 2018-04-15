@@ -2,6 +2,7 @@
     <mat-form-field fxFill color="accent" *ngIf="searching; else notSearching">
         <input matInput placeholder="モザイク名" [(ngModel)]="mosaicName" (blur)="searching = false" (submit)="designate()">
     </mat-form-field>
+
     <ng-template #notSearching>
         <button mat-button (click)="sidenav.toggle()">
             <mat-icon *ngIf="!sidenav.opened">menu</mat-icon>
@@ -17,7 +18,6 @@
             <mat-icon>search</mat-icon>
         </button>
     </ng-template>
-
 </mat-toolbar>
 <mat-sidenav-container>
     <mat-sidenav #sidenav>
