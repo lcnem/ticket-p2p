@@ -14,7 +14,7 @@ import {
 import { MatSnackBar } from '@angular/material';
 import { DataService } from "../data/data.service";
 import { StreamingService } from "../streaming/streaming.service";
-import { MosaicData, MosaicTranslationData } from '../models/api';
+import { MosaicData } from '../models/api';
 
 @Component({
     selector: 'app-home',
@@ -23,8 +23,6 @@ import { MosaicData, MosaicTranslationData } from '../models/api';
 })
 export class HomeComponent implements OnInit {
     public loading = true;
-
-    public searching = false;
 
     public mosaicName: string;
     public ownedMosaics: MosaicData[];
@@ -77,7 +75,7 @@ export class HomeComponent implements OnInit {
     public designate() {
         let mosaic = this.dataService.mosaicData.find(m => m.namespace + ":" + m.name == this.mosaicName);
         if (!mosaic) {
-            this.snackBar.open("一致するモザイクがありません。", "", { duration: 2000 });
+            this.snackBar.open("Not found", "", { duration: 2000 });
         }
         let splitted = this.mosaicName.split(":");
 

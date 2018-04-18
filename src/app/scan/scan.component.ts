@@ -35,13 +35,13 @@ export class ScanComponent implements OnInit {
             });
 
             this.scanner.camerasNotFound.subscribe((devices: MediaDeviceInfo[]) => {
-                this.snackBar.open("カメラが見つかりません。", "", { duration: 2000 });
+                this.snackBar.open("Camera not found", "", { duration: 2000 });
             });
 
             this.scanner.permissionResponse.subscribe((answer: boolean) => {
                 this.hasPermission = answer;
                 if (!answer) {
-                    this.snackBar.open("許可がないため使用できません。", "", { duration: 2000 });
+                    this.snackBar.open("Permission denied", "", { duration: 2000 });
                 }
             });
         });
@@ -50,7 +50,7 @@ export class ScanComponent implements OnInit {
     public handleQrCodeResult(resultString: string) {
         let invoice = Invoice.read(resultString);
         if (invoice == null) {
-            this.snackBar.open("有効な専用QRコードではありません。", "", { duration: 2000 });
+            this.snackBar.open("Invalid QR-code", "", { duration: 2000 });
             return;
         }
         this.router.navigate(["/transfer"], { queryParams: { json: resultString } });

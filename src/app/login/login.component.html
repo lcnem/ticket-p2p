@@ -1,46 +1,45 @@
 <mat-toolbar color="primary" class="mat-elevation-z4">
-  <button mat-button>
-    <mat-icon class="toolbar-icon">lock_open</mat-icon>
-  </button>
-  <span>ログイン</span>
-  <span class="fill-remaining-space"></span>
+    <button mat-button>
+        <mat-icon class="toolbar-icon">lock_open</mat-icon>
+    </button>
+    <span i18n>Log in</span>
+    <span class="fill-remaining-space"></span>
 </mat-toolbar>
 <div class="out-toolbar">
-  <mat-horizontal-stepper>
-    <mat-step label="アカウントを登録">
-      <mat-form-field fxFill>
-        <input matInput placeholder="アカウント名" [(ngModel)]="name" [disabled]="adding">
-      </mat-form-field>
-      <mat-form-field fxFill>
-        <input matInput type="password" placeholder="パスワード" [(ngModel)]="newPassword" [disabled]="adding">
-      </mat-form-field>
-      <mat-form-field fxFill matTooltip="空の場合、自動で生成します。">
-        <input matInput placeholder="秘密鍵" [(ngModel)]="privateKey" [disabled]="adding">
-      </mat-form-field>
-      <button mat-raised-button color="warn" fxFill (click)="addWallet()" [disabled]="adding">アカウントを登録</button>
-      <br />
-      <br />
-      <p class="mat-typography">登録していただくと、以下のアドレスから1xemプレゼントします。送金手数料としてお使いください。プレゼント用のアカウントの残高が不足すると、登録に失敗します。以下アドレスに寄付のご協力をお願いします。</p>
-      <mat-form-field fxFill>
-        <input matInput readonly placeholder="アドレス" value="ND46GN-35WWLC-PUCMH2-BNM4XV-HY2PGK-FNX6Q2-BKFE" />
-      </mat-form-field>
-    </mat-step>
-    <mat-step label="ログイン">
-      <mat-form-field fxFill>
-        <mat-select placeholder="アカウントを選択" [(ngModel)]="selectedIndex">
-          <mat-option *ngFor="let wallet of wallets; let i = index" [value]="i">{{wallet.address.pretty()}} {{wallet.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <br />
-      <mat-form-field fxFill>
-        <input matInput type="password" [(ngModel)]="password" placeholder="パスワード" />
-      </mat-form-field>
-      <button mat-raised-button color="accent" fxFill (click)="submitLogin()">ログイン</button>
-      <br />
-      <div flexLayout="row" fxFill>
-        <button mat-raised-button color="warn" fxFlex="50" (click)="delete()">アカウントを削除</button>
-        <button mat-raised-button color="warn" fxFlex="50" (click)="backupPrivateKey()">秘密鍵をバックアップ</button>
-      </div>
-    </mat-step>
-  </mat-horizontal-stepper>
+    <mat-horizontal-stepper>
+        <mat-step label="Register" i18n-label>
+            <mat-form-field fxFill>
+                <input matInput placeholder="Account name" [(ngModel)]="name" [disabled]="adding" i18n-placeholder>
+            </mat-form-field>
+            <mat-form-field fxFill>
+                <input matInput type="password" placeholder="Password" [(ngModel)]="newPassword" [disabled]="adding" i18n-placeholder>
+            </mat-form-field>
+            <mat-form-field fxFill>
+                <input matInput placeholder="Private key" [(ngModel)]="privateKey" [disabled]="adding" i18n-placeholder>
+            </mat-form-field>
+            <button mat-raised-button color="warn" fxFill (click)="addWallet()" [disabled]="adding" i18n>Register</button>
+            <br />
+            <p class="mat-typography" i18n>
+                If you input no private key, it will be generated.
+                Please don't forget to backup private key.
+            </p>
+        </mat-step>
+        <mat-step label="Log in" i18n-label>
+            <mat-form-field fxFill>
+                <mat-select placeholder="Select account" [(ngModel)]="selectedIndex" i18n-placeholder>
+                    <mat-option *ngFor="let wallet of wallets; let i = index" [value]="i">{{wallet.address.pretty()}} {{wallet.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <br />
+            <mat-form-field fxFill>
+                <input matInput type="password" [(ngModel)]="password" placeholder="Password" i18n />
+            </mat-form-field>
+            <button mat-raised-button color="accent" fxFill (click)="submitLogin()" i18n>Log in</button>
+            <br />
+            <div flexLayout="row" fxFill>
+                <button mat-raised-button color="warn" fxFlex="50" (click)="delete()" i18n>Delete account</button>
+                <button mat-raised-button color="warn" fxFlex="50" (click)="backupPrivateKey()" i18n>Backup private key</button>
+            </div>
+        </mat-step>
+    </mat-horizontal-stepper>
 </div>

@@ -2,7 +2,7 @@
     color: white;
 }
 
-mat-card {
+.mosaic-card {
     position: absolute;
     top: 6px;
     bottom: 6px;

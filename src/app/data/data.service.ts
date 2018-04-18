@@ -14,7 +14,7 @@ import {
     ServerConfig
 } from "nem-library";
 import { LoginComponent } from '../login/login.component';
-import { MosaicData, MosaicTranslationData, LcnemApi } from '../models/api'
+import { MosaicData, LcnemApi } from '../models/api'
 
 @Injectable()
 export class DataService {

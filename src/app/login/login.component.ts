@@ -54,11 +54,11 @@ export class LoginComponent implements OnInit {
         this.adding = true;
         let wallet: SimpleWallet;
         if (this.name == null) {
-            this.snackBar.open("アカウント名を入力してください。", "", { duration: 2000 });
+            this.snackBar.open("Account name is required", "", { duration: 2000 });
             return;
         }
         if (this.newPassword == null) {
-            this.snackBar.open("パスワードを入力してください。", "", { duration: 2000 });
+            this.snackBar.open("Password is required", "", { duration: 2000 });
             return;
         }
         let password = new Password(this.newPassword);
@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
             }
             catch
             {
-                this.snackBar.open("秘密鍵が不正です。", "", { duration: 2000 });
+                this.snackBar.open("Invalid private key", "", { duration: 2000 });
                 this.adding= false;
                 return;
             }
@@ -79,18 +79,12 @@ export class LoginComponent implements OnInit {
             wallet = SimpleWallet.create(this.name, password);
         }
 
-        if(!await LcnemApi.Register(this.http, wallet.open(password))) {
-            this.snackBar.open("登録に失敗しました。", "", { duration: 2000 });
-            this.adding = false;
-            return;
-        }
-
         this.dataService.wallets.push(wallet.writeWLTFile());
         this.dataService.saveWallets();
 
         this.loadWallets();
 
-        this.snackBar.open("登録しました。", "", { duration: 2000 });
+        this.snackBar.open("Success", "", { duration: 2000 });
 
         this.name = "";
         this.newPassword = "";
@@ -106,7 +100,7 @@ export class LoginComponent implements OnInit {
         this.dataService.saveWallets();
         this.selectedIndex = null;
         this.password = null;
-        this.snackBar.open("アカウントを削除しました。", "", { duration: 2000 });
+        this.snackBar.open("Account has been deleted", "", { duration: 2000 });
         this.loadWallets();
     }
 
@@ -117,7 +111,6 @@ export class LoginComponent implements OnInit {
 
         this.dataService.password = this.password;
         this.dataService.walletIndex = this.selectedIndex;
-        this.snackBar.open("ログインしました。", "", { duration: 2000 });
         this.router.navigate(["/"]);
     }
 
@@ -146,7 +139,7 @@ export class LoginComponent implements OnInit {
             if (account == null)
                 throw null;
         } catch {
-            this.snackBar.open("パスワードが違います。", "", { duration: 2000 });
+            this.snackBar.open("Invalid password", "", { duration: 2000 });
             return false;
         }
         return true;

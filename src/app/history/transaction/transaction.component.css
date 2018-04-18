@@ -4,6 +4,7 @@ mat-card {
 
 .price {
     font-size: 3em;
+    line-height: 100%;
     text-align: center;
 }
 

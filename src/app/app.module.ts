@@ -22,7 +22,8 @@ import {
     MatTabsModule,
     MatSnackBarModule,
     MatExpansionModule,
-    MatStepperModule
+    MatStepperModule,
+    MatDividerModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -88,7 +89,8 @@ import { environment } from '../environments/environment';
         MatTabsModule,
         MatSnackBarModule,
         MatExpansionModule,
-        MatStepperModule
+        MatStepperModule,
+        MatDividerModule
     ],
     providers: [DataService, StreamingService],
     bootstrap: [AppComponent]

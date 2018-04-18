@@ -1,26 +1,23 @@
-
-mat-grid-tile-header {
-    z-index: 1;
+mat-card {
+    margin: 6px;
 }
 
-.tile-image {
-    height: 100%;
+.price {
+    font-size: 3em;
+    line-height: 100%;
+    text-align: center;
 }
 
-.tile-image img {
-    display: block;
-    height: 100%;
-    margin: 0 auto;
+.avatar-svg {
+    position: relative;
+    margin-top: -50%;
+    top: 50%;
+    width: 100%;
 }
 
 .qr-image {
     display: block;
     margin: 0 auto;
-}
-
-.price {
-    text-align: center;
-    font-size: 300%;
 }
 
 .send-button {

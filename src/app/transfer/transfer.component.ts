@@ -34,7 +34,6 @@ import { Invoice } from '../models/invoice';
 export class TransferComponent implements OnInit {
     public ownedMosaics: MosaicData[];
 
-    public selectedIndex = 0;
     public address: string;
     public transferMosaics = new Array<MosaicData>();
     public price = new Array<number>();
@@ -58,7 +57,10 @@ export class TransferComponent implements OnInit {
             return;
         }
         this.dataService.login().then(() => {
-            this.ownedMosaics = this.dataService.ownedMosaicData;
+            this.ownedMosaics = new Array<MosaicData>();
+            this.dataService.ownedMosaicData.forEach(m => {
+                this.ownedMosaics.push(m);
+            });
             let json = this.route.snapshot.queryParamMap.get('json');
             
             if (json != null) {
@@ -74,11 +76,17 @@ export class TransferComponent implements OnInit {
             return;
         }
         this.address = invoice.data.addr;
-        let mosaic = this.dataService.mosaicData.find(m => m.namespace + ":" + m.name == invoice.data.name);
+        let mosaic = this.ownedMosaics.find(m => m.namespace + ":" + m.name == invoice.data.name);
         if (mosaic == null) {
             mosaic = this.dataService.mosaicData.find(m => m.namespace == "nem" && m.name == "xem");
         }
         this.transferMosaics.push(mosaic);
+
+        let index = this.ownedMosaics.findIndex(m => m == mosaic);
+        if(index != -1) {
+            this.ownedMosaics.splice(index, 1);
+        }
+
         this.price.push(mosaic.getPrice(invoice.data.amount));
         this.message = invoice.data.msg;
     }
@@ -92,27 +100,29 @@ export class TransferComponent implements OnInit {
                 let result = await namespaceHttp.getNamespace(namespace).toPromise();
                 this.address = result.owner.pretty();
             } catch {
-                this.snackBar.open("エイリアスを解決できませんでした。", "", { duration: 2000 });
+                this.snackBar.open("Failed to solve alias", "", { duration: 2000 });
             }
         } else {
-            this.snackBar.open("エイリアスは@から始めてください。", "", { duration: 2000 });
+            this.snackBar.open("Require to start with @", "", { duration: 2000 });
         }
     }
 
-    public addMosaic(selectedIndex: number) {
+    public addMosaic(selectedIndex: number, price: number) {
         this.transferMosaics.push(this.ownedMosaics[selectedIndex]);
-        this.price.push(null);
+        this.price.push(price);
+
+        this.ownedMosaics.splice(selectedIndex, 1);
     }
 
     public async transfer() {
         this.sending = true;
-        this.snackBar.open("送信中です。", "", { duration: 2000 });
+        this.snackBar.open("Processing", "", { duration: 2000 });
         try {
             let message: Message;
             if (this.encrypt) {
                 let recipient = await new AccountHttp(this.dataService.nodes).getFromAddress(new Address(this.address)).toPromise();
                 if (!recipient.publicAccount.hasPublicKey) {
-                    this.snackBar.open("新規アドレスには暗号化メッセージを送信できません。", "", { duration: 2000 });
+                    this.snackBar.open("Encrypting message to new address is not available.", "", { duration: 2000 });
                     this.sending = false;
                     return;
                 }
@@ -149,13 +159,13 @@ export class TransferComponent implements OnInit {
             let transactionHttp = new TransactionHttp(this.dataService.nodes);
             let signed = this.dataService.currentAccount.signTransaction(transaction);
             transactionHttp.announceTransaction(signed).subscribe(observer => {
-                this.snackBar.open("送信に成功しました。", "", { duration: 2000 });
+                this.snackBar.open("Success", "", { duration: 2000 });
                 this.router.navigate(["/"]);
             }, error => {
                 this.snackBar.open(error.message, "", { duration: 2000 });
             })
         } catch {
-            this.snackBar.open("エラーが発生しました。", "", { duration: 2000 });
+            this.snackBar.open("An error has occured.", "", { duration: 2000 });
             this.sending = false;
             return;
         }
