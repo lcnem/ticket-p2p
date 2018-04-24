@@ -20,6 +20,7 @@ export class ScanComponent implements OnInit {
 
     availableDevices: MediaDeviceInfo[];
     selectedDevice: MediaDeviceInfo;
+    selectedDeviceId: string;
 
     constructor(public snackBar: MatSnackBar, private router: Router, private dataService: DataService) { }
 
@@ -44,6 +45,10 @@ export class ScanComponent implements OnInit {
                 if (!answer) {
                     this.snackBar.open("Permission denied", "", { duration: 2000 });
                 }
+            });
+
+            this.scanner.scanComplete.subscribe((result: Result) => {
+
             });
         });
     }

@@ -7,10 +7,10 @@
 </mat-toolbar>
 <div class="out-toolbar">
     <mat-form-field fxFill *ngIf="availableDevices">
-        <mat-select placeholder="Select camera" (change)="onDeviceSelectChange($event.target.value)" i18n-placeholder>
+        <mat-select placeholder="Select camera" [(value)]="selectedDeviceId" (change)="onDeviceSelectChange(selectedDeviceId)" i18n-placeholder>
             <mat-option *ngFor="let device of availableDevices" [value]="device.deviceId">{{ device.label }}</mat-option>
         </mat-select>
     </mat-form-field>
-    <zxing-scanner #scanner [cssClass]="'scan-frame'" [device]="selectedDevice" (scanSuccess)="handleQrCodeResult($event)">
+    <zxing-scanner fxFill [hidden]="selectedDevice" #scanner [device]="selectedDevice" (scanSuccess)="handleQrCodeResult($event)">
     </zxing-scanner>
 </div>
