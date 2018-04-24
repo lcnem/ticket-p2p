@@ -35,7 +35,7 @@
         <div fxFlex="25" fxFlex.sm="33.3" fxFlex.xs="50" *ngFor="let mosaic of ownedMosaics; let i = index; trackBy:trackByIndex;">
             <mat-grid-list cols="1" rowHeight="16:9">
                 <mat-grid-tile>
-                    <mat-card mat-ripple class="mosaic-card" matTooltip="{{mosaic.namespace}}:{{mosaic.name}}" (click)="addMosaic(i, null)">
+                    <mat-card mat-ripple class="mosaic-card" matTooltip="{{mosaic.namespace}}:{{mosaic.name}}" (click)="addMosaic(ownedMosaics[i], null)">
                         <div class="mosaic-image">
                             <img [src]="mosaic.imageUrl" />
                         </div>

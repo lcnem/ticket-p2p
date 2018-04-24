@@ -37,8 +37,8 @@ export class TransferComponent implements OnInit {
     public address: string;
     public transferMosaics = new Array<MosaicData>();
     public price = new Array<number>();
-    public message: string;
-    public encrypt: boolean;
+    public message = "";
+    public encrypt = false;
 
     public sending = false;
 
@@ -80,14 +80,8 @@ export class TransferComponent implements OnInit {
         if (mosaic == null) {
             mosaic = this.dataService.mosaicData.find(m => m.namespace == "nem" && m.name == "xem");
         }
-        this.transferMosaics.push(mosaic);
 
-        let index = this.ownedMosaics.findIndex(m => m == mosaic);
-        if(index != -1) {
-            this.ownedMosaics.splice(index, 1);
-        }
-
-        this.price.push(mosaic.getPrice(invoice.data.amount));
+        this.addMosaic(mosaic, mosaic.getPrice(invoice.data.amount));
         this.message = invoice.data.msg;
     }
 
@@ -107,11 +101,14 @@ export class TransferComponent implements OnInit {
         }
     }
 
-    public addMosaic(selectedIndex: number, price: number) {
-        this.transferMosaics.push(this.ownedMosaics[selectedIndex]);
+    public addMosaic(mosaic: MosaicData, price: number) {
+        this.transferMosaics.push(mosaic);
         this.price.push(price);
 
-        this.ownedMosaics.splice(selectedIndex, 1);
+        let index = this.ownedMosaics.findIndex(m => m == mosaic);
+        if(index != -1) {
+            this.ownedMosaics.splice(index, 1);
+        }
     }
 
     public async transfer() {
@@ -136,7 +133,7 @@ export class TransferComponent implements OnInit {
 
             for(let i = 0; i < this.transferMosaics.length; i++) {
                 if (this.price[i] != null) {
-                    let mosaic = this.transferMosaics[i];
+                    let mosaic = this.transferMosaics[i];console.log(mosaic)
                     let mosaicId = new MosaicId(mosaic.namespace, mosaic.name);
                     let amount = mosaic.getAmount(this.price[i]) / Math.pow(10, mosaic.divisibility);console.log(amount)
                     if (mosaicId.namespaceId == "nem" && mosaicId.name == "xem") {

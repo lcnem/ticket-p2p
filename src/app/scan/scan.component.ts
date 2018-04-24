@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
+import { Result } from '@zxing/library';
 import { MatSnackBar } from '@angular/material';
 import { Invoice } from '../models/invoice';
 import { Router } from '@angular/router';

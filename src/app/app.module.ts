@@ -68,7 +68,7 @@ import { environment } from '../environments/environment';
         AppRoutingModule,
         FormsModule,
         BrowserAnimationsModule,
-        ZXingScannerModule.forRoot(),
+        ZXingScannerModule,
         ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
         MatButtonModule,
         MatCheckboxModule,

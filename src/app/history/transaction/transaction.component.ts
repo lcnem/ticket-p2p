@@ -31,21 +31,29 @@ export class TransactionComponent implements OnInit {
     }
 
     public async set(transferTransaction: TransferTransaction) {
-        if(transferTransaction.containsMosaics()) {
-            this.setMosaic(transferTransaction.mosaics());
-        } else {
-            let data = this.dataService.mosaicData.find(m => m.namespace == "nem" && m.name == "xem");
-            this.mosaicData.push(data);
-            this.price.push(transferTransaction.xem().amount);
-        }
+        let message: string;
         if(transferTransaction.message.isEncrypted()) {
             let account = this.dataService.currentAccount;
             let recipient = await new AccountHttp(this.dataService.nodes).getFromAddress(transferTransaction.recipient).toPromise();
             let msg = account.decryptMessage(transferTransaction.message, account);
-            this.message.push(msg.plain());
+            message = msg.payload;
         } else {
             let msg = transferTransaction.message as PlainMessage;
-            this.message.push(msg.plain());
+            message = msg.plain();
+        }
+
+
+        if(transferTransaction.containsMosaics()) {
+            let mosaics = transferTransaction.mosaics();
+            this.setMosaic(transferTransaction.mosaics());
+            mosaics.forEach(m => {
+                this.message.push(message);
+            });
+        } else {
+            let data = this.dataService.mosaicData.find(m => m.namespace == "nem" && m.name == "xem");
+            this.mosaicData.push(data);
+            this.price.push(transferTransaction.xem().amount);
+            this.message.push(message);
         }
     }
 
