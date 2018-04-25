@@ -6,7 +6,8 @@ import { MatSnackBar } from '@angular/material';
 import { encodeUriQuery } from '@angular/router/src/url_tree';
 import {
     Account,
-    Address
+    Address,
+    QRService
 } from 'nem-library';
 import { HttpClient } from '@angular/common/http';
 import { Invoice } from '../models/invoice';
@@ -73,12 +74,27 @@ export class MosaicComponent implements OnInit {
         }
         var amount = this.price * Math.pow(10, this.mosaic.divisibility) / this.mosaic.rate;
 
-        var qr = Invoice.generate(this.address.plain(), amount, this.message, this.mosaic.namespace + ':' + this.mosaic.name);
+        if(this.mosaic.namespace == "nem" && this.mosaic.name == "xem") {
+            let qrService = new QRService();
+            let json = qrService.generateTransactionQRText(this.address, amount, this.message);
+            this.qrUrl = "https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + encodeURI(json);
+            return;
+        }
+        let invoice = new Invoice();
+        invoice.data.addr = this.address.plain();
+        invoice.data.msg = this.message;
+        invoice.data.name = "LCNEM Wallet";
+        invoice.data.mosaics.push({name: this.mosaic.namespace + ':' + this.mosaic.name, quantity: amount});
+
+        let qr = invoice.generate();
         this.qrUrl = "https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + qr;
     }
 
     public send() {
-        var qr = Invoice.generate("", 0, "", this.mosaic.namespace + ':' + this.mosaic.name);
+        let invoice = new Invoice();
+        invoice.data.name = "LCNEM Wallet";
+        invoice.data.mosaics.push({name: this.mosaic.namespace + ':' + this.mosaic.name, quantity: 0});
+        var qr = invoice.generate();
         this.router.navigate(["/transfer"], { queryParams: { "json": qr } });
     }
 }

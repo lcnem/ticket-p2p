@@ -14,17 +14,23 @@
     <mat-sidenav #sidenav>
         <div fxLayout="column">
             <button mat-button fxFlex="100" routerLink="/transfer">
-                <mat-icon>send</mat-icon><ng-container i18n>Transfer</ng-container>
+                <mat-icon>send</mat-icon>
+                <ng-container i18n>Transfer</ng-container>
             </button>
             <button mat-button fxFlex="100" routerLink="/history">
-                <mat-icon>history</mat-icon><ng-container i18n>History</ng-container>
+                <mat-icon>history</mat-icon>
+                <ng-container i18n>History</ng-container>
             </button>
             <button mat-button fxFlex="100" routerLink="/scan">
-                <mat-icon>center_focus_strong</mat-icon><ng-container i18n>Scan QR-code</ng-container>
+                <mat-icon>center_focus_strong</mat-icon>
+                <ng-container i18n>Scan QR-code</ng-container>
             </button>
             <button mat-button fxFlex="100" (click)="logout()">
-                <mat-icon>lock</mat-icon><ng-container i18n>Log out</ng-container>
+                <mat-icon>lock</mat-icon>
+                <ng-container i18n>Log out</ng-container>
             </button>
+            <mat-divider></mat-divider>
+            <a mat-button href="https://lcnem.cc/exchange" target="_blank" fxFlex="100">Exchange</a>
         </div>
     </mat-sidenav>
     <mat-sidenav-content>
@@ -47,11 +53,16 @@
                     </div>
                 </div>
                 <mat-form-field fxFill>
-                    <input matInput placeholder="Mosaic name" [(ngModel)]="mosaicName" i18n-placeholder>
+                    <input matInput placeholder="Mosaic name" [(ngModel)]="mosaicName" [matAutocomplete]="auto" i18n-placeholder>
                     <button matSuffix mat-button color="accent" (click)="designate()">
                         <mat-icon>search</mat-icon>
                     </button>
                 </mat-form-field>
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let mosaic of dataService.mosaicData" value="{{mosaic.namespace}}:{{mosaic.name}}">
+                        {{mosaic.namespace}}:{{mosaic.name}}
+                    </mat-option>
+                </mat-autocomplete>
             </ng-template>
         </div>
     </mat-sidenav-content>

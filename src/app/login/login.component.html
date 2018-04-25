@@ -21,8 +21,14 @@
             <br />
             <p class="mat-typography" i18n>
                 If you input no private key, it will be generated.
-                Please don't forget to backup private key.
+                Your private key will be saved in [address].txt.
             </p>
+            <p class="mat-typography" color="warning">
+                This applications is specialized in not expensive mobile payment.
+                To save your assets, please use Nano Wallet with another address, not LCNEM Wallet.
+                You agree to terms.
+            </p>
+            <a mat-button color="accent" href="https://lcnem.github.io/terms/wallet/en.pdf" target="_blank">Terms</a>
         </mat-step>
         <mat-step label="Log in" i18n-label>
             <mat-form-field fxFill>
@@ -38,7 +44,7 @@
             <br />
             <div flexLayout="row" fxFill>
                 <button mat-raised-button color="warn" fxFlex="50" (click)="delete()" i18n>Delete account</button>
-                <button mat-raised-button color="warn" fxFlex="50" (click)="backupPrivateKey()" i18n>Backup private key</button>
+                <button mat-raised-button color="warn" fxFlex="50" (click)="submitBackupPrivateKey()" i18n>Backup private key</button>
             </div>
         </mat-step>
     </mat-horizontal-stepper>

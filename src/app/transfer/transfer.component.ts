@@ -76,13 +76,13 @@ export class TransferComponent implements OnInit {
             return;
         }
         this.address = invoice.data.addr;
-        let mosaic = this.ownedMosaics.find(m => m.namespace + ":" + m.name == invoice.data.name);
-        if (mosaic == null) {
-            mosaic = this.dataService.mosaicData.find(m => m.namespace == "nem" && m.name == "xem");
-        }
-
-        this.addMosaic(mosaic, mosaic.getPrice(invoice.data.amount));
         this.message = invoice.data.msg;
+        invoice.data.mosaics.forEach(m => {
+            let mosaic = this.ownedMosaics.find(o => o.namespace + ":" + o.name == m.name);
+            if(mosaic != null) {
+                this.addMosaic(mosaic, mosaic.getPrice(m.quantity));
+            }
+        });
     }
 
     public async resolveAlias() {

@@ -3,28 +3,20 @@ import { isNumber } from "util";
 export class Invoice {
     public v = 2;
     public type = 2;
+    public data = {
+        addr : "",
+        msg: "",
+        name: "",
+        mosaics: new Array<{name: string, quantity: number}>()
+    };
 
-    public constructor(
-        public data: {
-            addr: string,
-            amount: number,
-            msg: string,
-            name: string
-        }
-    ) {
-    }
-
-    public static generate(address: string, amount: number, message: string, name: string) {
-        let invoice = new Invoice({ addr: address, amount, msg: message, name });
-        if (!invoice.data.amount) {
-            invoice.data.amount = 0;
-        }
-        return encodeURI(JSON.stringify(invoice));
+    public generate() {
+        return encodeURI(JSON.stringify(this));
     }
 
     public static read(json: string): Invoice {
         let decoded = decodeURI(json);
-        let invoice: any;
+        let invoice: Invoice;
         try {
             console.log(decoded);
             invoice = eval("(" + decoded + ")") 
@@ -41,9 +33,27 @@ export class Invoice {
         if (invoice.data == null) {
             return null;
         }
-        if (!isNumber(invoice.data.amount)) {
+        if(invoice.data.addr == null) {
             return null;
         }
+        if(invoice.data.msg == null) {
+            return null;
+        }
+        if(invoice.data.name == null) {
+            return null;
+        }
+        if (invoice.data.mosaics == null) {
+            if(isNumber((invoice.data as any).amount)) {
+                invoice.data.mosaics = new Array<{name: string, quantity: number}>();
+                invoice.data.mosaics.push({name: "nem:xem", quantity: (invoice.data as any).amount});
+            }
+        }
+        invoice.data.mosaics.forEach(m => {
+            if(!isNumber(m.quantity)) {
+                m.quantity = 0;
+            }
+        });
+       
         return invoice;
     }
 }

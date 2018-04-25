@@ -56,6 +56,8 @@ export class ScanComponent implements OnInit {
     public handleQrCodeResult(resultString: string) {
         let invoice = Invoice.read(resultString);
         if (invoice == null) {
+            
+
             this.snackBar.open("Invalid QR-code", "", { duration: 2000 });
             return;
         }

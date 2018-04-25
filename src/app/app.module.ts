@@ -23,7 +23,8 @@ import {
     MatSnackBarModule,
     MatExpansionModule,
     MatStepperModule,
-    MatDividerModule
+    MatDividerModule,
+    MatAutocompleteModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -90,7 +91,8 @@ import { environment } from '../environments/environment';
         MatSnackBarModule,
         MatExpansionModule,
         MatStepperModule,
-        MatDividerModule
+        MatDividerModule,
+        MatAutocompleteModule
     ],
     providers: [DataService, StreamingService],
     bootstrap: [AppComponent]

@@ -86,6 +86,9 @@ export class LoginComponent implements OnInit {
 
         this.snackBar.open("Success", "", { duration: 2000 });
 
+        let account = wallet.open(new Password(this.newPassword));
+        this.backupPrivateKey(account.privateKey, account.address.plain());
+
         this.name = "";
         this.newPassword = "";
         this.privateKey = "";
@@ -114,19 +117,24 @@ export class LoginComponent implements OnInit {
         this.router.navigate(["/"]);
     }
 
-    public backupPrivateKey() {
+    public submitBackupPrivateKey() {
         if (!this.checkPassword()) {
             return;
         }
 
-        let key = this.wallets[this.selectedIndex].open(new Password(this.password)).privateKey;
+        let account = this.wallets[this.selectedIndex].open(new Password(this.password));
+        this.backupPrivateKey(account.privateKey, account.address.plain());
+    }
+
+    public backupPrivateKey(key: string, address: string)
+    {
         let json = JSON.stringify(key);
         let blob = new Blob([json], { "type": "text/plain" });
 
         let a = document.createElement("a");
         a.href = window.URL.createObjectURL(blob);
         a.target = "_blank";
-        a.download = ".txt";
+        a.download = address + ".txt";
         a.click();
     }
 
