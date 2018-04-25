@@ -128,8 +128,7 @@ export class LoginComponent implements OnInit {
 
     public backupPrivateKey(key: string, address: string)
     {
-        let json = JSON.stringify(key);
-        let blob = new Blob([json], { "type": "text/plain" });
+        let blob = new Blob([key], { "type": "text/plain" });
 
         let a = document.createElement("a");
         a.href = window.URL.createObjectURL(blob);

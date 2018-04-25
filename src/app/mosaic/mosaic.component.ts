@@ -22,10 +22,12 @@ export class MosaicComponent implements OnInit {
 
     public address: Address;
     public mosaic: MosaicData;
-    public owned = 0;
-
     public price = 0;
-    public message = "";
+
+    public invoice = {
+        price: 0,
+        message: ""
+    };
 
     public qrUrl: string;
 
@@ -57,7 +59,7 @@ export class MosaicComponent implements OnInit {
             }
             let owned = this.dataService.owned.find(o => o.mosaicId.namespaceId == this.mosaic.namespace && o.mosaicId.name == this.mosaic.name);
             if (owned) {
-                this.owned = this.mosaic.getPrice(owned.quantity);
+                this.price = this.mosaic.getPrice(owned.quantity);
             }
 
             this.address = this.dataService.currentAccount.address;
@@ -72,19 +74,19 @@ export class MosaicComponent implements OnInit {
             this.snackBar.open("Invalid amount", "", { duration: 2000 });
             return;
         }
-        var amount = this.price * Math.pow(10, this.mosaic.divisibility) / this.mosaic.rate;
+        let amount = this.invoice.price * Math.pow(10, this.mosaic.divisibility) / this.mosaic.rate;
 
         if(this.mosaic.namespace == "nem" && this.mosaic.name == "xem") {
             let qrService = new QRService();
-            let json = qrService.generateTransactionQRText(this.address, amount, this.message);
+            let json = qrService.generateTransactionQRText(this.address, amount, this.invoice.message);
             this.qrUrl = "https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + encodeURI(json);
             return;
         }
         let invoice = new Invoice();
         invoice.data.addr = this.address.plain();
-        invoice.data.msg = this.message;
+        invoice.data.msg = this.invoice.message;
         invoice.data.name = "LCNEM Wallet";
-        invoice.data.mosaics.push({name: this.mosaic.namespace + ':' + this.mosaic.name, quantity: amount});
+        invoice.data.mosaics.push({name: this.mosaic.namespace + ':' + this.mosaic.name, amount: amount});
 
         let qr = invoice.generate();
         this.qrUrl = "https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + qr;
@@ -93,7 +95,7 @@ export class MosaicComponent implements OnInit {
     public send() {
         let invoice = new Invoice();
         invoice.data.name = "LCNEM Wallet";
-        invoice.data.mosaics.push({name: this.mosaic.namespace + ':' + this.mosaic.name, quantity: 0});
+        invoice.data.mosaics.push({name: this.mosaic.namespace + ':' + this.mosaic.name, amount: 0});
         var qr = invoice.generate();
         this.router.navigate(["/transfer"], { queryParams: { "json": qr } });
     }

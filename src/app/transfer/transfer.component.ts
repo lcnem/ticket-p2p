@@ -80,7 +80,7 @@ export class TransferComponent implements OnInit {
         invoice.data.mosaics.forEach(m => {
             let mosaic = this.ownedMosaics.find(o => o.namespace + ":" + o.name == m.name);
             if(mosaic != null) {
-                this.addMosaic(mosaic, mosaic.getPrice(m.quantity));
+                this.addMosaic(mosaic, mosaic.getPrice(m.amount));
             }
         });
     }

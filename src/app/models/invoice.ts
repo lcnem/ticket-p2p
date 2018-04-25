@@ -7,7 +7,7 @@ export class Invoice {
         addr : "",
         msg: "",
         name: "",
-        mosaics: new Array<{name: string, quantity: number}>()
+        mosaics: new Array<{name: string, amount: number}>()
     };
 
     public generate() {
@@ -44,13 +44,13 @@ export class Invoice {
         }
         if (invoice.data.mosaics == null) {
             if(isNumber((invoice.data as any).amount)) {
-                invoice.data.mosaics = new Array<{name: string, quantity: number}>();
-                invoice.data.mosaics.push({name: "nem:xem", quantity: (invoice.data as any).amount});
+                invoice.data.mosaics = new Array<{name: string, amount: number}>();
+                invoice.data.mosaics.push({name: "nem:xem", amount: (invoice.data as any).amount});
             }
         }
         invoice.data.mosaics.forEach(m => {
-            if(!isNumber(m.quantity)) {
-                m.quantity = 0;
+            if(!isNumber(m.amount)) {
+                m.amount = 0;
             }
         });
        
