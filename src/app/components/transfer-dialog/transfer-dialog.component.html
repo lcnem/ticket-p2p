@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Are you sure?</h2>
+<mat-dialog-content>
+    <mat-list>
+        <mat-list-item *ngFor="let m of mosaics">
+            {{m.mosaicId.namespaceId}}:{{m.mosaicId.name}}
+            <span class="fill-remaining-space"></span>
+            <mat-icon></mat-icon>
+            {{m.amount}}{{dataService.getUnit(m.mosaicId.namespaceId, m.mosaicId.name)}}
+        </mat-list-item>
+        <mat-list-item>
+            Fee
+            <span class="fill-remaining-space"></span>
+            <mat-icon></mat-icon>
+            {{transaction.fee / 1000000}}XEM
+        </mat-list-item>
+    </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <span class="fill-remaining-space"></span>
+    <button mat-button mat-dialog-close color="warn">No</button>
+    <button mat-button [mat-dialog-close]="true" color="accent">Yes</button>
+</mat-dialog-actions>

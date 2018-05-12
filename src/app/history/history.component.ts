@@ -11,43 +11,39 @@ import { TransactionComponent } from './transaction/transaction.component';
 })
 export class HistoryComponent implements OnInit {
     public loading = true;
-    public address: Address;
 
-    public incomingTransactions: Transaction[];
-
-    public outgoingTransactions: Transaction[];
-
-    public unconfirmedTransactions: Transaction[];
+    public incomingTransactions: Transaction[] | undefined;
+    public outgoingTransactions: Transaction[] | undefined;
+    public unconfirmedTransactions: Transaction[] | undefined;
 
     constructor(private router: Router, private dataService: DataService) {
 
     }
 
     ngOnInit() {
-        if (this.dataService.walletIndex == null) {
-            this.router.navigate(["/login"]);
-            return;
-        }
-        this.dataService.login().then(() => {
-            this.address = this.dataService.currentAccount.address;
-
-            this.refresh();
+        this.dataService.auth.authState.subscribe((user) => {
+            if(user == null) {
+                this.router.navigate(["/login"]);
+                return;
+            }
+            this.dataService.initialize().then(() => {
+                this.refresh();
+            });
         });
     }
 
     public async refresh() {
+        const address = this.dataService.account!.address;
         this.loading = true;
         this.incomingTransactions = new Array<Transaction>();
         this.outgoingTransactions = new Array<Transaction>();
         this.unconfirmedTransactions = new Array<Transaction>();
 
-        var accountHttp = new AccountHttp(this.dataService.nodes);
+        this.incomingTransactions = await this.dataService.accountHttp.incomingTransactions(address).toPromise();
 
-        this.incomingTransactions = await accountHttp.incomingTransactions(this.address).toPromise();
+        this.outgoingTransactions = await this.dataService.accountHttp.outgoingTransactions(address).toPromise();
 
-        this.outgoingTransactions = await accountHttp.outgoingTransactions(this.address).toPromise();
-
-        this.unconfirmedTransactions = await accountHttp.unconfirmedTransactions(this.address).toPromise();
+        this.unconfirmedTransactions = await this.dataService.accountHttp.unconfirmedTransactions(address).toPromise();
 
         this.loading = false;
     }

@@ -1,21 +1,11 @@
-<mat-card *ngFor="let p of price; let i = index">
-    <mat-card-header>
-        <div mat-card-avatar>
-            <img class="avatar-svg" [src]="mosaicData[i].imageUrl" />
-        </div>
-        <mat-card-title>{{mosaicData[i].namespace}}:{{mosaicData[i].name}}</mat-card-title>
-        <mat-card-subtitle>{{mosaicData[i].issuer}}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-        <p class="amount">{{p / mosaicData[i].rate}}</p>
-        <p class="price">{{p}} {{mosaicData[i].unit}}</p>
-        <mat-form-field fxFill>
-            <input matInput readonly placeholder="From" [value]="tt.signer.address.pretty()" i18n-placeholder />
-        </mat-form-field>
-        <mat-form-field fxFill>
-            <input matInput readonly placeholder="To" [value]="tt.recipient.pretty()" i18n-placeholder />
-        </mat-form-field>
-        <p class="message">{{message[i]}}</p>
-        <p class="date">{{tt.timeWindow.timeStamp.toLocalDate()}} {{tt.timeWindow.timeStamp.toLocalTime()}}</p>
-    </mat-card-content>
-</mat-card>
+<app-mosaic-card *ngFor="let p of part;" [namespace]="p.namespace" [name]="p.name">
+    <p class="price">{{p.amount}}<span *ngIf="p.unit"> {{p.unit}}</span></p>
+    <mat-form-field fxFill>
+        <input matInput readonly placeholder="From" [value]="tt!.signer!.address.pretty()" i18n-placeholder />
+    </mat-form-field>
+    <mat-form-field fxFill>
+        <input matInput readonly placeholder="To" [value]="tt!.recipient.pretty()" i18n-placeholder />
+    </mat-form-field>
+    <p class="message">{{message}}</p>
+    <p class="date">{{tt!.timeWindow.timeStamp.toLocalDate()}} {{tt!.timeWindow.timeStamp.toLocalTime()}}</p>
+</app-mosaic-card>

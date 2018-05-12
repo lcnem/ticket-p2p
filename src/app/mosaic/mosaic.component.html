@@ -2,38 +2,21 @@
     <button mat-button routerLink="/">
         <mat-icon>arrow_back</mat-icon>
     </button>
-    <span *ngIf="mosaic">{{mosaic.namespace}}:{{mosaic.name}}</span>
+    <span>{{namespace}}:{{name}}</span>
     <span class="fill-remaining-space"></span>
 </mat-toolbar>
 
-<div class="out-toolbar mat-typography">
-    <div class="progress">
-        <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
-    </div>
+<div class="out-toolbar">
+    <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
     <ng-template #loaded>
-        <div fxFill>
-            <mat-card>
-                <mat-card-header>
-                    <div mat-card-avatar>
-                        <img class="avatar-svg" [src]="mosaic.imageUrl" />
-                    </div>
-                    <mat-card-title>{{mosaic.namespace}}:{{mosaic.name}}</mat-card-title>
-                    <mat-card-subtitle>{{mosaic.issuer}}</mat-card-subtitle>
-                </mat-card-header>
-                <mat-card-content>
-                    <p class="amount">{{price / mosaic.rate}}</p>
-                    <p class="price">{{price}} {{mosaic.unit}}</p>
-                </mat-card-content>
-            </mat-card>
-        </div>
+        <app-mosaic-card [namespace]="namespace" [name]="name">
+            <p class="price">{{amount}}<span *ngIf="unit"> {{unit}}</span></p>
+        </app-mosaic-card>
 
         <img class="qr-image" [src]="qrUrl" />
         <mat-form-field fxFill>
-            <input matInput readonly placeholder="Address" [value]="address.pretty()" i18n-placeholder />
-        </mat-form-field>
-        <mat-form-field fxFill>
-            <input matInput type="number" placeholder="Amount" [(ngModel)]="invoice.price" i18n-placeholder />
-            <span matSuffix>{{mosaic.unit}}</span>
+            <input matInput type="number" placeholder="Amount" [(ngModel)]="invoice.amount" i18n-placeholder />
+            <span matSuffix>{{unit}}</span>
         </mat-form-field>
         <mat-form-field fxFill>
             <input matInput placeholder="Message" [(ngModel)]="invoice.message" i18n-placeholder />

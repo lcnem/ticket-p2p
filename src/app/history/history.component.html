@@ -8,21 +8,24 @@
         <mat-icon>refresh</mat-icon>
     </button>
 </mat-toolbar>
-<div class="out-toolbar mat-typography">
-    <div class="progress">
-        <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
-    </div>
+<div class="out-toolbar">
+    <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
     <ng-template #loaded>
         <div fxLayout="column">
             <mat-tab-group fxFlex="100">
+                <mat-tab label="Unconfirmed" i18n-label>
+                    <app-transaction *ngFor="let t of unconfirmedTransactions" [transaction]="t"></app-transaction>
+                    <p class="empty" *ngIf="!unconfirmedTransactions.length">There is no unconfirmed transaction.</p>
+                </mat-tab>
+            </mat-tab-group>
+            <mat-tab-group fxFlex="100">
                 <mat-tab label="Incoming" i18n-label>
                     <app-transaction *ngFor="let t of incomingTransactions" [transaction]="t"></app-transaction>
+                    <p class="empty" *ngIf="!incomingTransactions.length">There is no incoming transaction.</p>
                 </mat-tab>
                 <mat-tab label="Outgoing" i18n-label>
                     <app-transaction *ngFor="let t of outgoingTransactions" [transaction]="t"></app-transaction>
-                </mat-tab>
-                <mat-tab label="Unconfirmed" i18n-label>
-                    <app-transaction *ngFor="let t of unconfirmedTransactions" [transaction]="t"></app-transaction>
+                    <p class="empty" *ngIf="!outgoingTransactions.length">There is no outgoing transaction.</p>
                 </mat-tab>
             </mat-tab-group>
         </div>

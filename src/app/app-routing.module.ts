@@ -8,6 +8,7 @@ import { HomeComponent } from './home/home.component';
 import { HistoryComponent } from './history/history.component';
 import { TransactionComponent } from './history/transaction/transaction.component';
 import { ScanComponent } from './scan/scan.component';
+import { ExchangeComponent } from './exchange/exchange.component';
 
 const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -16,6 +17,7 @@ const routes: Routes = [
     { path: 'scan', component: ScanComponent },
     { path: 'history', component: HistoryComponent },
     { path: 'mosaic/:namespace/:mosaic', component: MosaicComponent },
+    { path: 'exchange', component: ExchangeComponent},
     { path: '**', component: PageNotFoundComponent }
 ];
 

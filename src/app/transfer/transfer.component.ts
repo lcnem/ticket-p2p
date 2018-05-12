@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
-import { DataService } from "../data/data.service"
+import { MatSnackBar, MatDialog } from '@angular/material';
+import { DataService, MosaicData, OwnedMosaic } from "../data/data.service"
 import {
     Mosaic,
     Account,
@@ -21,10 +21,12 @@ import {
     MosaicTransferable,
     MosaicId,
     NamespaceHttp,
-    XEM
+    XEM,
+    MosaicDefinition
 } from 'nem-library';
-import { MosaicData } from '../models/api';
-import { Invoice } from '../models/invoice';
+import { Invoice } from '../../models/invoice';
+import { TransferDialogComponent } from '../components/transfer-dialog/transfer-dialog.component';
+import { LoadingDialogComponent } from '../components/loading-dialog/loading-dialog.component';
 
 @Component({
     selector: 'app-transfer',
@@ -32,42 +34,42 @@ import { Invoice } from '../models/invoice';
     styleUrls: ['./transfer.component.css']
 })
 export class TransferComponent implements OnInit {
-    public ownedMosaics: MosaicData[];
+    public loading = true;
 
-    public address: string;
-    public transferMosaics = new Array<MosaicData>();
-    public price = new Array<number>();
+    public address: string | undefined;
+    public transferMosaics = new Array<{
+        amount: number,
+        definition: MosaicDefinition
+    }>();
     public message = "";
     public encrypt = false;
-
-    public sending = false;
 
     constructor(
         public snackBar: MatSnackBar,
         private router: Router,
         private route: ActivatedRoute,
-        private dataService: DataService
+        public dialog: MatDialog,
+        public dataService: DataService
     ) {
 
     }
 
     ngOnInit() {
-        if (this.dataService.walletIndex == null) {
-            this.router.navigate(["/login"]);
-            return;
-        }
-        this.dataService.login().then(() => {
-            this.ownedMosaics = new Array<MosaicData>();
-            this.dataService.ownedMosaicData.forEach(m => {
-                this.ownedMosaics.push(m);
-            });
-            let json = this.route.snapshot.queryParamMap.get('json');
-            
-            if (json != null) {
-                this.readInvoice(json);
+        this.dataService.auth.authState.subscribe((user) => {
+            if (user == null) {
+                this.router.navigate(["/login"]);
+                return;
             }
-        });
+            this.dataService.initialize().then(() => {
+                let json = this.route.snapshot.queryParamMap.get('json');
 
+                if (json != null) {
+                    this.readInvoice(json);
+                }
+
+                this.loading = false;
+            });
+        });
     }
 
     public readInvoice(json: string) {
@@ -78,97 +80,114 @@ export class TransferComponent implements OnInit {
         this.address = invoice.data.addr;
         this.message = invoice.data.msg;
         invoice.data.mosaics.forEach(m => {
-            let mosaic = this.ownedMosaics.find(o => o.namespace + ":" + o.name == m.name);
-            if(mosaic != null) {
-                this.addMosaic(mosaic, mosaic.getPrice(m.amount));
+            let splitted = m.name.split(":");
+            if (splitted.length == 2) {
+                this.add(splitted[0], splitted[1], m.amount);
             }
         });
     }
 
     public async resolveAlias() {
-        if (this.address.startsWith("@")) {
+        if (this.address && this.address.startsWith("@")) {
             let namespace = this.address.substr(1, this.address.length - 1);
-            let namespaceHttp = new NamespaceHttp(this.dataService.nodes);
 
             try {
-                let result = await namespaceHttp.getNamespace(namespace).toPromise();
+                let result = await this.dataService.namespaceHttp.getNamespace(namespace).toPromise();
                 this.address = result.owner.pretty();
             } catch {
                 this.snackBar.open("Failed to solve alias", "", { duration: 2000 });
             }
         } else {
-            this.snackBar.open("Require to start with @", "", { duration: 2000 });
-        }
-    }
-
-    public addMosaic(mosaic: MosaicData, price: number) {
-        this.transferMosaics.push(mosaic);
-        this.price.push(price);
-
-        let index = this.ownedMosaics.findIndex(m => m == mosaic);
-        if(index != -1) {
-            this.ownedMosaics.splice(index, 1);
+            this.snackBar.open("Must start with @", "", { duration: 2000 });
         }
     }
 
     public async transfer() {
-        this.sending = true;
-        this.snackBar.open("Processing", "", { duration: 2000 });
-        try {
-            let message: Message;
-            if (this.encrypt) {
-                let recipient = await new AccountHttp(this.dataService.nodes).getFromAddress(new Address(this.address)).toPromise();
+        if (!this.address) {
+            this.snackBar.open("Address is required.", "", { duration: 2000 });
+            return;
+        }
+
+        let message: Message;
+        if (this.encrypt) {
+            try {
+                let recipient = await this.dataService.accountHttp.getFromAddress(new Address(this.address)).toPromise();
                 if (!recipient.publicAccount.hasPublicKey) {
                     this.snackBar.open("Encrypting message to new address is not available.", "", { duration: 2000 });
-                    this.sending = false;
                     return;
                 }
-                message = this.dataService.currentAccount.encryptMessage(this.message, recipient.publicAccount);
-            } else {
-                message = PlainMessage.create(this.message);
+
+                message = this.dataService.account!.encryptMessage(this.message, recipient.publicAccount);
+            } catch {
+                this.snackBar.open("Invalid address", "", { duration: 2000 });
+                return;
             }
+        } else {
+            message = PlainMessage.create(this.message);
+        }
 
-            let transferable = new Array<MosaicTransferable>();
-            let mosaicHttp = new MosaicHttp(this.dataService.nodes);
+        let transferable = new Array<MosaicTransferable>();
 
-            for(let i = 0; i < this.transferMosaics.length; i++) {
-                if (this.price[i] != null) {
-                    let mosaic = this.transferMosaics[i];console.log(mosaic)
-                    let mosaicId = new MosaicId(mosaic.namespace, mosaic.name);
-                    let amount = mosaic.getAmount(this.price[i]) / Math.pow(10, mosaic.divisibility);console.log(amount)
-                    if (mosaicId.namespaceId == "nem" && mosaicId.name == "xem") {
-                        transferable.push(new XEM(amount));
-                    } else {
-                        let mosaicTransferable = await mosaicHttp.getMosaicTransferableWithAmount(mosaicId, amount).toPromise();
-                        transferable.push(mosaicTransferable);
-                    }
+        for (let i = 0; i < this.transferMosaics.length; i++) {
+            if (this.transferMosaics[i].amount) {
+                let definition = this.transferMosaics[i].definition;
+
+                if (definition.id.namespaceId == "nem" && definition.id.name == "xem") {
+                    transferable.push(new XEM(this.transferMosaics[i].amount));
+                } else {
+                    let mosaicTransferable = new MosaicTransferable(definition.id, definition.properties, this.transferMosaics[i].amount, definition.levy);
+                    transferable.push(mosaicTransferable);
                 }
             }
+        }
 
-            let transaction = TransferTransaction.createWithMosaics(
-                TimeWindow.createWithDeadline(),
-                new Address(this.address),
-                transferable,
-                message
-            );
-            console.log(JSON.stringify(transaction));
+        let transaction = TransferTransaction.createWithMosaics(
+            TimeWindow.createWithDeadline(),
+            new Address(this.address),
+            transferable,
+            message
+        );
+        console.log(JSON.stringify(transaction));
 
-            let transactionHttp = new TransactionHttp(this.dataService.nodes);
-            let signed = this.dataService.currentAccount.signTransaction(transaction);
-            transactionHttp.announceTransaction(signed).subscribe(observer => {
+        let dialogRef = this.dialog.open(TransferDialogComponent, {
+            data: {
+                transaction: transaction,
+                mosaics: transferable
+            }
+        });
+
+        let result = dialogRef.afterClosed().subscribe(result => {
+            if (!result) {
+                return;
+            }
+            let dialogRef_ = this.dialog.open(LoadingDialogComponent);
+
+            let signed = this.dataService.account!.signTransaction(transaction);
+            this.dataService.transactionHttp.announceTransaction(signed).subscribe(async observer => {
+                await this.dataService.refresh();
+                dialogRef_.close();
                 this.snackBar.open("Success", "", { duration: 2000 });
                 this.router.navigate(["/"]);
             }, error => {
-                this.snackBar.open(error.message, "", { duration: 2000 });
-            })
-        } catch {
-            this.snackBar.open("An error has occured.", "", { duration: 2000 });
-            this.sending = false;
-            return;
-        }
+                dialogRef_.close();
+                this.snackBar.open("Error", "", { duration: 2000 });
+                console.log(JSON.stringify(error));
+            });
+        });
     }
 
-    trackByIndex(index: number, obj: any): any {
-        return index;
+    public add(namespace: string, name: string, quantity: number) {
+        let definition = this.dataService.getDefinition(namespace, name);
+        if (!definition) {
+            return;
+        }
+        this.transferMosaics.push({
+            amount: quantity / Math.pow(10, definition.properties.divisibility),
+            definition: definition
+        });
+    }
+
+    public isAdded(namespace: string, name: string) {
+        return this.transferMosaics.find(m => m.definition.id.namespaceId == namespace && m.definition.id.name == name) != null;
     }
 }

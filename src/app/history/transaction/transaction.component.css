@@ -2,24 +2,14 @@ mat-card {
     margin: 6px;
 }
 
-.amount {
+.price {
     font-size: 300%;
     line-height: 100%;
-    text-align: center;
-}
-.price {
     text-align: center;
 }
 
 .message {
     text-align: center;
-}
-
-.avatar-svg {
-    position: relative;
-    margin-top: -50%;
-    top: 50%;
-    width: 100%;
 }
 
 .date {

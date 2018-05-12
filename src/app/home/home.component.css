@@ -1,27 +1,3 @@
 .search-input * {
     color: white;
 }
-
-.mosaic-card {
-    position: absolute;
-    top: 6px;
-    bottom: 6px;
-    left: 6px;
-    right: 6px;
-    padding: 0;
-}
-
-.mosaic-image {
-    height: 100%;
-}
-
-.mosaic-image img {
-    display: block;
-    margin: 0 auto;
-    height: 100%;
-}
-
-.price {
-    font-size: 2em;
-    text-align: center;
-}

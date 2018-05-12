@@ -8,13 +8,11 @@ import {
     Mosaic,
     SimpleWallet,
     Address,
-    ConfirmedTransactionListener,
-    UnconfirmedTransactionListener
+    MosaicId
 } from "nem-library";
 import { MatSnackBar } from '@angular/material';
-import { DataService } from "../data/data.service";
-import { StreamingService } from "../streaming/streaming.service";
-import { MosaicData } from '../models/api';
+import { DataService, MosaicData, OwnedMosaic } from "../data/data.service";
+import { Invoice } from '../../models/invoice';
 
 @Component({
     selector: 'app-home',
@@ -24,61 +22,63 @@ import { MosaicData } from '../models/api';
 export class HomeComponent implements OnInit {
     public loading = true;
 
-    public mosaicName: string;
-    public ownedMosaics: MosaicData[];
+    public mosaicName: string | undefined;
 
     constructor(
         public snackBar: MatSnackBar,
         private router: Router,
-        public streamingService: StreamingService,
+        private route: ActivatedRoute,
         public dataService: DataService
     ) {
     }
 
     ngOnInit() {
-        if (this.dataService.walletIndex == null) {
-            this.router.navigate(["/login"]);
-            return;
-        } 
-        this.dataService.login().then(() => {
-            this.ownedMosaics = this.dataService.ownedMosaicData;
-
-            //this.streamingService.confirmedCallback = () => {
-            //    this.snackBar.open("取引が承認されました。", "", { duration: 2000 });
-            //};
-            //this.streamingService.unconfirmedCallback = () => {
-            //    this.snackBar.open("新しい取引を確認しました。", "", { duration: 2000 });
-            //};
-            //this.streamingService.startStreaming(this.dataService.currentAccount.address);
-
-            this.loading = false;
+        this.dataService.auth.authState.subscribe((user) => {
+            if (user == null) {
+                this.router.navigate(["/login"]);
+                return;
+            }
+            this.dataService.initialize().then(() => {
+                this.loading = false;
+            });
         });
     }
 
-    public logout() {
-        this.streamingService.finishStreaming();
-        this.dataService.logout();
+    public onClick(namespace: string, name: string) {
+        this.router.navigate(["/mosaic", namespace, name]);
+    }
+
+    public async logout() {
+        await this.dataService.logout();
         this.router.navigate(["/login"]);
     }
 
     public async refresh() {
         this.loading = true;
-
-        await this.dataService.loadMosaicData();
-        await this.dataService.loadOwned();
-
-        this.ownedMosaics = this.dataService.ownedMosaicData;
+        
+        await this.dataService.refresh();
 
         this.loading = false;
     }
 
     public designate() {
-        let mosaic = this.dataService.mosaicData.find(m => m.namespace + ":" + m.name == this.mosaicName);
-        if (!mosaic) {
-            this.snackBar.open("Not found", "", { duration: 2000 });
+        if(!this.mosaicName) {
+            return;
         }
         let splitted = this.mosaicName.split(":");
+        if(splitted.length != 2) {
+            this.snackBar.open("Invalid name", "", { duration: 2000 });
+        }
 
         this.router.navigate(["/mosaic", splitted[0], splitted[1]]);
+    }
+
+    public donate() {
+        let invoice = new Invoice();
+        invoice.data.addr = "@lc";
+        invoice.data.name = "LCNEM Wallet";
+        invoice.data.mosaics.push({ name: "nem:xem", amount: 1000000 });
+        var qr = invoice.generate();
+        this.router.navigate(["/transfer"], { queryParams: { "json": qr } });
     }
 }

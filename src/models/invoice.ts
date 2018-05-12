@@ -1,5 +1,3 @@
-import { isNumber } from "util";
-
 export class Invoice {
     public v = 2;
     public type = 2;
@@ -14,12 +12,11 @@ export class Invoice {
         return encodeURI(JSON.stringify(this));
     }
 
-    public static read(json: string): Invoice {
+    public static read(json: string): Invoice | null {
         let decoded = decodeURI(json);
         let invoice: Invoice;
         try {
-            console.log(decoded);
-            invoice = eval("(" + decoded + ")") 
+            invoice = JSON.parse(decoded);
         }
         catch {
             return null;
@@ -43,13 +40,14 @@ export class Invoice {
             return null;
         }
         if (invoice.data.mosaics == null) {
-            if(isNumber((invoice.data as any).amount)) {
+            const amount = Number((invoice.data as any).amount);
+            if(!isNaN(amount)) {
                 invoice.data.mosaics = new Array<{name: string, amount: number}>();
-                invoice.data.mosaics.push({name: "nem:xem", amount: (invoice.data as any).amount});
+                invoice.data.mosaics.push({name: "nem:xem", amount: amount});
             }
         }
         invoice.data.mosaics.forEach(m => {
-            if(!isNumber(m.amount)) {
+            if(isNaN(Number(m.amount))) {
                 m.amount = 0;
             }
         });

@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from "../data/data.service";
-import { LcnemApi, MosaicData } from '../models/api';
 import { RouterModule, Routes, ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { encodeUriQuery } from '@angular/router/src/url_tree';
 import {
     Account,
     Address,
-    QRService
+    QRService,
+    MosaicHttp,
+    MosaicId,
+    MosaicDefinition
 } from 'nem-library';
 import { HttpClient } from '@angular/common/http';
-import { Invoice } from '../models/invoice';
+import { Invoice } from '../../models/invoice';
 
 @Component({
     selector: 'app-mosaic',
@@ -20,16 +22,19 @@ import { Invoice } from '../models/invoice';
 export class MosaicComponent implements OnInit {
     public loading = true;
 
-    public address: Address;
-    public mosaic: MosaicData;
-    public price = 0;
+    public namespace: string | undefined;
+    public name: string | undefined;
+
+    public definition: MosaicDefinition | undefined;
+    public amount: number = 0;
+    public unit: string | null | undefined;
 
     public invoice = {
-        price: 0,
+        amount: 0,
         message: ""
     };
 
-    public qrUrl: string;
+    public qrUrl: string | undefined;
 
     constructor(
         public snackBar: MatSnackBar,
@@ -42,51 +47,59 @@ export class MosaicComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (this.dataService.walletIndex == null) {
-            this.router.navigate(["/login"]);
-            return;
-        }
-        this.dataService.login().then(() => {
-
-            let namespace = this.route.snapshot.paramMap.get('namespace');
-            let mosaic = this.route.snapshot.paramMap.get('mosaic');
-
-            this.mosaic = this.dataService.mosaicData.find(m => m.namespace == namespace && m.name == mosaic);
-
-            if (!this.mosaic) {
-                this.router.navigate(["/page-not-found"]);
+        this.dataService.auth.authState.subscribe((user) => {
+            if (user == null) {
+                this.router.navigate(["/login"]);
                 return;
             }
-            let owned = this.dataService.owned.find(o => o.mosaicId.namespaceId == this.mosaic.namespace && o.mosaicId.name == this.mosaic.name);
-            if (owned) {
-                this.price = this.mosaic.getPrice(owned.quantity);
-            }
+            this.namespace = this.route.snapshot.paramMap.get('namespace') || undefined;
+            this.name = this.route.snapshot.paramMap.get('mosaic') || undefined;
 
-            this.address = this.dataService.currentAccount.address;
-            this.generateQr();
+            this.dataService.initialize().then(async () => {
+                if (this.namespace && this.name) {
+                    this.definition = this.dataService.getDefinition(this.namespace, this.name) || undefined;
+                    if (!this.definition) {
+                        this.definition = await this.dataService.mosaicHttp.getMosaicDefinition(new MosaicId(this.namespace, this.name)).toPromise();
+                    }
 
-            this.loading = false;
+                    this.amount = this.dataService.getAmount(this.namespace, this.name);
+                    this.unit = this.dataService.getUnit(this.namespace, this.name);
+                    this.generateQr();
+
+                    this.loading = false;
+                }
+            });
         });
     }
 
     public generateQr() {
-        if (this.price == null) {
+        if (this.invoice.amount == null) {
             this.snackBar.open("Invalid amount", "", { duration: 2000 });
             return;
         }
-        let amount = this.invoice.price * Math.pow(10, this.mosaic.divisibility) / this.mosaic.rate;
+        let amount = this.invoice.amount * Math.pow(10, this.definition!.properties.divisibility);
 
-        if(this.mosaic.namespace == "nem" && this.mosaic.name == "xem") {
-            let qrService = new QRService();
-            let json = qrService.generateTransactionQRText(this.address, amount, this.invoice.message);
+        const address = this.dataService.account!.address;
+
+        if (this.namespace == "nem" && this.name == "xem") {
+            let json = JSON.stringify({
+                v: 2,
+                type: 2,
+                data: {
+                    addr: address.plain(),
+                    msg: this.invoice.message,
+                    name: "LCNEM Wallet",
+                    amount: amount
+                }
+            });
             this.qrUrl = "https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + encodeURI(json);
             return;
         }
         let invoice = new Invoice();
-        invoice.data.addr = this.address.plain();
+        invoice.data.addr = address.plain();
         invoice.data.msg = this.invoice.message;
         invoice.data.name = "LCNEM Wallet";
-        invoice.data.mosaics.push({name: this.mosaic.namespace + ':' + this.mosaic.name, amount: amount});
+        invoice.data.mosaics.push({ name: this.namespace + ':' + this.name, amount: amount });
 
         let qr = invoice.generate();
         this.qrUrl = "https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + qr;
@@ -95,7 +108,7 @@ export class MosaicComponent implements OnInit {
     public send() {
         let invoice = new Invoice();
         invoice.data.name = "LCNEM Wallet";
-        invoice.data.mosaics.push({name: this.mosaic.namespace + ':' + this.mosaic.name, amount: 0});
+        invoice.data.mosaics.push({ name: this.namespace + ':' + this.name, amount: 0 });
         var qr = invoice.generate();
         this.router.navigate(["/transfer"], { queryParams: { "json": qr } });
     }

@@ -5,48 +5,38 @@
 
     <span i18n>Transfer</span>
     <span class="fill-remaining-space"></span>
-    <button mat-button (click)="transfer()" [disabled]="sending">
+    <button mat-button (click)="transfer()">
         <mat-icon>send</mat-icon>
     </button>
 </mat-toolbar>
 <div class="out-toolbar">
-    <mat-form-field fxFill>
-        <input matInput placeholder="Recipient address" [disabled]="sending" [(ngModel)]="address" i18n-placeholder>
-        <button mat-button matSuffix color="accent" matTooltip="Solve alias" (click)="resolveAlias()" i18n-matTooltip>@</button>
-    </mat-form-field>
+    <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
+    <ng-template #loaded>
+        <mat-form-field fxFill>
+            <input matInput placeholder="Recipient address" [(ngModel)]="address" i18n-placeholder>
+            <button mat-button matSuffix color="accent" matTooltip="Solve alias" (click)="resolveAlias()" i18n-matTooltip>@</button>
+        </mat-form-field>
 
-    <div fxLayout="row wrap" fxLayoutAlign="space-around">
-        <mat-card fxFlex="33.3" fxFlex.sm="50" fxFlex.xs="100" *ngFor="let mosaic of transferMosaics; let i = index; trackBy:trackByIndex;">
-            <mat-card-header>
-                <div mat-card-avatar>
-                    <img class="avatar-svg" [src]="mosaic.imageUrl" />
-                </div>
-                <mat-card-title>{{mosaic.namespace}}:{{mosaic.name}}</mat-card-title>
-                <mat-card-subtitle>{{mosaic.issuer}}</mat-card-subtitle>
-            </mat-card-header>
-            <mat-form-field class="price-input">
-                <input matInput type="number" placeholder="Amount" [disabled]="sending" [(ngModel)]="price[i]" i18n-placeholder />
-                <span matSuffix>{{mosaic.unit}}</span>
-            </mat-form-field>
-        </mat-card>
-    </div>
-    <br />
-    <div fxLayout="row wrap">
-        <div fxFlex="25" fxFlex.sm="33.3" fxFlex.xs="50" *ngFor="let mosaic of ownedMosaics; let i = index; trackBy:trackByIndex;">
-            <mat-grid-list cols="1" rowHeight="16:9">
-                <mat-grid-tile>
-                    <mat-card mat-ripple class="mosaic-card" matTooltip="{{mosaic.namespace}}:{{mosaic.name}}" (click)="addMosaic(ownedMosaics[i], null)">
-                        <div class="mosaic-image">
-                            <img [src]="mosaic.imageUrl" />
-                        </div>
-                    </mat-card>
-                </mat-grid-tile>
-            </mat-grid-list>
+        <div fxLayout="row wrap" fxLayoutAlign="space-around">
+            <app-mosaic-card fxFlex="25" fxFlex.md="33.3" fxFlex.sm="50" fxFlex.xs="100" *ngFor="let m of transferMosaics" [namespace]="m.definition.id.namespaceId"
+                [name]="m.definition.id.name">
+                <mat-form-field class="price-input">
+                    <input matInput type="number" placeholder="Amount" [(ngModel)]="m.amount" i18n-placeholder />
+                    <span matSuffix>/{{dataService.getAmount(m.definition.id.namespaceId, m.definition.id.name)}}</span>
+                    <span matSuffix>{{dataService.getUnit(m.definition.id.namespaceId, m.definition.id.name)}}</span>
+                </mat-form-field>
+            </app-mosaic-card>
         </div>
-    </div>
-    <br />
-    <mat-form-field fxFill>
-        <input matInput placeholder="Message" [disabled]="sending" [(ngModel)]="message" i18n-placeholder>
-    </mat-form-field>
-    <mat-checkbox fxFill [disabled]="sending" [(ngModel)]="encrypt" i18n>Encrypt message</mat-checkbox>
+        <br />
+        <div fxLayout="row wrap">
+            <div fxFlex="25" fxFlex.md="33.3" fxFlex.sm="50" fxFlex.xs="100" *ngFor="let m of dataService.ownedMosaics">
+                <app-mosaic-tile [namespace]="m.definition.id.namespaceId" [name]="m.definition.id.name" (click)="add(m.definition.id.namespaceId, m.definition.id.name)"
+                    *ngIf="!isAdded(m.definition.id.namespaceId, m.definition.id.name)"></app-mosaic-tile>
+            </div>
+        </div>
+        <mat-form-field fxFill>
+            <input matInput placeholder="Message" [(ngModel)]="message" i18n-placeholder>
+            <mat-slide-toggle [(ngModel)]="encrypt" matSuffix>Encrypt Message</mat-slide-toggle>
+        </mat-form-field>
+    </ng-template>
 </div>

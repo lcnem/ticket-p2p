@@ -4,5 +4,13 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: 'AIzaSyAmzaskLg7tFnEaY8PKVz8G7LJYqVUVfwI',
+    authDomain: 'lcnem-wallet.firebaseapp.com',
+    databaseURL: 'https://lcnem-wallet.firebaseio.com',
+    projectId: 'lcnem-wallet',
+    storageBucket: 'lcnem-wallet.appspot.com',
+    messagingSenderId: '522057576747'
+  }
 };

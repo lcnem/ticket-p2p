@@ -6,7 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 
 import {
     MatButtonModule,
-    MatCheckboxModule,
     MatToolbarModule,
     MatCardModule,
     MatInputModule,
@@ -16,15 +15,16 @@ import {
     MatFormFieldModule,
     MatSidenavModule,
     MatRippleModule,
-    MatChipsModule,
     MatGridListModule,
     MatProgressSpinnerModule,
     MatTabsModule,
     MatSnackBarModule,
     MatExpansionModule,
-    MatStepperModule,
     MatDividerModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatDialogModule,
+    MatListModule,
+    MatSlideToggleModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -36,7 +36,6 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { FormsModule } from '@angular/forms';
 
 import { DataService } from './data/data.service';
-import { StreamingService } from "./streaming/streaming.service";
 
 import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
 import { LoginComponent } from './login/login.component';
@@ -50,7 +49,15 @@ import { ScanComponent } from './scan/scan.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireAuthModule } from 'angularfire2/auth';
 import { environment } from '../environments/environment';
+import { ExchangeComponent } from './exchange/exchange.component';
+import { TransferDialogComponent } from './components/transfer-dialog/transfer-dialog.component';
+import { MosaicTileComponent } from './components/mosaic-tile/mosaic-tile.component';
+import { MosaicCardComponent } from './components/mosaic-card/mosaic-card.component';
+import { LoadingDialogComponent } from './components/loading-dialog/loading-dialog.component';
 
 @NgModule({
     declarations: [
@@ -62,7 +69,12 @@ import { environment } from '../environments/environment';
         HomeComponent,
         HistoryComponent,
         TransactionComponent,
-        ScanComponent
+        ScanComponent,
+        ExchangeComponent,
+        TransferDialogComponent,
+        MosaicTileComponent,
+        MosaicCardComponent,
+        LoadingDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -71,8 +83,10 @@ import { environment } from '../environments/environment';
         BrowserAnimationsModule,
         ZXingScannerModule.forRoot(),
         ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule,
+        AngularFireAuthModule,
         MatButtonModule,
-        MatCheckboxModule,
         MatToolbarModule,
         MatCardModule,
         MatInputModule,
@@ -85,16 +99,21 @@ import { environment } from '../environments/environment';
         MatSidenavModule,
         MatRippleModule,
         HttpClientModule,
-        MatChipsModule,
         MatProgressSpinnerModule,
         MatTabsModule,
         MatSnackBarModule,
         MatExpansionModule,
-        MatStepperModule,
         MatDividerModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
+        MatDialogModule,
+        MatListModule,
+        MatSlideToggleModule
     ],
-    providers: [DataService, StreamingService],
+    entryComponents: [
+        TransferDialogComponent,
+        LoadingDialogComponent
+    ],
+    providers: [DataService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

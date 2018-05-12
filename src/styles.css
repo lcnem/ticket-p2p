@@ -5,18 +5,14 @@ html, body{
     margin: 0;
 }
 
-.out-toolbar {
-    padding-top: 80px;
-    padding-right: 16px;
-    padding-left: 16px;
-}
-
 mat-sidenav-container {
-    min-height: 100%;
+    height: 100%;
+    margin: 0;
 }
 
 mat-toolbar {
-    position: fixed;
+    position: -webkit-sticky;
+    position: sticky;
     top: 0;
     z-index: 100;
 }
@@ -26,10 +22,11 @@ mat-toolbar .mat-button {
 }
 
 mat-sidenav {
-    width: 200px;
-    padding-top: 80px;
-    position: fixed !important;
-    overflow-y: scroll !important;
+    width: 240px;
+}
+
+mat-sidenav .mat-button {
+    text-align: left !important;
 }
 
 mat-toolbar *{
@@ -40,10 +37,17 @@ mat-toolbar *{
     flex: 1 1 auto;
 }
 
-.progress {
-    overflow: hidden;
-}
-
 mat-spinner {
     margin: 0 auto;
 }
+
+.out-toolbar {
+    padding: 16px;
+}
+
+.background-contain {
+    background-position: center !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+}
+
