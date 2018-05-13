@@ -11,6 +11,6 @@
             <mat-option *ngFor="let device of availableDevices; let i = index" [value]="i">{{device.label}}</mat-option>
         </mat-select>
     </mat-form-field>
-    <zxing-scanner fxFill #scanner [device]="!isUndefined(selected) && availableDevices[selected]" [hidden]="isUndefined(selected) || !availableDevices[selected]">
+    <zxing-scanner fxFill #scanner [device]="!isUndefined(selected) && availableDevices![selected!]" [hidden]="isUndefined(selected) || !availableDevices![selected!]">
     </zxing-scanner>
 </div>

@@ -1,6 +1,6 @@
 <mat-card>
     <mat-card-header>
-        <div mat-card-avatar class="background-contain" [ngStyle]="{'background-image': 'url('+ dataService.getImageUrl(namespace, name) + ')'}"></div>
+        <div mat-card-avatar class="background-contain" [ngStyle]="{'background-image': 'url('+ dataService.getImageUrl(namespace!, name!) + ')'}"></div>
         <mat-card-title>{{namespace}}:{{name}}</mat-card-title>
         <mat-card-subtitle>{{issuer}}</mat-card-subtitle>
     </mat-card-header>

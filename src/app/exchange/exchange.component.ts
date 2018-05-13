@@ -93,7 +93,7 @@ export class ExchangeComponent implements OnInit {
             if (!result) {
                 return;
             }
-            let dialogRef_ = this.dialog.open(LoadingDialogComponent);
+            let dialogRef_ = this.dialog.open(LoadingDialogComponent, {disableClose: true});
 
             if(! await this.checkIp()) {
                 dialogRef_.close();

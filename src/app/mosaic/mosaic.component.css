@@ -2,7 +2,7 @@ mat-card {
     margin: 6px;
 }
 
-.price {
+.amount {
     font-size: 300%;
     line-height: 100%;
     text-align: center;

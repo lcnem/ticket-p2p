@@ -14,8 +14,8 @@
             </mat-select>
         </mat-form-field>
         <div *ngIf="selected">
-            <p class="mat-typography rate">{{rates[selected]}} XEM/{{selected}}</p>
-            <mat-form-field class="price-input" fxFill>
+            <p class="mat-typography rate">{{rates[selected].toFixed(9)}}<wbr/>XEM/{{selected}}</p>
+            <mat-form-field fxFill>
                 <input matInput type="number" placeholder="Amount" [(ngModel)]="amount" />
                 <span matSuffix>{{selected}}</span>
             </mat-form-field>

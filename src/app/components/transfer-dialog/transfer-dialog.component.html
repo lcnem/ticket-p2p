@@ -5,13 +5,13 @@
             {{m.mosaicId.namespaceId}}:{{m.mosaicId.name}}
             <span class="fill-remaining-space"></span>
             <mat-icon></mat-icon>
-            {{m.amount}}{{dataService.getUnit(m.mosaicId.namespaceId, m.mosaicId.name)}}
+            {{m.amount.toFixed(m.properties.divisibility)}}{{dataService.getUnit(m.mosaicId.namespaceId, m.mosaicId.name)}}
         </mat-list-item>
         <mat-list-item>
             Fee
             <span class="fill-remaining-space"></span>
             <mat-icon></mat-icon>
-            {{transaction.fee / 1000000}}XEM
+            {{floor(transaction.fee) / 1000000}}XEM
         </mat-list-item>
     </mat-list>
 </mat-dialog-content>

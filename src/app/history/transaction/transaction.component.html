@@ -1,5 +1,5 @@
 <app-mosaic-card *ngFor="let p of part;" [namespace]="p.namespace" [name]="p.name">
-    <p class="price">{{p.amount}}<span *ngIf="p.unit"> {{p.unit}}</span></p>
+    <p class="amount">{{p.amount}}{{p.unit}}</p>
     <mat-form-field fxFill>
         <input matInput readonly placeholder="From" [value]="tt!.signer!.address.pretty()" i18n-placeholder />
     </mat-form-field>

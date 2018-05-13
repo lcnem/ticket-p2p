@@ -160,7 +160,7 @@ export class TransferComponent implements OnInit {
             if (!result) {
                 return;
             }
-            let dialogRef_ = this.dialog.open(LoadingDialogComponent);
+            let dialogRef_ = this.dialog.open(LoadingDialogComponent, {disableClose: true});
 
             let signed = this.dataService.account!.signTransaction(transaction);
             this.dataService.transactionHttp.announceTransaction(signed).subscribe(async observer => {

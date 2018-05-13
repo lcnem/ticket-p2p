@@ -16,4 +16,8 @@ export class TransferDialogComponent {
         this.transaction = data.transaction as TransferTransaction;
         this.mosaics = data.mosaics as MosaicTransferable[];
     }
+
+    public floor(x: number) {
+        return Math.floor(x);
+    }
 }

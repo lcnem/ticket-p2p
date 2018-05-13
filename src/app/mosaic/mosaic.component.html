@@ -10,7 +10,7 @@
     <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
     <ng-template #loaded>
         <app-mosaic-card [namespace]="namespace" [name]="name">
-            <p class="price">{{amount}}<span *ngIf="unit"> {{unit}}</span></p>
+            <p class="amount">{{amount}}<wbr/>{{unit}}</p>
         </app-mosaic-card>
 
         <img class="qr-image" [src]="qrUrl" />
