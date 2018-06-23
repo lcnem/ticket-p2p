@@ -1,0 +1,18 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+    <button mat-button routerLink="/">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <span>{{translation.sign[global.lang]}}</span>
+    <span class="fill-remaining-space"></span>
+</mat-toolbar>
+<div class="out-toolbar mat-typography">
+    <p>{{translation.caution[global.lang]}}</p>
+    <mat-form-field fxFill>
+        <input matInput placeholder="{{translation.callback[global.lang]}}" readonly [value]="callback">
+    </mat-form-field>
+    <mat-form-field fxFill>
+        <input matInput placeholder="{{translation.data[global.lang]}}" readonly [value]="data">
+    </mat-form-field>
+    <button mat-raised-button fxFill color="accent" (click)="sign()">{{translation.sign[global.lang]}}</button>
+</div>

@@ -1,0 +1,42 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+    <button mat-button routerLink="/">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <span>{{translation.transfer[global.lang]}}</span>
+    <span class="fill-remaining-space"></span>
+</mat-toolbar>
+<div class="out-toolbar">
+    <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
+    <ng-template #loaded>
+        <mat-card>
+            <mat-form-field fxFill>
+                <input matInput placeholder="{{translation.recipient[global.lang]}}" [(ngModel)]="recipient" [matAutocomplete]="auto">
+            </mat-form-field>
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngIf="recipient" [value]="recipient">{{translation.address[global.lang]}} "{{recipient}}"</mat-option>
+                <mat-option *ngIf="recipient" (click)="resolveNamespace()" [value]="recipient">{{translation.namespace[global.lang]}} "{{recipient}}"</mat-option>
+            </mat-autocomplete>
+        </mat-card>
+        <mat-card>
+            <mat-form-field fxFill>
+                <input matInput placeholder="{{translation.message[global.lang]}}" [(ngModel)]="message">
+                <mat-slide-toggle fxFill [(ngModel)]="encrypt" matSuffix>{{translation.encryption[global.lang]}}</mat-slide-toggle>
+            </mat-form-field>
+        </mat-card>
+        <mat-card>
+            <app-mosaic-list [title]="translation.balance[global.lang]" [mosaics]="global.mosaics"></app-mosaic-list>
+        </mat-card>
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>
+                    {{translation.amount[global.lang]}}
+                </mat-card-title>
+            </mat-card-header>
+            <mat-form-field fxFill *ngFor="let m of transferMosaics; let i = index">
+                <input matInput placeholder="{{m.name}}" [(ngModel)]="transferMosaics[i].amount" [matTooltip]="translation.inputEmpty[global.lang]">
+            </mat-form-field>
+        </mat-card>
+        <button fxFill mat-raised-button color="accent" (click)="transfer()">{{translation.submit[global.lang]}}</button>
+    </ng-template>
+</div>

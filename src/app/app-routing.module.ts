@@ -1,24 +1,25 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
-import { LoginComponent } from './login/login.component';
-import { TransferComponent } from './transfer/transfer.component';
-import { MosaicComponent } from './mosaic/mosaic.component';
+import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { HistoryComponent } from './history/history.component';
-import { TransactionComponent } from './history/transaction/transaction.component';
-import { ScanComponent } from './scan/scan.component';
-import { ExchangeComponent } from './exchange/exchange.component';
+import { LoginComponent } from './accounts/login/login.component';
+import { SignComponent } from './accounts/sign/sign.component';
+import { HistoryComponent } from './transactions/history/history.component';
+import { ScanComponent } from './transactions/scan/scan.component';
+import { TransferComponent } from './transactions/transfer/transfer.component';
+import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
+import { WithdrawComponent } from './accounts/withdraw/withdraw.component';
+import { DepositComponent } from './accounts/deposit/deposit.component';
 
 const routes: Routes = [
-    { path: '', component: HomeComponent },
-    { path: 'login', component: LoginComponent },
-    { path: 'transfer', component: TransferComponent },
-    { path: 'scan', component: ScanComponent },
-    { path: 'history', component: HistoryComponent },
-    { path: 'mosaic/:namespace/:mosaic', component: MosaicComponent },
-    { path: 'exchange', component: ExchangeComponent},
-    { path: '**', component: PageNotFoundComponent }
+    {path: "", component: HomeComponent},
+    {path: "accounts/login", component: LoginComponent},
+    {path: "accounts/deposit", component: DepositComponent},
+    {path: "accounts/withdraw", component: WithdrawComponent},
+    {path: "accounts/sign", component: SignComponent},
+    {path: "transactions/history", component: HistoryComponent},
+    {path: "transactions/scan", component: ScanComponent},
+    {path: "transactions/transfer", component: TransferComponent},
+    {path: "**", component: PageNotFoundComponent}
 ];
 
 @NgModule({

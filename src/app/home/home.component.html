@@ -3,27 +3,35 @@
         <mat-toolbar class="background-contain" [ngStyle]="{'background-image': 'url(favicon.svg)'}">
         </mat-toolbar>
         <div fxLayout="column">
-            <button mat-button fxFlex="100" routerLink="/transfer">
-                <mat-icon>send</mat-icon>
-                <ng-container i18n>Transfer</ng-container>
-            </button>
-            <button mat-button fxFlex="100" routerLink="/history">
-                <mat-icon>history</mat-icon>
-                <ng-container i18n>History</ng-container>
-            </button>
-            <button mat-button fxFlex="100" routerLink="/scan">
-                <mat-icon>center_focus_strong</mat-icon>
-                <ng-container i18n>Scan QR-code</ng-container>
-            </button>
-            <button mat-button fxFlex="100" routerLink="/exchange">
-                <mat-icon>transform</mat-icon>
-                <ng-container i18n>Exchange</ng-container>
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-button fxFlex="100" (click)="logout()">
-                <mat-icon>lock_open</mat-icon>
-                <ng-container i18n>Log out</ng-container>
-            </button>
+            <mat-form-field fxFlex="100">
+                <mat-select placeholder="{{translation.language[global.lang]}}" [(ngModel)]="global.lang">
+                    <mat-option value="en">English</mat-option>
+                    <mat-option value="ja">日本語</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-nav-list>
+                <mat-list-item routerLink="/transactions/scan">
+                    <mat-icon>center_focus_strong</mat-icon>
+                    {{translation.scan[global.lang]}}
+                </mat-list-item>
+                <mat-list-item routerLink="/transactions/history">
+                    <mat-icon>history</mat-icon>
+                    {{translation.history[global.lang]}}
+                </mat-list-item>
+                <mat-list-item routerLink="/accounts/deposit">
+                    <mat-icon>call_received</mat-icon>
+                    {{translation.deposit[global.lang]}}
+                </mat-list-item>
+                <mat-list-item routerLink="/accounts/withdraw">
+                    <mat-icon>call_made</mat-icon>
+                    {{translation.withdraw[global.lang]}}
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item (click)="logout()">
+                    <mat-icon>lock_open</mat-icon>
+                    {{translation.logout[global.lang]}}
+                </mat-list-item>
+            </mat-nav-list>
         </div>
     </mat-sidenav>
     <mat-sidenav-content>
@@ -34,36 +42,28 @@
 
             <span>LCNEM Wallet</span>
             <span class="fill-remaining-space"></span>
-            <button mat-button (click)="refresh()">
+            <button mat-button (click)="refresh()" [disabled]="loading">
                 <mat-icon>refresh</mat-icon>
             </button>
         </mat-toolbar>
         <div class="out-toolbar">
             <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
             <ng-template #loaded>
-                <div fxLayout="row wrap">
-                    <app-mosaic-tile fxFlex="25" fxFlex.md="33.3" fxFlex.sm="50" fxFlex.xs="100" 
-                    *ngFor="let m of dataService.ownedMosaics"
-                    [namespace]="m.definition.id.namespaceId"
-                    [name]="m.definition.id.name"
-                    (click)="onClick(m.definition.id.namespaceId, m.definition.id.name)"></app-mosaic-tile>
-                </div>
-
-                <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let m of dataService.mosaicData" value="{{m.namespace}}:{{m.name}}">
-                        {{m.namespace}}:{{m.name}}
-                    </mat-option>
-                </mat-autocomplete>
-                <mat-form-field fxFill>
-                    <input matInput placeholder="Search" [(ngModel)]="mosaicName" [matAutocomplete]="auto" i18n-placeholder>
-                    <button matSuffix mat-button color="accent" (click)="designate()">
-                        <mat-icon>search</mat-icon>
-                    </button>
-                </mat-form-field>
-                <mat-form-field fxFill>
-                    <input matInput placeholder="Your address" [value]="dataService.account!.address.pretty()" />
-                </mat-form-field>
-                <button mat-raised-button color="accent" (click)="donate()" fxFill>Donate to LCNEM</button>
+                <mat-card>
+                    <app-mosaic-list [title]="translation.balance[global.lang]" [mosaics]="global.mosaics"></app-mosaic-list>
+                </mat-card>
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{translation.yourAddress[global.lang]}}</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p style="text-align: center;">{{global.account!.address.pretty()}}</p>
+                        <img class="qr" [src]="qrUrl" />
+                    </mat-card-content>
+                </mat-card>
+                <button mat-fab color="accent" class="transfer-button" routerLink="/transactions/transfer">
+                    <mat-icon>send</mat-icon>
+                </button>
             </ng-template>
         </div>
     </mat-sidenav-content>

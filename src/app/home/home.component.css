@@ -1,3 +1,22 @@
-.search-input * {
-    color: white;
+.amount {
+    text-align: center;
+}
+
+.transfer-button {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 99;
+}
+
+mat-card {
+    margin: 6px 0;
+}
+
+.qr {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 300px;
+    max-height: 300px;
 }

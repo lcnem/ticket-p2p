@@ -1,18 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { RouterModule, Routes, ActivatedRoute, Router } from '@angular/router';
-import {
-    NEMLibrary,
-    NetworkTypes,
-    AccountHttp,
-    Mosaic,
-    SimpleWallet,
-    Address,
-    MosaicId
-} from "nem-library";
-import { MatSnackBar } from '@angular/material';
-import { DataService, MosaicData, OwnedMosaic } from "../data/data.service";
+import { Router } from '@angular/router';
+import { GlobalDataService } from '../services/global-data.service';
 import { Invoice } from '../../models/invoice';
+import { nodes } from '../../models/nodes';
+import { ServerConfig, AccountHttp, MosaicHttp, TransactionHttp, NamespaceHttp } from 'nem-library';
 
 @Component({
     selector: 'app-home',
@@ -21,64 +12,74 @@ import { Invoice } from '../../models/invoice';
 })
 export class HomeComponent implements OnInit {
     public loading = true;
-
-    public mosaicName: string | undefined;
+    public qrUrl = "";
+    public nodes = nodes;
 
     constructor(
-        public snackBar: MatSnackBar,
-        private router: Router,
-        private route: ActivatedRoute,
-        public dataService: DataService
-    ) {
-    }
+        public global: GlobalDataService,
+        private router: Router
+    ) { }
 
     ngOnInit() {
-        this.dataService.auth.authState.subscribe((user) => {
+        this.global.auth.authState.subscribe((user) => {
             if (user == null) {
-                this.router.navigate(["/login"]);
+                this.router.navigate(["/accounts/login"]);
                 return;
             }
-            this.dataService.initialize().then(() => {
+            this.global.initialize().then(() => {
+                let invoice = new Invoice();
+                invoice.data.addr = this.global.account!.address.plain();
+                this.qrUrl = "https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + invoice.generate();
                 this.loading = false;
             });
         });
     }
 
-    public onClick(namespace: string, name: string) {
-        this.router.navigate(["/mosaic", namespace, name]);
-    }
-
     public async logout() {
-        await this.dataService.logout();
-        this.router.navigate(["/login"]);
+        await this.global.logout();
+        this.router.navigate(["/accounts/login"]);
     }
 
     public async refresh() {
         this.loading = true;
         
-        await this.dataService.refresh();
+        await this.global.refresh();
 
         this.loading = false;
     }
 
-    public designate() {
-        if(!this.mosaicName) {
-            return;
+    public translation = {
+        balance: {
+            en: "Balance",
+            ja: "残高"
+        },
+        deposit: {
+            en: "Deposit",
+            ja: "入金"
+        },
+        history: {
+            en: "History",
+            ja: "履歴"
+        },
+        language: {
+            en: "Language",
+            ja: "言語"
+        },
+        logout: {
+            en: "Log out",
+            ja: "ログアウト"
+        },
+        scan: {
+            en: "Scan QR-code",
+            ja: "QRコードをスキャン"
+        },
+        withdraw: {
+            en: "Withdraw",
+            ja: "出金"
+        },
+        yourAddress: {
+            en: "Your address",
+            ja: "あなたのアドレス"
         }
-        let splitted = this.mosaicName.split(":");
-        if(splitted.length != 2) {
-            this.snackBar.open("Invalid name", "", { duration: 2000 });
-        }
-
-        this.router.navigate(["/mosaic", splitted[0], splitted[1]]);
-    }
-
-    public donate() {
-        let invoice = new Invoice();
-        invoice.data.addr = "@lc";
-        invoice.data.name = "LCNEM Wallet";
-        invoice.data.mosaics.push({ name: "nem:xem", amount: 1000000 });
-        var qr = invoice.generate();
-        this.router.navigate(["/transfer"], { queryParams: { "json": qr } });
-    }
+    } as {[key: string]: {[key: string]: string}};
 }

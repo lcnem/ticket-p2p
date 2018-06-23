@@ -1,0 +1,30 @@
+﻿{
+    "nem:xem": {
+        "issuer": "",
+        "unit": "XEM"
+    },
+    "lc:jpy": {
+        "issuer": "LCNEM Co.Ltd.",
+        "unit": "JPY"
+    },
+    "lc:usd": {
+        "issuer": "LCNEM Co.Ltd.",
+        "unit": "USD"
+    },
+    "lc:eur": {
+        "issuer": "LCNEM Co.Ltd.",
+        "unit": "EUR"
+    },
+    "oshibori:point2019": {
+        "issuer": "おしぼり.jp",
+        "unit": "JPY"
+    },
+    "syt-gamouhonten:sytg0001": {
+        "issuer": "炭火焼肉たむら蒲生本店",
+        "unit": "JPY"
+    },
+    "montoken:mot": {
+        "issuer": "かえもん",
+        "unit": null
+    }
+}

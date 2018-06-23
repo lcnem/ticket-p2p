@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body{
+html, body, main{
     height: 100%;
     margin: 0;
 }
@@ -51,3 +51,10 @@ mat-spinner {
     background-repeat: no-repeat !important;
 }
 
+mat-step {
+    padding: 6px;
+}
+
+mat-stepper {
+    padding: 6px;
+}
