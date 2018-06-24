@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
         public router: Router,
         sanitizer: DomSanitizer
     ) {
-        this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/${global.lang}.html`);
+        this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/${global.lang}.txt`);
     }
 
     ngOnInit() {

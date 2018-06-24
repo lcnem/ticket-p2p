@@ -79,10 +79,14 @@ export class GlobalDataService {
         let docRef = this.firestore.collection("users").doc(uid).ref;
         let doc = await docRef.get();
         if (!doc.exists) {
-            await docRef.set({});
-            doc = await docRef.get();
+            let wallet = SimpleWallet.create(uid, password);
+            this.account = wallet.open(password);
+            await docRef.set({
+                wallet: wallet.writeWLTFile()
+            });
+        } else {
+            this.account = SimpleWallet.readFromWLT(doc.data()!["wallet"]).open(password);
         }
-        this.account = SimpleWallet.readFromWLT(doc.data()!["wallet"]).open(password);
 
         await this.refresh();
 
