@@ -2,16 +2,13 @@
     <h3 mat-subheader>{{title}}</h3>
     <mat-divider></mat-divider>
     <ng-container *ngFor="let m of _mosaics">
-        <mat-list-item>
+        <mat-list-item matTooltip="{{m.name}}">
             <div mat-list-icon class="background-contain" [ngStyle]="{'background-image': 'url(' + m.imageUrl + ')'}"></div>
-            <span>
-                <span mat-line>{{m.name}}</span>
-                <small mat-line>{{m.issuer}}</small>
-            </span>
+            <span mat-line>{{m.name}}</span>
+            <small mat-line>{{m.issuer}}</small>
             <span class="fill-remaining-space"></span>
             <span style="text-align: right;">
-                <span>{{m.unit}} </span>
-                <span>{{m.amount}}</span>
+                {{m.unit}} {{m.amount}}
             </span>
         </mat-list-item>
         <mat-divider></mat-divider>

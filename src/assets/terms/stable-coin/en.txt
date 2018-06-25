@@ -1,6 +1,6 @@
 Deposit fees 0
 Withdraw fees 500LCJPY
-Business hours 8:00～22:00 GMT+9
+Business hours 9:00～21:00 GMT+9
 In consideration of security, we make business hours for human confirmation.
 
 資金決済法に基づく表示

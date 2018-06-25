@@ -23,6 +23,12 @@ export class DepositComponent implements OnInit {
 
     public safeSite: SafeResourceUrl;
 
+    public minimum: {[key: string]: number} = {
+        JPY: 1000,
+        USD: 10,
+        EUR: 10
+    };
+
     constructor(
         public global: GlobalDataService,
         private router: Router,

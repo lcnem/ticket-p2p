@@ -21,5 +21,5 @@
             <mat-option value="credit">{{translation.creditCard[global.lang]}}</mat-option>
         </mat-select>
     </mat-form-field>
-    <button mat-raised-button color="accent" fxFill [disabled]="!amount || !type" (click)="depositRequest()">{{translation.request[global.lang]}}</button>
+    <button mat-raised-button color="accent" fxFill [disabled]="!amount || amount! < minimum[selectedCurrency] || !type" (click)="depositRequest()">{{translation.request[global.lang]}}</button>
 </div>
