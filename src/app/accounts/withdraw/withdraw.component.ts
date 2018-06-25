@@ -7,6 +7,8 @@ import { LoadingDialogComponent } from '../../components/loading-dialog/loading-
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { HttpClient } from '@angular/common/http';
 
+import { DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+
 @Component({
     selector: 'app-withdraw',
     templateUrl: './withdraw.component.html',
@@ -19,12 +21,17 @@ export class WithdrawComponent implements OnInit {
     public amount?: number;
     public type?: string;
 
+    public safeSite: SafeResourceUrl;
+
     constructor(
         public global: GlobalDataService,
         private router: Router,
         private dialog: MatDialog,
-        private http: HttpClient
-    ) { }
+        private http: HttpClient,
+        sanitizer: DomSanitizer
+    ) {
+        this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/stable-coin/${global.lang}.txt`);
+    }
 
     ngOnInit() {
         this.global.auth.authState.subscribe((user) => {

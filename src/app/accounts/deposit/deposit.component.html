@@ -7,6 +7,7 @@
     <span class="fill-remaining-space"></span>
 </mat-toolbar>
 <div class="out-toolbar">
+    <iframe [src]="safeSite" fxFill></iframe>
     <mat-form-field fxFill>
         <mat-select placeholder="{{translation.currency[global.lang]}}" [(ngModel)]="selectedCurrency">
             <mat-option *ngFor="let c of supportedCurrencies" [value]="c">{{c}}</mat-option>

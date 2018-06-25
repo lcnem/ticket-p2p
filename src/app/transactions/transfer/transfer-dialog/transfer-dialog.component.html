@@ -6,7 +6,7 @@
             <span>{{getMosaicName(m)}} </span>
             <span class="fill-remaining-space"></span>
             <mat-icon></mat-icon>
-            <span>
+            <span style="text-align: right;">
                 <span>{{global.additionalDefinitions![getMosaicName(m)].unit}} </span>
                 <span>{{m.quantity / Math.pow(10, global.definitions![getMosaicName(m)].properties.divisibility)}}</span>
             </span>
@@ -14,7 +14,7 @@
         <mat-list-item>
             <span>{{translation.fees[global.lang]}} </span>
             <span class="fill-remaining-space"></span>
-            <span>
+            <span style="text-align: right;">
                 <span>XEM </span>
                 <span>{{Math.floor(transaction.fee) / 1000000}}</span>
             </span>
@@ -24,7 +24,7 @@
         <mat-list-item>
             <span>{{translation.encryption[global.lang]}} </span>
             <span class="fill-remaining-space"></span>
-            <span>
+            <span style="text-align: right;">
                 <mat-icon *ngIf="transaction.message.isEncrypted()">check</mat-icon>
                 <mat-icon *ngIf="transaction.message.isPlain()">close</mat-icon>
             </span>
