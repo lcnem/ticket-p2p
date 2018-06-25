@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
-import { GlobalDataService } from '../../../services/global-data.service';
-import { TransferTransaction, Mosaic } from 'nem-library';
+import { TransferTransaction, Mosaic, MosaicTransferable } from 'nem-library';
+import { GlobalDataService } from '../../services/global-data.service';
 
 @Component({
   selector: 'app-transfer-dialog',
@@ -10,17 +10,15 @@ import { TransferTransaction, Mosaic } from 'nem-library';
 })
 export class TransferDialogComponent {
     public transaction: TransferTransaction;
-    public message: string;
-    public mosaics: Mosaic[];
+    public mosaics: MosaicTransferable[];
     public Math = Math;
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, public global: GlobalDataService) {
         this.transaction = data.transaction as TransferTransaction;
-        this.message = data.message as string;
-        this.mosaics = this.transaction.mosaics();
+        this.mosaics = data.mosaics;
     }
 
-    public getMosaicName(m: Mosaic) {
+    public getMosaicName(m: MosaicTransferable) {
         return m.mosaicId.namespaceId + ":" + m.mosaicId.name;
     }
 

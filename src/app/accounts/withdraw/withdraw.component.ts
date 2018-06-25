@@ -8,6 +8,8 @@ import { DialogComponent } from '../../components/dialog/dialog.component';
 import { HttpClient } from '@angular/common/http';
 
 import { DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import { TransferDialogComponent } from '../../components/transfer-dialog/transfer-dialog.component';
+import { TransferTransaction, TimeWindow, Address, MosaicTransferable, EmptyMessage, MosaicId } from 'nem-library';
 
 @Component({
     selector: 'app-withdraw',
@@ -45,20 +47,27 @@ export class WithdrawComponent implements OnInit {
     }
 
     public async withdrawRequest() {
-        let dialogRef = this.dialog.open(LoadingDialogComponent, { disableClose: true });
 
+        let transaction: TransferTransaction;
+        let mosaics: MosaicTransferable[];
         try {
-            await this.http.post(
-                "https://us-central1-lcnem-wallet.cloudfunctions.net/withdraw",
-                {
-                    currency: this.selectedCurrency,
-                    amount: this.amount,
-                    email: this.global.auth.auth.currentUser!.email,
-                    nemAddress: this.global.account!.address.pretty(),
-                    type: this.type,
-                    lang: this.global.lang
-                }
-            ).toPromise();
+            if(this.selectedCurrency == "JPY") {
+                mosaics = [
+                    await this.global.mosaicHttp.getMosaicTransferableWithAmount(new MosaicId("lc", "jpy"), Number(this.amount!) + 500).toPromise()
+                ];
+            } else {
+                mosaics = [
+                    await this.global.mosaicHttp.getMosaicTransferableWithAmount(new MosaicId("lc", this.selectedCurrency.toLowerCase()), this.amount!).toPromise(),
+                    await this.global.mosaicHttp.getMosaicTransferableWithAmount(new MosaicId("lc", "jpy"), 500).toPromise()
+                ];
+            }
+
+            transaction = TransferTransaction.createWithMosaics(
+                TimeWindow.createWithDeadline(),
+                new Address("NADLY2-AGU3UI-NE4IRA-VFQ7WB-V7FJU4-HGGED3-4H6R"),
+                mosaics,
+                EmptyMessage
+            );
         } catch {
             this.dialog.open(DialogComponent, {
                 data: {
@@ -67,18 +76,57 @@ export class WithdrawComponent implements OnInit {
                 }
             });
             return;
-        } finally {
-            dialogRef.close();
         }
 
-        this.dialog.open(DialogComponent, {
+        let dialogRef = this.dialog.open(TransferDialogComponent, {
             data: {
-                title: this.translation.completed[this.global.lang],
-                content: this.translation.completedMessage[this.global.lang]
+                transaction: transaction,
+                mosaics: mosaics
             }
-        }).afterClosed().subscribe(() => {
-            this.router.navigate(["/"]);
         });
+        dialogRef.afterClosed().subscribe(async result => {
+            if (!result) {
+                return;
+            }
+            
+            let _dialogRef = this.dialog.open(LoadingDialogComponent, { disableClose: true });
+
+            try {
+                let signed = this.global.account!.signTransaction(transaction);
+                await this.global.transactionHttp.announceTransaction(signed).toPromise();
+
+                await this.http.post(
+                    "https://us-central1-lcnem-wallet.cloudfunctions.net/withdraw",
+                    {
+                        currency: this.selectedCurrency,
+                        amount: this.amount,
+                        email: this.global.auth.auth.currentUser!.email,
+                        nemAddress: this.global.account!.address.pretty(),
+                        type: this.type,
+                        lang: this.global.lang
+                    }
+                ).toPromise();
+            } catch {
+                this.dialog.open(DialogComponent, {
+                    data: {
+                        title: this.translation.error[this.global.lang],
+                        content: ""
+                    }
+                });
+                return;
+            } finally {
+                _dialogRef.close();
+            }
+    
+            this.dialog.open(DialogComponent, {
+                data: {
+                    title: this.translation.completed[this.global.lang],
+                    content: this.translation.completedMessage[this.global.lang]
+                }
+            }).afterClosed().subscribe(() => {
+                this.router.navigate(["/"]);
+            });
+        })
     }
 
     public translation = {

@@ -7,8 +7,8 @@
             <span class="fill-remaining-space"></span>
             <mat-icon></mat-icon>
             <span style="text-align: right;">
-                <span>{{global.additionalDefinitions![getMosaicName(m)].unit}} </span>
-                <span>{{m.quantity / Math.pow(10, global.definitions![getMosaicName(m)].properties.divisibility)}}</span>
+                <span>{{global.additionalDefinitions![getMosaicName(m)] && global.additionalDefinitions![getMosaicName(m)].unit}} </span>
+                <span>{{m.amount}}</span>
             </span>
         </mat-list-item>
         <mat-list-item>

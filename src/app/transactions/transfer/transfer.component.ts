@@ -19,7 +19,7 @@ import {
 } from 'nem-library';
 import { LoadingDialogComponent } from '../../components/loading-dialog/loading-dialog.component';
 import { DialogComponent } from '../../components/dialog/dialog.component';
-import { TransferDialogComponent } from './transfer-dialog/transfer-dialog.component';
+import { TransferDialogComponent } from '../../components/transfer-dialog/transfer-dialog.component';
 
 @Component({
     selector: 'app-transfer',
@@ -151,7 +151,7 @@ export class TransferComponent implements OnInit {
         let dialogRef = this.dialog.open(TransferDialogComponent, {
             data: {
                 transaction: transaction,
-                message: this.message
+                mosaics: transferMosaics
             }
         });
 
