@@ -1,10 +1,10 @@
 <mat-toolbar color="primary" class="mat-elevation-z4">
-    <button mat-button routerLink="/">
+    <button mat-icon-button routerLink="/">
         <mat-icon>arrow_back</mat-icon>
     </button>
-    <span i18n>{{translation.history[global.lang]}}</span>
+    <span>{{translation.history[global.lang]}}</span>
     <span class="fill-remaining-space"></span>
-    <button mat-button (click)="refresh()" [disabled]="loading">
+    <button mat-icon-button (click)="refresh()" [disabled]="loading">
         <mat-icon>refresh</mat-icon>
     </button>
 </mat-toolbar>
