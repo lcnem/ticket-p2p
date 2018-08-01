@@ -45,37 +45,19 @@ import { environment } from '../environments/environment';
 
 import { HomeComponent} from './home/home.component';
 import { LoginComponent } from './accounts/login/login.component';
-import { SignComponent } from './accounts/sign/sign.component';
-import { HistoryComponent } from './transactions/history/history.component';
-import { TransactionComponent } from './transactions/history/transaction/transaction.component';
-import { ScanComponent } from './transactions/scan/scan.component';
-import { TransferComponent } from './transactions/transfer/transfer.component';
 import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
 import { LoadingDialogComponent } from './components/loading-dialog/loading-dialog.component';
 import { GlobalDataService } from './services/global-data.service';
-import { MosaicListComponent } from './components/mosaic-list/mosaic-list.component';
-import { WithdrawComponent } from './accounts/withdraw/withdraw.component';
-import { DepositComponent } from './accounts/deposit/deposit.component';
 import { DialogComponent } from './components/dialog/dialog.component';
-import { TransferDialogComponent } from './components/transfer-dialog/transfer-dialog.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
         LoginComponent,
-        SignComponent,
-        HistoryComponent,
-        TransactionComponent,
-        ScanComponent,
-        TransferComponent,
         PageNotFoundComponent,
         LoadingDialogComponent,
-        MosaicListComponent,
-        WithdrawComponent,
-        DepositComponent,
-        DialogComponent,
-        TransferDialogComponent
+        DialogComponent
     ],
     imports: [
         BrowserModule,
@@ -113,8 +95,7 @@ import { TransferDialogComponent } from './components/transfer-dialog/transfer-d
     ],
     entryComponents: [
         LoadingDialogComponent,
-        DialogComponent,
-        TransferDialogComponent
+        DialogComponent
     ],
     providers: [GlobalDataService],
     bootstrap: [AppComponent]
