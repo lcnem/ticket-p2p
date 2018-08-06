@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GlobalDataService } from '../services/global-data.service';
-import { Invoice } from '../../models/invoice';
 import { nodes } from '../../models/nodes';
 import { ServerConfig, AccountHttp, MosaicHttp, TransactionHttp, NamespaceHttp } from 'nem-library';
 
@@ -27,9 +26,6 @@ export class HomeComponent implements OnInit {
                 return;
             }
             this.global.initialize().then(() => {
-                let invoice = new Invoice();
-                invoice.data.addr = this.global.account!.address.plain();
-                this.qrUrl = "https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=" + invoice.generate();
                 this.loading = false;
             });
         });

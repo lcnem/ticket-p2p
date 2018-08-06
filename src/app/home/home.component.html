@@ -46,7 +46,6 @@
             <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
             <ng-template #loaded>
                 <mat-card>
-                    <app-mosaic-list [title]="translation.balance[global.lang]" [mosaics]="global.mosaics"></app-mosaic-list>
                 </mat-card>
                 <mat-card>
                     <mat-card-header>

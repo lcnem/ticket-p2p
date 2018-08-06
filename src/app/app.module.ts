@@ -49,12 +49,14 @@ import { PageNotFoundComponent } from './error/page-not-found/page-not-found.com
 import { LoadingDialogComponent } from './components/loading-dialog/loading-dialog.component';
 import { GlobalDataService } from './services/global-data.service';
 import { DialogComponent } from './components/dialog/dialog.component';
+import { ScanComponent } from './events/scan/scan.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
         LoginComponent,
+        ScanComponent,
         PageNotFoundComponent,
         LoadingDialogComponent,
         DialogComponent
