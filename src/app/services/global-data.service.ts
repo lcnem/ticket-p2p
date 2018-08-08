@@ -22,7 +22,6 @@ import {
     NodeHttp,
     ServerConfig
 } from 'nem-library';
-import { MosaicAdditionalDefinition } from '../../models/mosaic-additional-definition';
 import { nodes } from '../../models/nodes';
 
 @Injectable()
@@ -32,10 +31,6 @@ export class GlobalDataService {
     public lang = "en";
 
     public account?: Account;
-
-    public definitions?: { [key: string]: MosaicDefinition };
-    public additionalDefinitions?: { [key: string]: MosaicAdditionalDefinition };
-    public mosaics?: Mosaic[];
 
     public accountHttp: AccountHttp;
     public mosaicHttp: MosaicHttp;
@@ -73,49 +68,9 @@ export class GlobalDataService {
             return;
         }
 
-        let uid = this.auth.auth.currentUser!.uid;
-        let password = new Password(uid);
-
-        let docRef = this.firestore.collection("users").doc(uid).ref;
-        let doc = await docRef.get();
-        if (!doc.exists) {
-            let wallet = SimpleWallet.create(uid, password);
-            this.account = wallet.open(password);
-            await docRef.set({
-                wallet: wallet.writeWLTFile()
-            });
-        } else {
-            this.account = SimpleWallet.readFromWLT(doc.data()!["wallet"]).open(password);
-        }
-
-        await this.refresh();
-
         this.initialized = true;
     }
 
     public async refresh() {
-        this.additionalDefinitions = await this.http.get<{ [key: string]: MosaicAdditionalDefinition }>('assets/data/list.json').toPromise();
-
-        this.mosaics = await this.accountHttp.getMosaicOwnedByAddress(this.account!.address).toPromise().catch(() => { throw new Error() });
-        this.definitions = {};
-        this.definitions["nem:xem"] = {
-            creator: new PublicAccount(),
-            id: XEM.MOSAICID,
-            description: "",
-            properties: {
-                divisibility: XEM.DIVISIBILITY,
-                initialSupply: XEM.INITIALSUPPLY,
-                supplyMutable: XEM.SUPPLYMUTABLE,
-                transferable: XEM.TRANSFERABLE
-            }
-        };
-
-        for (let i = 0; i < this.mosaics!.length; i++) {
-            if (this.mosaics![i].mosaicId.namespaceId == "nem") {
-                continue;
-            }
-            let d = await this.mosaicHttp.getMosaicDefinition(this.mosaics![i].mosaicId).toPromise().catch(() => { throw new Error() });
-            this.definitions![d.id.namespaceId + ":" + d.id.name] = d;
-        }
     }
 }

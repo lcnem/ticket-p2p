@@ -4,7 +4,6 @@ import { Result } from '@zxing/library';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { GlobalDataService } from '../../services/global-data.service';
-import { Invoice } from '../../../models/invoice';
 
 
 @Component({
@@ -54,12 +53,6 @@ export class ScanComponent implements OnInit {
                 });
 
                 this.scanner.scanComplete.subscribe((result: any) => {
-                    this.resultText = result.getText();
-                    let invoice = Invoice.read(this.resultText);
-                    if (invoice == null) {
-                        return;
-                    }
-                    this.router.navigate(["/transactions/transfer"], { queryParams: { invoice: this.resultText } });
                 });
             });
         });
