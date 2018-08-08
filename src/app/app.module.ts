@@ -50,6 +50,8 @@ import { LoadingDialogComponent } from './components/loading-dialog/loading-dial
 import { GlobalDataService } from './services/global-data.service';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { ScanComponent } from './events/scan/scan.component';
+import { EventComponent } from './events/event/event.component';
+import { CreateComponent } from './events/create/create.component';
 
 @NgModule({
     declarations: [
@@ -59,7 +61,9 @@ import { ScanComponent } from './events/scan/scan.component';
         ScanComponent,
         PageNotFoundComponent,
         LoadingDialogComponent,
-        DialogComponent
+        DialogComponent,
+        EventComponent,
+        CreateComponent
     ],
     imports: [
         BrowserModule,

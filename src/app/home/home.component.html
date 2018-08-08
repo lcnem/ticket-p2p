@@ -1,5 +1,5 @@
 <mat-sidenav-container>
-    <mat-sidenav #sidenav>
+    <mat-sidenav #sidenav class="mat-elevation-z16">
         <mat-toolbar class="background-contain" [ngStyle]="{'background-image': 'url(favicon.svg)'}">
         </mat-toolbar>
         <div fxLayout="column">
@@ -32,11 +32,11 @@
     </mat-sidenav>
     <mat-sidenav-content>
         <mat-toolbar color="primary" class="mat-elevation-z4">
-            <button mat-icon-button (click)="sidenav.toggle()">
+            <button mat-icon-button (click)="sidenav.toggle()" fxHide fxShow.xs fxShow.sm>
                 <mat-icon>menu</mat-icon>
             </button>
 
-            <span>LCNEM Wallet</span>
+            <span>ちけっとピアツーピア</span>
             <span class="fill-remaining-space"></span>
             <button mat-icon-button (click)="refresh()" [disabled]="loading">
                 <mat-icon>refresh</mat-icon>
