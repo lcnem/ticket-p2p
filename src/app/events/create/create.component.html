@@ -1,3 +1,12 @@
-<p>
-  create works!
-</p>
+<mat-toolbar color="primary" class="mat-elevation-z4">
+    <button mat-icon-button routerLink="/">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span></span>
+    <span class="fill-remaining-space"></span>
+</mat-toolbar>
+<div class="out-toolbar">
+    <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
+    <ng-template #loaded>
+    </ng-template>
+</div>
