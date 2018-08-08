@@ -45,19 +45,8 @@
         <div class="out-toolbar">
             <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
             <ng-template #loaded>
-                <mat-card>
-                </mat-card>
-                <mat-card>
-                    <mat-card-header>
-                        <mat-card-title>{{translation.yourAddress[global.lang]}}</mat-card-title>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <p style="text-align: center;">{{global.account!.address.pretty()}}</p>
-                        <img class="qr" [src]="qrUrl" />
-                    </mat-card-content>
-                </mat-card>
-                <button mat-fab color="accent" class="transfer-button" routerLink="/transactions/transfer">
-                    <mat-icon>send</mat-icon>
+                <button mat-fab color="accent" class="add-button" routerLink="/events/create">
+                    <mat-icon>add</mat-icon>
                 </button>
             </ng-template>
         </div>
