@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit {
                 this.router.navigate(["/accounts/login"]);
                 return;
             }
-            
+
             // 一箇所にまとめたい
             let uid = this.auth.auth.currentUser!.uid;
             let docRef = this.firestore.collection("users").doc(uid).collection("events").ref;
@@ -103,6 +103,9 @@ export class HomeComponent implements OnInit {
                 submit: "作成"
             }
         }).afterClosed().subscribe(async eventName => {
+            if (!eventName) {
+                return;
+            }
             // この辺一箇所にまとめたい
             let uid = this.auth.auth.currentUser!.uid;
             let docRef = this.firestore.collection("users").doc(uid).ref;
