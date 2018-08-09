@@ -13,11 +13,11 @@
         </mat-form-field>
         <mat-form-field fxFill>
             <input matInput readonly placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="eventName" />
-            <button color="accent" matSuffix>{{translation.edit[global.lang]}}</button>
+            <button color="accent" matSuffix (click)="editEventName()">{{translation.edit[global.lang]}}</button>
         </mat-form-field>
         <mat-form-field fxFill>
             <input matInput readonly type="number" placeholder="{{translation.capacity[global.lang]}}" [(ngModel)]="capacity" />
-            <button color="accent" matSuffix>{{transation.supplement[global.lang]}}</button>
+            <button color="accent" matSuffix (click)="capacitySupplement()">{{transation.supplement[global.lang]}}</button>
         </mat-form-field>
     </ng-template>
 </div>
