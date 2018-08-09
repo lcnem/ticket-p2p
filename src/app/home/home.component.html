@@ -45,6 +45,13 @@
         <div class="out-toolbar">
             <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
             <ng-template #loaded>
+                <ul *ngIf="this.events">
+                    <li *ngFor="let event of this.events">
+                        <a routerLink="/events/{{event.id}}">
+                                {{event.name}}
+                        </a>
+                    </li>
+                </ul>
                 <button mat-fab color="accent" class="add-button" (click)="createEvent()">
                     <mat-icon>add</mat-icon>
                 </button>
