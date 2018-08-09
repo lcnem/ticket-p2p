@@ -74,7 +74,18 @@ export class HomeComponent implements OnInit {
     }
 
     public async createEvent() {
-        this.dialog.open(InputDialogComponent);
+        let dialogRef = this.dialog.open(InputDialogComponent, {
+            data: {
+                title: "イベントを作成",
+                placeholder: "イベント名を入力",
+                cancel: "キャンセル",
+                submit: "作成"
+            }
+        });
+
+        // dialogRef.afterClosed().subscribe(async result => {
+            
+        // }
     }
 
     public translation = {
