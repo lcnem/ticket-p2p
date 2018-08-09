@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material';
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { LoadingDialogComponent } from '../../components/loading-dialog/loading-dialog.component';
 import { HttpClient } from '@angular/common/http';
+import { InputDialogComponent } from '../../components/input-dialog/input-dialog.component';
 
 declare let Payjp: any;
 
@@ -42,7 +43,60 @@ export class EventComponent implements OnInit {
         });
     }
 
-    public async onBuyClicked() {
+    public async editEventName() {
+        this.dialog.open(InputDialogComponent, {
+            data: {
+                title: this.translation.edit[this.global.lang],
+                placeholder: this.translation.eventName[this.global.lang],
+                inputData: this.eventName,
+                cancel: this.translation.cancel[this.global.lang],
+                submit: this.translation.submit[this.global.lang]
+            }
+        }).afterClosed().subscribe(async result => {
+            if(this.eventName == result) {
+                return;
+            }
+
+            this.dialog.open(DialogComponent, {
+                data: {
+                    title: this.translation.completed[this.global.lang],
+                    content: ""
+                }
+            });
+        });
+    }
+
+    public async capacitySupplement() {
+        this.dialog.open(InputDialogComponent, {
+            data: {
+                title: this.translation.supplement[this.global.lang],
+                placeholder: this.translation.supplement[this.global.lang],
+                inputData: 0,
+                inputType: "number",
+                cancel: this.translation.cancel[this.global.lang],
+                submit: this.translation.submit[this.global.lang]
+            }
+        }).afterClosed().subscribe(async result => {
+            if(result <= 0) {
+                this.dialog.open(DialogComponent, {
+                    data: {
+                        title: this.translation.error[this.global.lang],
+                        content: ""
+                    }
+                });
+                return;
+            }
+            
+            this.dialog.open(DialogComponent, {
+                data: {
+                    title: this.translation.completed[this.global.lang],
+                    content: ""
+                }
+            });
+        });
+    }
+
+    public async chargeCreditCard(yen: number) {
         if (!(window as any).PaymentRequest) {
             this.dialog.open(DialogComponent, {
                 data: {
@@ -71,7 +125,7 @@ export class EventComponent implements OnInit {
                     label: this.translation.fee[this.global.lang],
                     amount: {
                         currency: "JPY",
-                        value: "0"
+                        value: yen.toString()
                     }
                 }
             ],
@@ -79,7 +133,7 @@ export class EventComponent implements OnInit {
                 label: this.translation.total[this.global.lang],
                 amount: {
                     currency: "JPY",
-                    value: "0"
+                    value: yen.toString()
                 }
             }
         };
@@ -183,6 +237,14 @@ export class EventComponent implements OnInit {
         supplement: {
             en: "Supplement",
             ja: "枠追加"
+        },
+        cancel: {
+            en: "Cancel",
+            ja: "キャンセル"
+        },
+        submit: {
+            en: "Submit",
+            ja: "決定"
         }
     } as { [key: string]: { [key: string]: string } };
 }
