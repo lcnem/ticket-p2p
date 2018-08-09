@@ -68,6 +68,13 @@ export class GlobalDataService {
             return;
         }
 
+        let uid = this.auth.auth.currentUser!.uid;
+        let docRef = this.firestore.collection("users").doc(uid).ref;
+        let doc = await docRef.get();
+        if (!doc.exists) {
+            await docRef.set({});
+        }
+
         this.initialized = true;
     }
 
