@@ -8,6 +8,8 @@ import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
 import { InputDialogComponent } from '../components/input-dialog/input-dialog.component';
 import { MatDialog } from '@angular/material';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFirestore } from 'angularfire2/firestore';
 
 @Component({
     selector: 'app-home',
@@ -28,7 +30,9 @@ export class HomeComponent implements OnInit {
         public global: GlobalDataService,
         private router: Router,
         private media: ObservableMedia,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        public auth: AngularFireAuth,
+        public firestore: AngularFirestore,
     ) { }
 
     ngOnInit() {
@@ -74,18 +78,26 @@ export class HomeComponent implements OnInit {
     }
 
     public async createEvent() {
-        let dialogRef = this.dialog.open(InputDialogComponent, {
+        this.dialog.open(InputDialogComponent, {
             data: {
                 title: "イベントを作成",
-                placeholder: "イベント名を入力",
+                placeholder: "イベント名",
                 cancel: "キャンセル",
                 submit: "作成"
             }
+        }).afterClosed().subscribe(async eventName => {
+            let uid = this.auth.auth.currentUser!.uid;
+            let docRef = this.firestore.collection("users").doc(uid).ref;
+            let doc = await docRef.get();
+            if (doc.exists) {
+                await docRef.collection("events").add({
+                    name: eventName,
+                    ownerId: uid
+                }).then(newEvent => {
+                    this.router.navigate(["event", newEvent.id]);
+                })
+            }
         });
-
-        // dialogRef.afterClosed().subscribe(async result => {
-            
-        // }
     }
 
     public translation = {
