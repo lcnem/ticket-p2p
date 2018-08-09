@@ -6,6 +6,8 @@ import { ServerConfig, AccountHttp, MosaicHttp, TransactionHttp, NamespaceHttp }
 import { MatSidenav } from '@angular/material';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
+import { InputDialogComponent } from '../components/input-dialog/input-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'app-home',
@@ -25,7 +27,8 @@ export class HomeComponent implements OnInit {
     constructor(
         public global: GlobalDataService,
         private router: Router,
-        private media: ObservableMedia
+        private media: ObservableMedia,
+        public dialog: MatDialog
     ) { }
 
     ngOnInit() {
@@ -68,6 +71,10 @@ export class HomeComponent implements OnInit {
         await this.global.refresh();
 
         this.loading = false;
+    }
+
+    public async createEvent() {
+        this.dialog.open(InputDialogComponent);
     }
 
     public translation = {

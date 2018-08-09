@@ -2,11 +2,22 @@
     <button mat-icon-button routerLink="/">
         <mat-icon>arrow_back</mat-icon>
     </button>
-    <span></span>
+    <span>{{eventName}}</span>
     <span class="fill-remaining-space"></span>
 </mat-toolbar>
 <div class="out-toolbar">
     <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
     <ng-template #loaded>
+        <mat-form-field fxFill>
+            <input matInput readonly placeholder="{{translation.eventId[global.lang]}}" [(ngModel)]="id" />
+        </mat-form-field>
+        <mat-form-field fxFill>
+            <input matInput readonly placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="eventName" />
+            <button color="accent" matSuffix>{{translation.edit[global.lang]}}</button>
+        </mat-form-field>
+        <mat-form-field fxFill>
+            <input matInput readonly type="number" placeholder="{{translation.capacity[global.lang]}}" [(ngModel)]="capacity" />
+            <button color="accent" matSuffix>{{transation.supplement[global.lang]}}</button>
+        </mat-form-field>
     </ng-template>
 </div>

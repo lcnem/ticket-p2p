@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+    <mat-form-field fxFill>
+        <input matInput type="{{data.inputType}}" placeholder="{{data.placeholder}}" [(ngModel)]="data.inputData" />
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <span class="fill-remaining-space"></span>
+    <button mat-button mat-dialog-close color="warn">{{data.cancel}}</button>
+    <button mat-button [mat-dialog-close]="data.inputData" color="accent">{{data.submit}}</button>
+</mat-dialog-actions>
