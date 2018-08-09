@@ -89,15 +89,12 @@ export class HomeComponent implements OnInit {
             let uid = this.auth.auth.currentUser!.uid;
             let docRef = this.firestore.collection("users").doc(uid).ref;
             let doc = await docRef.get();
-                console.log(doc);
                 if (doc.exists) {                
                 await docRef.collection("events").add({
                     name: eventName,
                     ownerId: uid
                 }).then(newEvent => {
-                    console.log(newEvent);
-                    
-                    this.router.navigate(["event", newEvent.id]); // "/event"の可能性あり
+                    this.router.navigate(["events", newEvent.id]);
                 })
             }
         });
