@@ -51,6 +51,7 @@ import { GlobalDataService } from './services/global-data.service';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { ScanComponent } from './events/scan/scan.component';
 import { EventComponent } from './events/event/event.component';
+import { InputDialogComponent } from './components/input-dialog/input-dialog.component';
 
 @NgModule({
     declarations: [
@@ -61,7 +62,8 @@ import { EventComponent } from './events/event/event.component';
         PageNotFoundComponent,
         LoadingDialogComponent,
         DialogComponent,
-        EventComponent
+        EventComponent,
+        InputDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -99,7 +101,8 @@ import { EventComponent } from './events/event/event.component';
     ],
     entryComponents: [
         LoadingDialogComponent,
-        DialogComponent
+        DialogComponent,
+        InputDialogComponent
     ],
     providers: [GlobalDataService],
     bootstrap: [AppComponent]
