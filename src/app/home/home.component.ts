@@ -9,6 +9,8 @@ import { Subscription } from 'rxjs';
 import { InputDialogComponent } from '../components/input-dialog/input-dialog.component';
 import { MatDialog } from '@angular/material';
 import { Event } from '../../models/event';
+import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 @Component({
     selector: 'app-home',
@@ -17,8 +19,6 @@ import { Event } from '../../models/event';
 })
 export class HomeComponent implements OnInit {
     public loading = true;
-
-    public events?: Array<string>;
 
     @ViewChild("sidenav")
     public sidenav?: MatSidenav;
@@ -29,7 +29,9 @@ export class HomeComponent implements OnInit {
         public global: GlobalDataService,
         private router: Router,
         private media: ObservableMedia,
-        public dialog: MatDialog
+        private dialog: MatDialog,
+        private auth: AngularFireAuth,
+        private firestore: AngularFirestore
     ) { }
 
     ngOnInit() {
@@ -46,14 +48,14 @@ export class HomeComponent implements OnInit {
             }
         });
 
-        this.global.auth.authState.subscribe(async (user) => {
+        this.auth.authState.subscribe(async (user) => {
             if (user == null) {
                 this.router.navigate(["accounts", "login"]);
                 return;
             }
 
             await this.global.initialize();
-            await this.refresh();
+            
             this.loading = false;
         });
     }
@@ -72,8 +74,6 @@ export class HomeComponent implements OnInit {
 
         await this.global.refresh();
 
-        this.events = Object.keys(this.global.events!);
-
         this.loading = false;
     }
 
@@ -90,9 +90,9 @@ export class HomeComponent implements OnInit {
                 return;
             }
 
-            let uid = this.global.auth.auth.currentUser!.uid;
+            let uid = this.auth.auth.currentUser!.uid;
 
-            let newEvent = await this.global.firestore.collection("users").doc(uid).collection("events").add({
+            let newEvent = await this.firestore.collection("users").doc(uid).collection("events").add({
                 name: eventName
             });
             this.router.navigate(["events", newEvent.id]);

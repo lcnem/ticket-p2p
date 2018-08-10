@@ -4,6 +4,7 @@ import { Result } from '@zxing/library';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { GlobalDataService } from '../../services/global-data.service';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 
 @Component({
@@ -25,11 +26,12 @@ export class ScanComponent implements OnInit {
 
     constructor(
         public global: GlobalDataService,
-        private router: Router
+        private router: Router,
+        private auth: AngularFireAuth
     ) { }
 
     ngOnInit() {
-        this.global.auth.authState.subscribe(async (user) => {
+        this.auth.authState.subscribe(async (user) => {
             if (user == null) {
                 this.router.navigate(["login"]);
                 return;

@@ -6,6 +6,8 @@ import { DialogComponent } from '../../components/dialog/dialog.component';
 import { LoadingDialogComponent } from '../../components/loading-dialog/loading-dialog.component';
 import { HttpClient } from '@angular/common/http';
 import { InputDialogComponent } from '../../components/input-dialog/input-dialog.component';
+import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 declare let Payjp: any;
 
@@ -25,14 +27,16 @@ export class EventComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private dialog: MatDialog,
-        private http: HttpClient
+        private http: HttpClient,
+        private auth: AngularFireAuth,
+        private firestore: AngularFirestore
     ) {
     }
 
     ngOnInit() {
         this.id = this.route.snapshot.paramMap.get('id') || undefined;
 
-        this.global.auth.authState.subscribe(async (user) => {
+        this.auth.authState.subscribe(async (user) => {
             if (user == null) {
                 this.router.navigate(["accounts", "login"]);
                 return;
@@ -45,7 +49,7 @@ export class EventComponent implements OnInit {
     public async refresh() {
         this.loading = true;
 
-        let docRef = this.global.firestore.collection("users").doc(this.global.auth.auth.currentUser!.uid).collection("events").doc(this.id!).ref;
+        let docRef = this.firestore.collection("users").doc(this.auth.auth.currentUser!.uid).collection("events").doc(this.id!).ref;
 
         let doc = await docRef.get();
 
@@ -164,7 +168,7 @@ export class EventComponent implements OnInit {
 
         let dialogRef = this.dialog.open(LoadingDialogComponent, { disableClose: true });
 
-        Payjp.setPublicKey("pk_test_0383a1b8f91e8a6e3ea0e2a9");
+        Payjp.setPublicKey("pk_test_50f13f3a317e8ccf17c27134");
         Payjp.createToken({
             number: result.details.cardNumber,
             cvc: result.details.cardSecurityCode,

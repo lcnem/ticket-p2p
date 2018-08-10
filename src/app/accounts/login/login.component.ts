@@ -3,6 +3,7 @@ import { GlobalDataService } from '../../services/global-data.service';
 import { Router } from '@angular/router';
 
 import { DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 @Component({
   selector: 'app-login',
@@ -17,13 +18,14 @@ export class LoginComponent implements OnInit {
     constructor(
         public global: GlobalDataService,
         public router: Router,
+        private auth: AngularFireAuth,
         sanitizer: DomSanitizer
     ) {
         this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/${global.lang}.txt`);
     }
 
     ngOnInit() {
-        this.global.auth.authState.subscribe((user) => {
+        this.auth.authState.subscribe((user) => {
             console.log(JSON.stringify(user));
             if (user) {
                 this.router.navigate(["/"]);
