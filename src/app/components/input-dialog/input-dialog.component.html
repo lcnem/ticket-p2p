@@ -7,5 +7,5 @@
 <mat-dialog-actions>
     <span class="fill-remaining-space"></span>
     <button mat-button mat-dialog-close color="warn">{{data.cancel}}</button>
-    <button mat-button [mat-dialog-close]="data.inputData" color="accent">{{data.submit}}</button>
+    <button mat-button [mat-dialog-close]="data.inputData" color="accent" disabled="{{!data.inputData}}">{{data.submit}}</button>
 </mat-dialog-actions>

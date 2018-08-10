@@ -39,11 +39,12 @@ export class GlobalDataService {
     public transactionHttp: TransactionHttp;
     public events = [] as {[key: string]: string}[];
 
+    public eventIds?: Array<string>;
     public events?: {[key: string]: Event};
 
     constructor(
-        public auth: AngularFireAuth,
-        public firestore: AngularFirestore,
+        private auth: AngularFireAuth,
+        private firestore: AngularFirestore,
         private http: HttpClient
     ) {
         NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
@@ -78,6 +79,7 @@ export class GlobalDataService {
         if (!doc.exists) {
             await docRef.set({});
         }
+        this.refresh();
 
         await this.refresh();
 
@@ -94,5 +96,6 @@ export class GlobalDataService {
         doc.forEach(d => {
             this.events![d.id] = d.data() as any;
         });
+        this.eventIds = Object.keys(this.events);
     }
 }

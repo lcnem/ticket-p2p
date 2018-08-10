@@ -33,7 +33,7 @@
         <div class="out-toolbar">
             <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
             <ng-template #loaded>
-                <mat-card *ngFor="let event of this.events">
+                <mat-card *ngFor="let event of this.global.eventIds">
                     <mat-card-content>
                         {{global.events[event].name}}
                     </mat-card-content>
