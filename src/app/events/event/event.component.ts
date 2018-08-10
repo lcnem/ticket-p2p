@@ -49,16 +49,12 @@ export class EventComponent implements OnInit {
     public async refresh() {
         this.loading = true;
 
-        let docRef = this.firestore.collection("users").doc(this.auth.auth.currentUser!.uid).collection("events").doc(this.id!).ref;
-
-        let doc = await docRef.get();
-
-        if (!doc.exists) {
-            return;
+        let event = this.global.events![this.id!];
+        if(!event) {
+            this.router.navigate(["error", "404"])
         }
-
-        let data = doc.data() as any;
-        this.eventName = data.name;
+        
+        this.eventName = event.name;
         this.capacity = 0;
 
         this.loading = false;

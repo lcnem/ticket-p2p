@@ -1,11 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { GlobalDataService } from '../services/global-data.service';
-import { nodes } from '../../models/nodes';
-import { ServerConfig, AccountHttp, MosaicHttp, TransactionHttp, NamespaceHttp } from 'nem-library';
-import { MatSidenav } from '@angular/material';
-import { MediaChange, ObservableMedia } from '@angular/flex-layout';
-import { Subscription } from 'rxjs';
 import { InputDialogComponent } from '../components/input-dialog/input-dialog.component';
 import { MatDialog } from '@angular/material';
 import { Event } from '../../models/event';
@@ -20,34 +15,15 @@ import { AngularFireAuth } from 'angularfire2/auth';
 export class HomeComponent implements OnInit {
     public loading = true
 
-    @ViewChild("sidenav")
-    public sidenav?: MatSidenav;
-
-    watcher?: Subscription;
-
     constructor(
         public global: GlobalDataService,
         private router: Router,
-        private media: ObservableMedia,
         private dialog: MatDialog,
         private auth: AngularFireAuth,
         private firestore: AngularFirestore
     ) { }
 
     ngOnInit() {
-        this.watcher = this.media.subscribe((change: MediaChange) => {
-            if (!this.sidenav) {
-                return;
-            }
-            if (change.mqAlias == "xs" || change.mqAlias == "sm") {
-                this.sidenav.mode = "over";
-                this.sidenav.opened = false;
-            } else {
-                this.sidenav.mode = "side";
-                this.sidenav.opened = true;
-            }
-        });
-
         this.auth.authState.subscribe(async (user) => {
             if (user == null) {
                 this.router.navigate(["accounts", "login"]);
@@ -58,10 +34,6 @@ export class HomeComponent implements OnInit {
           
             this.loading = false;
         });
-    }
-
-    ngOnDestroy() {
-        this.watcher!.unsubscribe();
     }
 
     public async logout() {
@@ -80,10 +52,10 @@ export class HomeComponent implements OnInit {
     public async createEvent() {
         this.dialog.open(InputDialogComponent, {
             data: {
-                title: "イベントを作成",
-                placeholder: "イベント名",
-                cancel: "キャンセル",
-                submit: "作成"
+                title: this.translation.createEvent[this.global.lang],
+                placeholder: this.translation.eventName[this.global.lang],
+                cancel: this.translation.cancel[this.global.lang],
+                submit: this.translation.submit[this.global.lang]
             }
         }).afterClosed().subscribe(async (eventName) => {
             if (!eventName) {
@@ -99,23 +71,15 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    public deleteEvent() {
+    public async deleteEvent(eventId: string) {
+        let uid = this.auth.auth.currentUser!.uid;
 
+        this.firestore.collection("users").doc(uid).collection("events").doc(eventId).set({
+            deleted: true
+        });
     }
 
     public translation = {
-        balance: {
-            en: "Balance",
-            ja: "残高"
-        },
-        deposit: {
-            en: "Deposit",
-            ja: "入金"
-        },
-        history: {
-            en: "History",
-            ja: "履歴"
-        },
         language: {
             en: "Language",
             ja: "言語"
@@ -124,17 +88,21 @@ export class HomeComponent implements OnInit {
             en: "Log out",
             ja: "ログアウト"
         },
-        scan: {
-            en: "Scan QR-code",
-            ja: "QRコードをスキャン"
+        createEvent: {
+            en: "Create your event",
+            ja: "イベントを作成"
         },
-        withdraw: {
-            en: "Withdraw",
-            ja: "出金"
+        eventName: {
+            en: "Event name",
+            ja: "イベント名"
         },
-        yourAddress: {
-            en: "Your address",
-            ja: "あなたのアドレス"
+        cancel: {
+            en: "Cancel",
+            ja: "キャンセル"
+        },
+        submit: {
+            en: "Submit",
+            ja: "作成"
         }
     } as { [key: string]: { [key: string]: string } };
 }
