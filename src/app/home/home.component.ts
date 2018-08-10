@@ -8,6 +8,7 @@ import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
 import { InputDialogComponent } from '../components/input-dialog/input-dialog.component';
 import { MatDialog } from '@angular/material';
+import { Event } from '../../models/event';
 
 @Component({
     selector: 'app-home',
@@ -16,8 +17,8 @@ import { MatDialog } from '@angular/material';
 })
 export class HomeComponent implements OnInit {
     public loading = true;
-    public qrUrl = "";
-    public nodes = nodes;
+
+    public events?: Array<string>;
 
     @ViewChild("sidenav")
     public sidenav?: MatSidenav;
@@ -33,7 +34,7 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.watcher = this.media.subscribe((change: MediaChange) => {
-            if(!this.sidenav) {
+            if (!this.sidenav) {
                 return;
             }
             if (change.mqAlias == "xs" || change.mqAlias == "sm") {
@@ -45,17 +46,18 @@ export class HomeComponent implements OnInit {
             }
         });
 
-        this.global.auth.authState.subscribe((user) => {
+        this.global.auth.authState.subscribe(async (user) => {
             if (user == null) {
-                this.router.navigate(["/accounts/login"]);
+                this.router.navigate(["accounts", "login"]);
                 return;
             }
-            this.global.initialize().then(() => {
-                this.loading = false;
-            });
+
+            await this.global.initialize();
+            await this.refresh();
+            this.loading = false;
         });
     }
-    
+
     ngOnDestroy() {
         this.watcher!.unsubscribe();
     }
@@ -67,14 +69,38 @@ export class HomeComponent implements OnInit {
 
     public async refresh() {
         this.loading = true;
-        
+
         await this.global.refresh();
+
+        this.events = Object.keys(this.global.events!);
 
         this.loading = false;
     }
 
     public async createEvent() {
-        this.dialog.open(InputDialogComponent);
+        this.dialog.open(InputDialogComponent, {
+            data: {
+                title: "イベントを作成",
+                placeholder: "イベント名",
+                cancel: "キャンセル",
+                submit: "作成"
+            }
+        }).afterClosed().subscribe(async eventName => {
+            if (!eventName) {
+                return;
+            }
+
+            let uid = this.global.auth.auth.currentUser!.uid;
+
+            let newEvent = await this.global.firestore.collection("users").doc(uid).collection("events").add({
+                name: eventName
+            });
+            this.router.navigate(["events", newEvent.id]);
+        });
+    }
+
+    public deleteEvent() {
+
     }
 
     public translation = {
@@ -110,5 +136,5 @@ export class HomeComponent implements OnInit {
             en: "Your address",
             ja: "あなたのアドレス"
         }
-    } as {[key: string]: {[key: string]: string}};
+    } as { [key: string]: { [key: string]: string } };
 }

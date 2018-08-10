@@ -32,15 +32,32 @@ export class EventComponent implements OnInit {
     ngOnInit() {
         this.id = this.route.snapshot.paramMap.get('id') || undefined;
 
-        this.global.auth.authState.subscribe((user) => {
+        this.global.auth.authState.subscribe(async (user) => {
             if (user == null) {
-                this.router.navigate(["/accounts/login"]);
+                this.router.navigate(["accounts", "login"]);
                 return;
             }
-            this.global.initialize().then(() => {
-                this.loading = false;
-            });
+            await this.global.initialize();
+            await this.refresh();
         });
+    }
+
+    public async refresh() {
+        this.loading = true;
+
+        let docRef = this.global.firestore.collection("users").doc(this.global.auth.auth.currentUser!.uid).collection("events").doc(this.id!).ref;
+
+        let doc = await docRef.get();
+
+        if (!doc.exists) {
+            return;
+        }
+
+        let data = doc.data() as any;
+        this.eventName = data.name;
+        this.capacity = 0;
+
+        this.loading = false;
     }
 
     public async editEventName() {
@@ -52,8 +69,8 @@ export class EventComponent implements OnInit {
                 cancel: this.translation.cancel[this.global.lang],
                 submit: this.translation.submit[this.global.lang]
             }
-        }).afterClosed().subscribe(async result => {
-            if(this.eventName == result) {
+        }).afterClosed().subscribe(async (result) => {
+            if (this.eventName == result) {
                 return;
             }
 
@@ -76,8 +93,8 @@ export class EventComponent implements OnInit {
                 cancel: this.translation.cancel[this.global.lang],
                 submit: this.translation.submit[this.global.lang]
             }
-        }).afterClosed().subscribe(async result => {
-            if(result <= 0) {
+        }).afterClosed().subscribe(async (result) => {
+            if (result <= 0) {
                 this.dialog.open(DialogComponent, {
                     data: {
                         title: this.translation.error[this.global.lang],
@@ -86,7 +103,7 @@ export class EventComponent implements OnInit {
                 });
                 return;
             }
-            
+
             this.dialog.open(DialogComponent, {
                 data: {
                     title: this.translation.completed[this.global.lang],
@@ -141,7 +158,7 @@ export class EventComponent implements OnInit {
         let request = new PaymentRequest(supportedInstruments, details, { requestShipping: false });
 
         let result = await request.show();
-        if(!result) {
+        if (!result) {
             return;
         }
 
@@ -179,7 +196,7 @@ export class EventComponent implements OnInit {
                 result.complete("success");
                 dialogRef.close();
             }
-    
+
             this.dialog.open(DialogComponent, {
                 data: {
                     title: this.translation.completed[this.global.lang],
@@ -188,11 +205,11 @@ export class EventComponent implements OnInit {
             }).afterClosed().subscribe(() => {
                 this.router.navigate([""]);
             });
-            
+
         });
     }
 
-    
+
     public translation = {
         amount: {
             en: "Amount",

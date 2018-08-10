@@ -10,18 +10,6 @@
                 </mat-select>
             </mat-form-field>
             <mat-nav-list>
-                <mat-list-item routerLink="/transactions/scan">
-                    <mat-icon>center_focus_strong</mat-icon>
-                    {{translation.scan[global.lang]}}
-                </mat-list-item>
-                <mat-list-item routerLink="/transactions/history">
-                    <mat-icon>history</mat-icon>
-                    {{translation.history[global.lang]}}
-                </mat-list-item>
-                <mat-list-item routerLink="/accounts/deposit">
-                    <mat-icon>call_received</mat-icon>
-                    {{translation.deposit[global.lang]}}
-                </mat-list-item>
                 <mat-divider></mat-divider>
                 <mat-list-item (click)="logout()">
                     <mat-icon>lock_open</mat-icon>
@@ -45,6 +33,22 @@
         <div class="out-toolbar">
             <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
             <ng-template #loaded>
+                <mat-card *ngFor="let event of this.events">
+                    <mat-card-content>
+                        {{global.events[event].name}}
+                    </mat-card-content>
+                    <mat-card-actions>
+                        <span class="fill-remaining-space"></span>
+                        <span>
+                            <button mat-icon-button (click)="deleteEvent()">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                            <button mat-icon-button routerLink="/events/{{event}}">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                        </span>
+                    </mat-card-actions>
+                </mat-card>
                 <button mat-fab color="accent" class="add-button" (click)="createEvent()">
                     <mat-icon>add</mat-icon>
                 </button>
