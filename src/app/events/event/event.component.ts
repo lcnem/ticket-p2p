@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material';
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { LoadingDialogComponent } from '../../components/loading-dialog/loading-dialog.component';
 import { HttpClient } from '@angular/common/http';
+import { InputDialogComponent } from '../../components/input-dialog/input-dialog.component';
 
 declare let Payjp: any;
 
@@ -31,18 +32,88 @@ export class EventComponent implements OnInit {
     ngOnInit() {
         this.id = this.route.snapshot.paramMap.get('id') || undefined;
 
-        this.global.auth.authState.subscribe((user) => {
+        this.global.auth.authState.subscribe(async (user) => {
             if (user == null) {
-                this.router.navigate(["/accounts/login"]);
+                this.router.navigate(["accounts", "login"]);
                 return;
             }
-            this.global.initialize().then(() => {
-                this.loading = false;
+            await this.global.initialize();
+            await this.refresh();
+        });
+    }
+
+    public async refresh() {
+        this.loading = true;
+
+        let docRef = this.global.firestore.collection("users").doc(this.global.auth.auth.currentUser!.uid).collection("events").doc(this.id!).ref;
+
+        let doc = await docRef.get();
+
+        if (!doc.exists) {
+            return;
+        }
+
+        let data = doc.data() as any;
+        this.eventName = data.name;
+        this.capacity = 0;
+
+        this.loading = false;
+    }
+
+    public async editEventName() {
+        this.dialog.open(InputDialogComponent, {
+            data: {
+                title: this.translation.edit[this.global.lang],
+                placeholder: this.translation.eventName[this.global.lang],
+                inputData: this.eventName,
+                cancel: this.translation.cancel[this.global.lang],
+                submit: this.translation.submit[this.global.lang]
+            }
+        }).afterClosed().subscribe(async (result) => {
+            if (this.eventName == result) {
+                return;
+            }
+
+            this.dialog.open(DialogComponent, {
+                data: {
+                    title: this.translation.completed[this.global.lang],
+                    content: ""
+                }
             });
         });
     }
 
-    public async onBuyClicked() {
+    public async capacitySupplement() {
+        this.dialog.open(InputDialogComponent, {
+            data: {
+                title: this.translation.supplement[this.global.lang],
+                placeholder: this.translation.supplement[this.global.lang],
+                inputData: 0,
+                inputType: "number",
+                cancel: this.translation.cancel[this.global.lang],
+                submit: this.translation.submit[this.global.lang]
+            }
+        }).afterClosed().subscribe(async (result) => {
+            if (result <= 0) {
+                this.dialog.open(DialogComponent, {
+                    data: {
+                        title: this.translation.error[this.global.lang],
+                        content: ""
+                    }
+                });
+                return;
+            }
+
+            this.dialog.open(DialogComponent, {
+                data: {
+                    title: this.translation.completed[this.global.lang],
+                    content: ""
+                }
+            });
+        });
+    }
+
+    public async chargeCreditCard(yen: number) {
         if (!(window as any).PaymentRequest) {
             this.dialog.open(DialogComponent, {
                 data: {
@@ -71,7 +142,7 @@ export class EventComponent implements OnInit {
                     label: this.translation.fee[this.global.lang],
                     amount: {
                         currency: "JPY",
-                        value: "0"
+                        value: yen.toString()
                     }
                 }
             ],
@@ -79,7 +150,7 @@ export class EventComponent implements OnInit {
                 label: this.translation.total[this.global.lang],
                 amount: {
                     currency: "JPY",
-                    value: "0"
+                    value: yen.toString()
                 }
             }
         };
@@ -87,7 +158,7 @@ export class EventComponent implements OnInit {
         let request = new PaymentRequest(supportedInstruments, details, { requestShipping: false });
 
         let result = await request.show();
-        if(!result) {
+        if (!result) {
             return;
         }
 
@@ -125,7 +196,7 @@ export class EventComponent implements OnInit {
                 result.complete("success");
                 dialogRef.close();
             }
-    
+
             this.dialog.open(DialogComponent, {
                 data: {
                     title: this.translation.completed[this.global.lang],
@@ -134,11 +205,11 @@ export class EventComponent implements OnInit {
             }).afterClosed().subscribe(() => {
                 this.router.navigate([""]);
             });
-            
+
         });
     }
 
-    
+
     public translation = {
         amount: {
             en: "Amount",
@@ -183,6 +254,14 @@ export class EventComponent implements OnInit {
         supplement: {
             en: "Supplement",
             ja: "枠追加"
+        },
+        cancel: {
+            en: "Cancel",
+            ja: "キャンセル"
+        },
+        submit: {
+            en: "Submit",
+            ja: "決定"
         }
     } as { [key: string]: { [key: string]: string } };
 }

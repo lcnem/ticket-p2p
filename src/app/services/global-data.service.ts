@@ -23,6 +23,7 @@ import {
     ServerConfig
 } from 'nem-library';
 import { nodes } from '../../models/nodes';
+import { Event } from '../../models/event';
 
 @Injectable()
 export class GlobalDataService {
@@ -37,6 +38,8 @@ export class GlobalDataService {
     public namespaceHttp: NamespaceHttp;
     public transactionHttp: TransactionHttp;
     public events = [] as {[key: string]: string}[];
+
+    public events?: {[key: string]: Event};
 
     constructor(
         public auth: AngularFireAuth,
@@ -84,18 +87,12 @@ export class GlobalDataService {
     public async refresh() {
         let uid = this.auth.auth.currentUser!.uid;
         let docRef = this.firestore.collection("users").doc(uid).collection("events").ref;
-        this.events = [];
-        docRef.get().then(snapshot => {
-            snapshot.forEach(doc => {
-                this.events!.push({
-                    id: doc.id,
-                    name: doc.data().name
-                })
-            });
-        })
-        .catch(err => {
-            console.log('Error getting documents', err);
-        });
+      
+        this.events = {};
 
+        let doc = await docRef.get();
+        doc.forEach(d => {
+            this.events![d.id] = d.data() as any;
+        });
     }
 }
