@@ -17,7 +17,7 @@ import { Event } from '../../models/event';
 })
 export class HomeComponent implements OnInit {
     public loading = true;
-
+  
     public events?: Array<string>;
 
     @ViewChild("sidenav")
@@ -51,10 +51,10 @@ export class HomeComponent implements OnInit {
                 this.router.navigate(["accounts", "login"]);
                 return;
             }
-
+          
             await this.global.initialize();
             await this.refresh();
-            this.loading = false;
+            this.loading = false
         });
     }
 

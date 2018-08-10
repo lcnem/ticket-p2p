@@ -37,6 +37,7 @@ export class GlobalDataService {
     public mosaicHttp: MosaicHttp;
     public namespaceHttp: NamespaceHttp;
     public transactionHttp: TransactionHttp;
+    public events = [] as {[key: string]: string}[];
 
     public events?: {[key: string]: Event};
 
@@ -78,13 +79,15 @@ export class GlobalDataService {
             await docRef.set({});
         }
 
+        await this.refresh();
+
         this.initialized = true;
     }
 
     public async refresh() {
         let uid = this.auth.auth.currentUser!.uid;
         let docRef = this.firestore.collection("users").doc(uid).collection("events").ref;
-
+      
         this.events = {};
 
         let doc = await docRef.get();
