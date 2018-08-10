@@ -45,8 +45,8 @@
         <div class="out-toolbar">
             <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
             <ng-template #loaded>
-                <ul *ngIf="this.events">
-                    <li *ngFor="let event of this.events">
+                <ul *ngIf="this.global.events">
+                    <li *ngFor="let event of this.global.events">
                         <a routerLink="/events/{{event.id}}">
                                 {{event.name}}
                         </a>

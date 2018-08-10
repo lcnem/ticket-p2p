@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit {
     public loading = true;
     public qrUrl = "";
     public nodes = nodes;
-    public events = [] as {[key: string]: string}[];
 
     @ViewChild("sidenav")
     public sidenav?: MatSidenav;
@@ -55,22 +54,7 @@ export class HomeComponent implements OnInit {
                 this.router.navigate(["/accounts/login"]);
                 return;
             }
-
-            // 一箇所にまとめたい
-            let uid = this.auth.auth.currentUser!.uid;
-            let docRef = this.firestore.collection("users").doc(uid).collection("events").ref;
-            docRef.get().then(snapshot => {
-                snapshot.forEach(doc => {
-                    this.events!.push({
-                        id: doc.id,
-                        name: doc.data().name
-                    })
-                });
-            })
-            .catch(err => {
-                console.log('Error getting documents', err);
-            });
-
+            
             this.global.initialize().then(() => {
                 this.loading = false;
             });

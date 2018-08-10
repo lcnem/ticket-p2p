@@ -36,6 +36,7 @@ export class GlobalDataService {
     public mosaicHttp: MosaicHttp;
     public namespaceHttp: NamespaceHttp;
     public transactionHttp: TransactionHttp;
+    public events = [] as {[key: string]: string}[];
 
     constructor(
         public auth: AngularFireAuth,
@@ -75,9 +76,26 @@ export class GlobalDataService {
             await docRef.set({});
         }
 
+        await this.refresh();
+
         this.initialized = true;
     }
 
     public async refresh() {
+        let uid = this.auth.auth.currentUser!.uid;
+        let docRef = this.firestore.collection("users").doc(uid).collection("events").ref;
+        this.events = [];
+        docRef.get().then(snapshot => {
+            snapshot.forEach(doc => {
+                this.events!.push({
+                    id: doc.id,
+                    name: doc.data().name
+                })
+            });
+        })
+        .catch(err => {
+            console.log('Error getting documents', err);
+        });
+
     }
 }
