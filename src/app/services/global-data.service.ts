@@ -37,8 +37,7 @@ export class GlobalDataService {
     public mosaicHttp: MosaicHttp;
     public namespaceHttp: NamespaceHttp;
     public transactionHttp: TransactionHttp;
-    public events = [] as {[key: string]: string}[];
-
+    
     public eventIds?: Array<string>;
     public events?: {[key: string]: Event};
 

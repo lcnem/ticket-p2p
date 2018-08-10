@@ -85,7 +85,7 @@ export class HomeComponent implements OnInit {
                 cancel: "キャンセル",
                 submit: "作成"
             }
-        }).afterClosed().subscribe(async eventName => {
+        }).afterClosed().subscribe(async (eventName) => {
             if (!eventName) {
                 return;
             }
