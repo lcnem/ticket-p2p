@@ -4,6 +4,7 @@ import { Result } from '@zxing/library';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { GlobalDataService } from '../../services/global-data.service';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 
 @Component({
@@ -25,35 +26,36 @@ export class ScanComponent implements OnInit {
 
     constructor(
         public global: GlobalDataService,
-        private router: Router
+        private router: Router,
+        private auth: AngularFireAuth
     ) { }
 
     ngOnInit() {
-        this.global.auth.authState.subscribe((user) => {
+        this.auth.authState.subscribe(async (user) => {
             if (user == null) {
-                this.router.navigate(["/login"]);
+                this.router.navigate(["login"]);
                 return;
             }
-            this.global.initialize().then(() => {
-                if (!this.scanner) {
-                    return;
-                }
+            await this.global.initialize();
+            
+            if (!this.scanner) {
+                return;
+            }
 
-                this.scanner.camerasFound.subscribe((devices: MediaDeviceInfo[]) => {
-                    this.availableDevices = devices;
-                    this.selected = 0;
-                });
+            this.scanner.camerasFound.subscribe((devices: MediaDeviceInfo[]) => {
+                this.availableDevices = devices;
+                this.selected = 0;
+            });
 
-                this.scanner.camerasNotFound.subscribe(() => {
-                    this.noCamera = true;
-                });
+            this.scanner.camerasNotFound.subscribe(() => {
+                this.noCamera = true;
+            });
 
-                this.scanner.permissionResponse.subscribe((answer: boolean) => {
-                    this.hasPermission = answer;
-                });
+            this.scanner.permissionResponse.subscribe((answer: boolean) => {
+                this.hasPermission = answer;
+            });
 
-                this.scanner.scanComplete.subscribe((result: any) => {
-                });
+            this.scanner.scanComplete.subscribe((result: any) => {
             });
         });
     }

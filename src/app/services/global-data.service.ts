@@ -23,6 +23,7 @@ import {
     ServerConfig
 } from 'nem-library';
 import { nodes } from '../../models/nodes';
+import { Event } from '../../models/event';
 
 @Injectable()
 export class GlobalDataService {
@@ -37,9 +38,12 @@ export class GlobalDataService {
     public namespaceHttp: NamespaceHttp;
     public transactionHttp: TransactionHttp;
 
+    public eventIds?: Array<string>;
+    public events?: {[key: string]: Event};
+
     constructor(
-        public auth: AngularFireAuth,
-        public firestore: AngularFirestore,
+        private auth: AngularFireAuth,
+        private firestore: AngularFirestore,
         private http: HttpClient
     ) {
         NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
@@ -68,9 +72,27 @@ export class GlobalDataService {
             return;
         }
 
+        let uid = this.auth.auth.currentUser!.uid;
+        let docRef = this.firestore.collection("users").doc(uid).ref;
+        let doc = await docRef.get();
+        if (!doc.exists) {
+            await docRef.set({});
+        }
+        this.refresh();
+
         this.initialized = true;
     }
 
     public async refresh() {
+        let uid = this.auth.auth.currentUser!.uid;
+        let docRef = this.firestore.collection("users").doc(uid).collection("events").ref;
+
+        this.events = {};
+
+        let doc = await docRef.get();
+        doc.forEach(d => {
+            this.events![d.id] = d.data() as any;
+        });
+        this.eventIds = Object.keys(this.events);
     }
 }

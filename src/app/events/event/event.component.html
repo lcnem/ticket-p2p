@@ -1,0 +1,27 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+    <button mat-icon-button routerLink="/">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>{{eventName}}</span>
+    <span class="fill-remaining-space"></span>
+</mat-toolbar>
+<div class="out-toolbar">
+    <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
+    <ng-template #loaded>
+        <mat-form-field fxFill>
+            <input matInput readonly placeholder="{{translation.eventId[global.lang]}}" [(ngModel)]="id" />
+        </mat-form-field>
+        <mat-form-field fxFill>
+            <input matInput readonly placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="eventName" />
+            <button mat-button color="accent" matSuffix (click)="editEventName()" matTooltip="{{translation.edit[global.lang]}}">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </mat-form-field>
+        <mat-form-field fxFill>
+            <input matInput readonly type="number" placeholder="{{translation.capacity[global.lang]}}" [(ngModel)]="capacity" />
+            <button mat-button color="accent" matSuffix (click)="capacitySupplement()" matTooltip="{{translation.supplement[global.lang]}}">
+                <mat-icon>add</mat-icon>
+            </button>
+        </mat-form-field>
+    </ng-template>
+</div>

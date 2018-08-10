@@ -1,8 +1,5 @@
-.amount {
-    text-align: center;
-}
 
-.transfer-button {
+.add-button {
     position: fixed;
     right: 16px;
     bottom: 16px;
@@ -11,12 +8,4 @@
 
 mat-card {
     margin: 6px 0;
-}
-
-.qr {
-    display: block;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 300px;
-    max-height: 300px;
 }
