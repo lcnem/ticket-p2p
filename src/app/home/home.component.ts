@@ -18,7 +18,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
     styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-    public loading = true;
+    public loading = true
 
     @ViewChild("sidenav")
     public sidenav?: MatSidenav;
@@ -53,9 +53,9 @@ export class HomeComponent implements OnInit {
                 this.router.navigate(["accounts", "login"]);
                 return;
             }
-
+          
             await this.global.initialize();
-            
+          
             this.loading = false;
         });
     }
