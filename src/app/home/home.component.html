@@ -4,6 +4,10 @@
         </mat-toolbar>
         <div fxLayout="column">
             <mat-nav-list>
+                <mat-list-item routerLink="/events/archived">
+                    <mat-icon mat-list-icon>archive</mat-icon>
+                    {{translation.archived[global.lang]}}
+                </mat-list-item>
                 <mat-divider></mat-divider>
                 <mat-list-item (click)="logout()">
                     <mat-icon mat-list-icon>lock_open</mat-icon>
@@ -42,22 +46,25 @@
         <div class="out-toolbar">
             <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
             <ng-template #loaded>
-                <mat-card *ngFor="let event of this.global.eventIds">
-                    <mat-card-header>
-                        <span>{{global.events[event].name}}</span>
+                <ng-container *ngFor="let event of this.global.eventIds">
+                    <mat-card *ngIf="!global.events[event].archived">
+                        <mat-card-header>
+                            <span>{{global.events[event].name}}</span>
 
-                        <span class="fill-remaining-space"></span>
-                        <span>
-                            <button mat-icon-button (click)="deleteEvent(event)">
-                                <mat-icon>delete</mat-icon>
-                            </button>
-                            <button mat-icon-button routerLink="/events/{{event}}">
-                                <mat-icon>open_in_new</mat-icon>
-                            </button>
-                        </span>
-                    </mat-card-header>
-                    <mat-card-content></mat-card-content>
-                </mat-card>
+                            <span class="fill-remaining-space"></span>
+                            <span>
+                                <button mat-icon-button (click)="archiveEvent(event)">
+                                    <mat-icon>archive</mat-icon>
+                                </button>
+                                <button mat-icon-button routerLink="/events/{{event}}">
+                                    <mat-icon>open_in_new</mat-icon>
+                                </button>
+                            </span>
+                        </mat-card-header>
+                        <mat-card-content></mat-card-content>
+                    </mat-card>
+                </ng-container>
+
                 <button mat-fab color="accent" class="add-button" (click)="createEvent()">
                     <mat-icon>add</mat-icon>
                 </button>

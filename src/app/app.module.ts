@@ -53,6 +53,7 @@ import { DialogComponent } from './components/dialog/dialog.component';
 import { ScanComponent } from './events/scan/scan.component';
 import { EventComponent } from './events/event/event.component';
 import { InputDialogComponent } from './components/input-dialog/input-dialog.component';
+import { ArchivedComponent } from './events/archived/archived.component';
 
 @NgModule({
     declarations: [
@@ -64,7 +65,8 @@ import { InputDialogComponent } from './components/input-dialog/input-dialog.com
         LoadingDialogComponent,
         DialogComponent,
         EventComponent,
-        InputDialogComponent
+        InputDialogComponent,
+        ArchivedComponent
     ],
     imports: [
         BrowserModule,
