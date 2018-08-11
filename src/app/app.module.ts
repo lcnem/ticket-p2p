@@ -30,7 +30,8 @@ import {
     MatSlideToggleModule,
     MatStepperModule,
     MatCheckboxModule,
-    MatTableModule
+    MatTableModule,
+    MatMenuModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -97,7 +98,8 @@ import { InputDialogComponent } from './components/input-dialog/input-dialog.com
         MatListModule,
         MatSlideToggleModule,
         MatStepperModule,
-        MatTableModule
+        MatTableModule,
+        MatMenuModule
     ],
     entryComponents: [
         LoadingDialogComponent,
