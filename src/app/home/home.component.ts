@@ -71,11 +71,11 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    public async deleteEvent(eventId: string) {
+    public async archiveEvent(eventId: string) {
         let uid = this.auth.auth.currentUser!.uid;
 
         this.firestore.collection("users").doc(uid).collection("events").doc(eventId).set({
-            deleted: true
+            archived: true
         });
     }
 
@@ -83,6 +83,10 @@ export class HomeComponent implements OnInit {
         language: {
             en: "Language",
             ja: "言語"
+        },
+        archived: {
+            en: "Archived",
+            ja: "アーカイブ"
         },
         logout: {
             en: "Log out",

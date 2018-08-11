@@ -51,7 +51,14 @@ export class EventComponent implements OnInit {
 
         let event = this.global.events![this.id!];
         if(!event) {
-            this.router.navigate(["error", "404"])
+            this.dialog.open(DialogComponent, {
+                data: {
+                    title: this.translation.error[this.global.lang],
+                    content: ""
+                }
+            }).afterClosed().subscribe(() => {
+                this.router.navigate([""]);
+            });
         }
         
         this.eventName = event.name;
@@ -104,6 +111,8 @@ export class EventComponent implements OnInit {
                 return;
             }
 
+            await this.chargeCreditCard(result);
+
             this.dialog.open(DialogComponent, {
                 data: {
                     title: this.translation.completed[this.global.lang],
@@ -113,7 +122,7 @@ export class EventComponent implements OnInit {
         });
     }
 
-    public async chargeCreditCard(yen: number) {
+    public async chargeCreditCard(capacity: number) {
         if (!(window as any).PaymentRequest) {
             this.dialog.open(DialogComponent, {
                 data: {
@@ -142,7 +151,7 @@ export class EventComponent implements OnInit {
                     label: this.translation.fee[this.global.lang],
                     amount: {
                         currency: "JPY",
-                        value: yen.toString()
+                        value: (capacity * 54).toString()
                     }
                 }
             ],
@@ -150,7 +159,7 @@ export class EventComponent implements OnInit {
                 label: this.translation.total[this.global.lang],
                 amount: {
                     currency: "JPY",
-                    value: yen.toString()
+                    value: (capacity * 54).toString()
                 }
             }
         };
@@ -208,7 +217,6 @@ export class EventComponent implements OnInit {
 
         });
     }
-
 
     public translation = {
         amount: {
