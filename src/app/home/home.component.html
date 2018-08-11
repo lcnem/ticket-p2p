@@ -3,16 +3,10 @@
         <mat-toolbar class="background-contain" [ngStyle]="{'background-image': 'url(favicon.svg)'}">
         </mat-toolbar>
         <div fxLayout="column">
-            <mat-form-field fxFlex="100">
-                <mat-select placeholder="{{translation.language[global.lang]}}" [(ngModel)]="global.lang">
-                    <mat-option value="en">English</mat-option>
-                    <mat-option value="ja">日本語</mat-option>
-                </mat-select>
-            </mat-form-field>
             <mat-nav-list>
                 <mat-divider></mat-divider>
                 <mat-list-item (click)="logout()">
-                    <mat-icon>lock_open</mat-icon>
+                    <mat-icon mat-list-icon>lock_open</mat-icon>
                     {{translation.logout[global.lang]}}
                 </mat-list-item>
             </mat-nav-list>
@@ -25,9 +19,24 @@
             </button>
             <button mat-icon-button class="background-contain" [ngStyle]="{'background-image': 'url(favicon.svg)'}"></button>
             <span>ちけっとピアツーピア</span>
+
             <span class="fill-remaining-space"></span>
+
+
             <button mat-icon-button (click)="refresh()" [disabled]="loading">
                 <mat-icon>refresh</mat-icon>
+            </button>
+
+            <mat-menu #langMenu="matMenu" [overlapTrigger]="false">
+                <button mat-menu-item (click)="global.lang = 'en'">
+                    English
+                </button>
+                <button mat-menu-item (click)="global.lang = 'ja'">
+                    日本語
+                </button>
+            </mat-menu>
+            <button mat-icon-button [matMenuTriggerFor]="langMenu" yPosition="below">
+                {{global.lang}}
             </button>
         </mat-toolbar>
         <div class="out-toolbar">
@@ -36,7 +45,7 @@
                 <mat-card *ngFor="let event of this.global.eventIds">
                     <mat-card-header>
                         <span>{{global.events[event].name}}</span>
-                        
+
                         <span class="fill-remaining-space"></span>
                         <span>
                             <button mat-icon-button (click)="deleteEvent(event)">
