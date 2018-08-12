@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material';
 import { Event } from '../../models/event';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { DialogComponent } from '../components/dialog/dialog.component';
 
 @Component({
     selector: 'app-home',
@@ -29,9 +30,9 @@ export class HomeComponent implements OnInit {
                 this.router.navigate(["accounts", "login"]);
                 return;
             }
-          
+
             await this.global.initialize();
-          
+
             this.loading = false;
         });
     }
@@ -65,18 +66,37 @@ export class HomeComponent implements OnInit {
             let uid = this.auth.auth.currentUser!.uid;
 
             let newEvent = await this.firestore.collection("users").doc(uid).collection("events").add({
-                name: eventName
+                name: eventName,
+                archived: false
             });
+
+            await this.refresh();
             this.router.navigate(["events", newEvent.id]);
         });
     }
 
     public async archiveEvent(eventId: string) {
-        let uid = this.auth.auth.currentUser!.uid;
+        this.dialog.open(DialogComponent, {
+            data: {
+                title: this.translation.confirmation[this.global.lang],
+                content: this.translation.archiveConfirmation[this.global.lang],
+                cancel: this.translation.cancel[this.global.lang],
+                confirm: this.translation.confirm[this.global.lang]
+            }
+        }).afterClosed().subscribe(async (result) => {
+            if(!result) {
+                return;
+            }
 
-        this.firestore.collection("users").doc(uid).collection("events").doc(eventId).set({
-            archived: true
+            let uid = this.auth.auth.currentUser!.uid;
+
+            await this.firestore.collection("users").doc(uid).collection("events").doc(eventId).set({
+                archived: true
+            }, { merge: true });
+
+            await this.refresh();
         });
+
     }
 
     public translation = {
@@ -104,9 +124,25 @@ export class HomeComponent implements OnInit {
             en: "Cancel",
             ja: "キャンセル"
         },
+        confirm: {
+            en: "Confirm",
+            ja: "確認"
+        },
         submit: {
             en: "Submit",
             ja: "作成"
+        },
+        empty: {
+            en: "There is no event.",
+            ja: "イベントはありません。"
+        },
+        confirmation: {
+            en: "Confirmation",
+            ja: "確認"
+        },
+        archiveConfirmation: {
+            en: "Do you want to archive the event?",
+            ja: "イベントをアーカイブしますか？"
         }
     } as { [key: string]: { [key: string]: string } };
 }

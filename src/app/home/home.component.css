@@ -7,5 +7,10 @@
 }
 
 mat-card {
-    margin: 6px 0;
+    margin: 6px;
+}
+
+.capacity {
+    font-size: 400%;
+    text-align: center;
 }

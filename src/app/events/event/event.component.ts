@@ -20,6 +20,7 @@ export class EventComponent implements OnInit {
     public loading = true;
     public id?: string;
     public eventName?: string;
+    public purchased?: number;
     public capacity?: number;
 
     constructor(
@@ -42,27 +43,41 @@ export class EventComponent implements OnInit {
                 return;
             }
             await this.global.initialize();
-            await this.refresh();
+            await this.initialize();
+
+            this.loading = false;
         });
     }
 
-    public async refresh() {
-        this.loading = true;
+    public async initialize() {
+        let uid = this.auth.auth.currentUser!.uid;
 
         let event = this.global.events![this.id!];
-        if(!event) {
+
+        if(!event || event.archived) {
             this.dialog.open(DialogComponent, {
                 data: {
                     title: this.translation.error[this.global.lang],
-                    content: ""
+                    content: "",
+                    cancel: this.translation.cancel[this.global.lang],
+                    confirm: this.translation.confirm[this.global.lang]
                 }
             }).afterClosed().subscribe(() => {
                 this.router.navigate([""]);
             });
         }
-        
+
         this.eventName = event.name;
-        this.capacity = 0;
+        
+        this.purchased = event.purchases;
+        this.capacity = event.capacity;
+    }
+
+    public async refresh() {
+        this.loading = true;
+
+        await this.global.refresh();
+        await this.initialize();
 
         this.loading = false;
     }
@@ -81,12 +96,13 @@ export class EventComponent implements OnInit {
                 return;
             }
 
-            this.dialog.open(DialogComponent, {
-                data: {
-                    title: this.translation.completed[this.global.lang],
-                    content: ""
-                }
-            });
+            let uid = this.auth.auth.currentUser!.uid;
+
+            await this.firestore.collection("users").doc(uid).collection("events").doc(this.id!).set({
+                name: result
+            }, { merge: true });
+
+            await this.refresh();
         });
     }
 
@@ -105,7 +121,9 @@ export class EventComponent implements OnInit {
                 this.dialog.open(DialogComponent, {
                     data: {
                         title: this.translation.error[this.global.lang],
-                        content: ""
+                        content: "",
+                        cancel: this.translation.cancel[this.global.lang],
+                        confirm: this.translation.confirm[this.global.lang]
                     }
                 });
                 return;
@@ -116,8 +134,12 @@ export class EventComponent implements OnInit {
             this.dialog.open(DialogComponent, {
                 data: {
                     title: this.translation.completed[this.global.lang],
-                    content: ""
+                    content: "",
+                    cancel: this.translation.cancel[this.global.lang],
+                    confirm: this.translation.confirm[this.global.lang]
                 }
+            }).afterClosed().subscribe(async () => {
+                await this.refresh();
             });
         });
     }
@@ -127,7 +149,9 @@ export class EventComponent implements OnInit {
             this.dialog.open(DialogComponent, {
                 data: {
                     title: this.translation.error[this.global.lang],
-                    content: ""
+                    content: "",
+                    cancel: this.translation.cancel[this.global.lang],
+                    confirm: this.translation.confirm[this.global.lang]
                 }
             });
             return;
@@ -195,7 +219,9 @@ export class EventComponent implements OnInit {
                 this.dialog.open(DialogComponent, {
                     data: {
                         title: this.translation.error[this.global.lang],
-                        content: ""
+                        content: "",
+                        cancel: this.translation.cancel[this.global.lang],
+                        confirm: this.translation.confirm[this.global.lang]
                     }
                 });
                 result.complete("fail");
@@ -209,7 +235,9 @@ export class EventComponent implements OnInit {
             this.dialog.open(DialogComponent, {
                 data: {
                     title: this.translation.completed[this.global.lang],
-                    content: ""
+                    content: "",
+                    cancel: this.translation.cancel[this.global.lang],
+                    confirm: this.translation.confirm[this.global.lang]
                 }
             }).afterClosed().subscribe(() => {
                 this.router.navigate([""]);
@@ -266,6 +294,10 @@ export class EventComponent implements OnInit {
         cancel: {
             en: "Cancel",
             ja: "キャンセル"
+        },
+        confirm: {
+            en: "Confirm",
+            ja: "確認"
         },
         submit: {
             en: "Submit",
