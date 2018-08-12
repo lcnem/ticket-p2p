@@ -11,6 +11,8 @@ export class DialogComponent {
         @Inject(MAT_DIALOG_DATA) public data: {
             title: string,
             content: string
+            cancel: string,
+            confirm: string
         }
     ) { }
 }

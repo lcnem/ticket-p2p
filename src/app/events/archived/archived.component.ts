@@ -40,19 +40,32 @@ export class ArchivedComponent implements OnInit {
         });
     }
 
+    public async refresh() {
+        this.loading = true;
+
+        this.global.refresh();
+
+        this.loading = false;
+    }
 
     public async unarchiveEvent(eventId: string) {
         let uid = this.auth.auth.currentUser!.uid;
 
-        this.firestore.collection("users").doc(uid).collection("events").doc(eventId).set({
+        await this.firestore.collection("users").doc(uid).collection("events").doc(eventId).set({
             archived: false
-        });
+        }, { merge: true });
+
+        await this.refresh();
     }
 
     public translation = {
         archived: {
             en: "Archived",
             ja: "アーカイブ"
+        },
+        empty: {
+            en: "There is no archived event.",
+            ja: "アーカイブされたイベントはありません。"
         }
     };
 }

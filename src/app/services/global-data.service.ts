@@ -24,6 +24,7 @@ import {
 } from 'nem-library';
 import { nodes } from '../../models/nodes';
 import { Event } from '../../models/event';
+import { CapacitySupplement } from '../../models/capacityAddition';
 
 @Injectable()
 export class GlobalDataService {
@@ -39,6 +40,7 @@ export class GlobalDataService {
     public transactionHttp: TransactionHttp;
     
     public eventIds?: Array<string>;
+    public archivedEventIds?: Array<string>;
     public events?: {[key: string]: Event};
 
     constructor(
@@ -78,8 +80,6 @@ export class GlobalDataService {
         if (!doc.exists) {
             await docRef.set({});
         }
-        this.refresh();
-
         await this.refresh();
 
         this.initialized = true;
@@ -87,14 +87,43 @@ export class GlobalDataService {
 
     public async refresh() {
         let uid = this.auth.auth.currentUser!.uid;
-        let docRef = this.firestore.collection("users").doc(uid).collection("events").ref;
+        let eventsRef = this.firestore.collection("users").doc(uid).collection("events").ref;
       
+        this.eventIds = [];
+        this.archivedEventIds = [];
         this.events = {};
 
-        let doc = await docRef.get();
-        doc.forEach(d => {
-            this.events![d.id] = d.data() as any;
+        let events = await eventsRef.get();
+
+        events.forEach(event => {
+            let data = event.data() as any as Event;
+            if(data.archived) {
+                this.archivedEventIds!.push(event.id);
+            } else {
+                this.eventIds!.push(event.id);
+            }
+            this.events![event.id] = data;
         });
-        this.eventIds = Object.keys(this.events);
+
+        for(let key in this.events!) {
+            let purchasesRef = this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("capacitySupplements").ref;
+            let purchases = await purchasesRef.get();
+
+            this.events![key].purchases = 0;
+            purchases.forEach(purchase => {
+                this.events![key].purchases++;
+            });
+
+            let supplementsRef = this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("capacitySupplements").ref;
+            let supplements = await supplementsRef.get();
+
+            this.events![key].capacity = 0;
+            supplements.forEach(supplement => {
+                let data = supplement.data() as any as CapacitySupplement;
+                this.events![key].capacity += data.capacity;
+            });
+
+            this.events![key].available = this.events![key].capacity - this.events![key].purchases;
+        }
     }
 }

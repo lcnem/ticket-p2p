@@ -1,4 +1,7 @@
 export interface Event {
     name: string;
-    ownerId: string;
+    archived: boolean;
+    purchases: number;
+    capacity: number;
+    available: number;
 }

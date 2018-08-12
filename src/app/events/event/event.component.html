@@ -4,6 +4,9 @@
     </button>
     <span>{{eventName}}</span>
     <span class="fill-remaining-space"></span>
+    <button mat-icon-button (click)="refresh()" [disabled]="loading">
+        <mat-icon>refresh</mat-icon>
+    </button>
 </mat-toolbar>
 <div class="out-toolbar">
     <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
