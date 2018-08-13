@@ -120,7 +120,7 @@ export class GlobalDataService {
             this.events![key].capacity = 0;
             supplements.forEach(supplement => {
                 let data = supplement.data() as any as CapacitySupplement;
-                this.events![key].capacity += data.capacity;
+                this.events![key].capacity += Number(data.capacity);
             });
 
             this.events![key].available = this.events![key].capacity - this.events![key].purchases;

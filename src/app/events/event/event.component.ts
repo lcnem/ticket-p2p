@@ -50,11 +50,9 @@ export class EventComponent implements OnInit {
     }
 
     public async initialize() {
-        let uid = this.auth.auth.currentUser!.uid;
-
         let event = this.global.events![this.id!];
 
-        if(!event || event.archived) {
+        if (!event || event.archived) {
             this.dialog.open(DialogComponent, {
                 data: {
                     title: this.translation.error[this.global.lang],
@@ -68,7 +66,7 @@ export class EventComponent implements OnInit {
         }
 
         this.eventName = event.name;
-        
+
         this.purchased = event.purchases;
         this.capacity = event.capacity;
     }
@@ -130,17 +128,6 @@ export class EventComponent implements OnInit {
             }
 
             await this.chargeCreditCard(result);
-
-            this.dialog.open(DialogComponent, {
-                data: {
-                    title: this.translation.completed[this.global.lang],
-                    content: "",
-                    cancel: this.translation.cancel[this.global.lang],
-                    confirm: this.translation.confirm[this.global.lang]
-                }
-            }).afterClosed().subscribe(async () => {
-                await this.refresh();
-            });
         });
     }
 
@@ -172,10 +159,17 @@ export class EventComponent implements OnInit {
         let details = {
             displayItems: [
                 {
-                    label: this.translation.fee[this.global.lang],
+                    label: `${this.translation.fee[this.global.lang]}: 50x ${capacity}`,
                     amount: {
                         currency: "JPY",
-                        value: (capacity * 54).toString()
+                        value: (capacity * 50).toString()
+                    }
+                },
+                {
+                    label: `${this.translation.tax[this.global.lang]}: 4x ${capacity}`,
+                    amount: {
+                        currency: "JPY",
+                        value: (capacity * 4).toString()
                     }
                 }
             ],
@@ -207,11 +201,27 @@ export class EventComponent implements OnInit {
             try {
                 if (status == 200) {
                     await this.http.post(
-                        "",
+                        "https://us-central1-ticket-p2p.cloudfunctions.net/capacitySupplement",
                         {
+                            userId: this.auth.auth.currentUser!.uid,
+                            eventId: this.id,
+                            capacity: capacity,
                             token: response.id
                         }
                     ).toPromise();
+
+                    result.complete("success");
+
+                    this.dialog.open(DialogComponent, {
+                        data: {
+                            title: this.translation.completed[this.global.lang],
+                            content: "",
+                            cancel: this.translation.cancel[this.global.lang],
+                            confirm: this.translation.confirm[this.global.lang]
+                        }
+                    }).afterClosed().subscribe(async () => {
+                        await this.refresh();
+                    });
                 } else {
                     throw Error();
                 }
@@ -228,21 +238,8 @@ export class EventComponent implements OnInit {
 
                 return;
             } finally {
-                result.complete("success");
                 dialogRef.close();
             }
-
-            this.dialog.open(DialogComponent, {
-                data: {
-                    title: this.translation.completed[this.global.lang],
-                    content: "",
-                    cancel: this.translation.cancel[this.global.lang],
-                    confirm: this.translation.confirm[this.global.lang]
-                }
-            }).afterClosed().subscribe(() => {
-                this.router.navigate([""]);
-            });
-
         });
     }
 
@@ -266,6 +263,10 @@ export class EventComponent implements OnInit {
         fee: {
             en: "Fee",
             ja: "手数料"
+        },
+        tax: {
+            en: "Consumption tax",
+            ja: "消費税"
         },
         total: {
             en: "Total",

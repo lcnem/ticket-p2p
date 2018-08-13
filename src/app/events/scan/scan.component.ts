@@ -83,10 +83,10 @@ export class ScanComponent implements OnInit {
             let transactions = await this.global.accountHttp.allTransactions(address).toPromise();
             if(transactions.length == 1) {
                 if(transactions[0].type == TransactionTypes.TRANSFER) {
-                    if((transactions[0] as TransferTransaction).signer!.address.plain() == "") {
+                    if((transactions[0] as TransferTransaction).signer!.address.plain() == "NDFRSC6OVQUOBP6NEHPDDA7ZTYQAS3VNOD6C3DCW") {
                         if(((transactions[0] as TransferTransaction).message as PlainMessage).plain() == this.id) {
                             await this.http.post(
-                                "",
+                                "https://us-central1-ticket-p2p.cloudfunctions.net/checkTicket",
                                 {
                                     nemAddress: result
                                 }
