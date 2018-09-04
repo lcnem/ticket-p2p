@@ -42,32 +42,24 @@ export class ScanComponent implements OnInit {
     ngOnInit() {
         this.id = this.route.snapshot.paramMap.get('id') || undefined;
 
-        this.auth.authState.subscribe(async (user) => {
-            if (user == null) {
-                this.router.navigate(["login"]);
-                return;
-            }
-            await this.global.initialize();
-            
-            if (!this.scanner) {
-                return;
-            }
+        if (!this.scanner) {
+            return;
+        }
 
-            this.scanner.camerasFound.subscribe((devices: MediaDeviceInfo[]) => {
-                this.availableDevices = devices;
-                this.selected = 0;
-            });
-
-            this.scanner.camerasNotFound.subscribe(() => {
-                this.noCamera = true;
-            });
-
-            this.scanner.permissionResponse.subscribe((answer: boolean) => {
-                this.hasPermission = answer;
-            });
-
-            this.scanner.scanComplete.subscribe(this.onScanComplete);
+        this.scanner.camerasFound.subscribe((devices: MediaDeviceInfo[]) => {
+            this.availableDevices = devices;
+            this.selected = 0;
         });
+
+        this.scanner.camerasNotFound.subscribe(() => {
+            this.noCamera = true;
+        });
+
+        this.scanner.permissionResponse.subscribe((answer: boolean) => {
+            this.hasPermission = answer;
+        });
+
+        this.scanner.scanComplete.subscribe(this.onScanComplete);
     }
 
     public isUndefined(value: any) {
