@@ -7,6 +7,7 @@ import { Event } from '../../models/event';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { DialogComponent } from '../components/dialog/dialog.component';
+import { Account, NetworkTypes } from 'nem-library';
 
 @Component({
     selector: 'app-home',
@@ -67,6 +68,7 @@ export class HomeComponent implements OnInit {
 
             let newEvent = await this.firestore.collection("users").doc(uid).collection("events").add({
                 name: eventName,
+                nonce: Account.generateAccount(uid, uid, NetworkTypes.MAIN_NET).privateKey,
                 archived: false
             });
 

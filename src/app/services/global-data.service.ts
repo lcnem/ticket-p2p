@@ -106,7 +106,7 @@ export class GlobalDataService {
         });
 
         for(let key in this.events!) {
-            let purchasesRef = this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("capacitySupplements").ref;
+            let purchasesRef = this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("purchases").ref;
             let purchases = await purchasesRef.get();
 
             this.events![key].purchases = purchases.docs.length;

@@ -49,9 +49,9 @@
                     <div *ngFor="let event of global.eventIds" fxFlex.xs="100" fxFlex.sm="50" fxFlex="25">
                         <mat-card>
                             <img mat-card-image src="https://chart.googleapis.com/chart?cht=p&amp;chd=t:{{global.events[event].purchases}},{{global.events[event].available}}&amp;chs=300x300&amp;chf=EEEEEE"
-                                *ngIf="global.events[event].available">
-                            <img mat-card-image src="https://chart.googleapis.com/chart?cht=p&amp;chd=t:{{global.events[event].purchases}},1&amp;chs=300x300&amp;chf=EEEEEE"
-                                *ngIf="!global.events[event].available">
+                                *ngIf="global.events[event].capacity">
+                            <img mat-card-image src="https://chart.googleapis.com/chart?cht=p&amp;chd=t:0,1&amp;chs=300x300&amp;chf=EEEEEE"
+                                *ngIf="!global.events[event].capacity">
                             <mat-card-header>
                                 <mat-card-title>
                                     {{global.events[event].name}}
