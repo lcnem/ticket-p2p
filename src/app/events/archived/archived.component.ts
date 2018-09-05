@@ -67,5 +67,5 @@ export class ArchivedComponent implements OnInit {
             en: "There is no archived event.",
             ja: "アーカイブされたイベントはありません。"
         }
-    };
+    } as { [key: string]: { [key: string]: string } };
 }

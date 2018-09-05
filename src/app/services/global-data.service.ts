@@ -106,13 +106,10 @@ export class GlobalDataService {
         });
 
         for(let key in this.events!) {
-            let purchasesRef = this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("capacitySupplements").ref;
+            let purchasesRef = this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("purchases").ref;
             let purchases = await purchasesRef.get();
 
-            this.events![key].purchases = 0;
-            purchases.forEach(purchase => {
-                this.events![key].purchases++;
-            });
+            this.events![key].purchases = purchases.docs.length;
 
             let supplementsRef = this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("capacitySupplements").ref;
             let supplements = await supplementsRef.get();
@@ -120,7 +117,7 @@ export class GlobalDataService {
             this.events![key].capacity = 0;
             supplements.forEach(supplement => {
                 let data = supplement.data() as any as CapacitySupplement;
-                this.events![key].capacity += data.capacity;
+                this.events![key].capacity += Number(data.capacity);
             });
 
             this.events![key].available = this.events![key].capacity - this.events![key].purchases;
