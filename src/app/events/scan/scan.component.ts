@@ -56,44 +56,42 @@ export class ScanComponent implements OnInit {
             this.hasPermission = answer;
         });
 
-        this.scanner.scanComplete.subscribe(async (result: any) => {console.log(result)
+        this.scanner.scanComplete.subscribe(async (result: any) => {
             this.scanning = true;
             let dialog = this.dialog.open(LoadingDialogComponent);
 
             try {
                 let address = new Address(result.text);
 
-                if((await this.global.accountHttp.unconfirmedTransactions(address).toPromise()).length) {
-                    throw Error(this.translation[this.global.lang].unconfirmedTransaction);
-                }
-    
-                let transactions = await this.global.accountHttp.allTransactions(address).toPromise();
-                if(transactions.length == 1) {
-                    if(transactions[0].type == TransactionTypes.TRANSFER) {
-                        if((transactions[0] as TransferTransaction).signer!.address.plain() == "NDFRSC6OVQUOBP6NEHPDDA7ZTYQAS3VNOD6C3DCW") {
-                            if(((transactions[0] as TransferTransaction).message as PlainMessage).plain() == this.id) {
-                                await this.http.post(
-                                    "https://us-central1-ticket-p2p.cloudfunctions.net/checkTicket",
-                                    {
-                                        nemAddress: address.plain()
-                                    }
-                                ).toPromise();
-    
-                                this.dialog.open(DialogComponent, {
-                                    data: {
-                                        title: this.translation.completed[this.global.lang],
-                                        content: "",
-                                        cancel: this.translation.cancel[this.global.lang],
-                                        confirm: this.translation.confirm[this.global.lang]
-                                    }
-                                });
-    
-                                return;
+                if ((await this.global.accountHttp.unconfirmedTransactions(address).toPromise()).length == 0) {
+                    let transactions = await this.global.accountHttp.allTransactions(address).toPromise();
+                    if (transactions.length == 1) {
+                        if (transactions[0].type == TransactionTypes.TRANSFER) {
+                            if ((transactions[0] as TransferTransaction).signer!.address.plain() == "NDFRSC6OVQUOBP6NEHPDDA7ZTYQAS3VNOD6C3DCW") {
+                                if (((transactions[0] as TransferTransaction).message as PlainMessage).plain() == this.id) {
+                                    await this.http.post(
+                                        "https://us-central1-ticket-p2p.cloudfunctions.net/checkTicket",
+                                        {
+                                            nemAddress: address.plain()
+                                        }
+                                    ).toPromise();
+
+                                    this.dialog.open(DialogComponent, {
+                                        data: {
+                                            title: this.translation.completed[this.global.lang],
+                                            content: "",
+                                            cancel: this.translation.cancel[this.global.lang],
+                                            confirm: this.translation.confirm[this.global.lang]
+                                        }
+                                    });
+
+                                    return;
+                                }
                             }
                         }
                     }
                 }
-                
+
                 this.dialog.open(DialogComponent, {
                     data: {
                         title: this.translation.error[this.global.lang],
@@ -102,7 +100,7 @@ export class ScanComponent implements OnInit {
                         confirm: this.translation.confirm[this.global.lang]
                     }
                 });
-            } catch(e){
+            } catch (e) {
                 this.dialog.open(DialogComponent, {
                     data: {
                         title: this.translation.error[this.global.lang],
@@ -118,8 +116,15 @@ export class ScanComponent implements OnInit {
         });
     }
 
-    public isUndefined(value: any) {
-        return value === undefined;
+    public get selectedDevice() {
+        if(this.selected === undefined) {
+            return null;
+        }
+        if(this.availableDevices === undefined) {
+            return null;
+        }
+
+        return this.availableDevices![this.selected!];
     }
 
     public translation = {
@@ -158,10 +163,6 @@ export class ScanComponent implements OnInit {
         confirm: {
             en: "Confirm",
             ja: "確認"
-        },
-        unconfirmedTransaction: {
-            en: "There are unconfirmed transactions.",
-            ja: "未承認トランザクションがあります。"
         }
-    } as {[key: string]: {[key: string]: string}};
+    } as { [key: string]: { [key: string]: string } };
 }
