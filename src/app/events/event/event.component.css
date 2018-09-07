@@ -5,3 +5,7 @@
     bottom: 16px;
     z-index: 99;
 }
+
+textarea {
+    resize: none;
+}
