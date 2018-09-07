@@ -73,7 +73,12 @@ export class EventComponent implements OnInit {
         this.purchased = event.purchases;
         this.capacity = event.capacity;
 
-        this.postParameters = `userId=${this.auth.auth.currentUser!.uid}&eventId=${this.id}&nonce=${nonce}`;
+        this.postParameters = JSON.stringify({
+            userId: this.auth.auth.currentUser!.uid,
+            eventId: this.id,
+            nonce: nonce,
+            amount: 1
+        }, null, 2);
     }
 
     public async refresh() {
