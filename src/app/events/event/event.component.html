@@ -32,6 +32,7 @@
         <mat-form-field fxFill>
             <textarea matInput readonly placeholder="{{translation.postParameters[global.lang]}}" [(ngModel)]="postParameters" rows="6"></textarea>
         </mat-form-field>
+        <iframe [src]="safeSite" fxFill></iframe>
         <button mat-fab color="accent" class="scan-button" routerLink="/events/{{id}}/scan">
             <mat-icon>center_focus_strong</mat-icon>
         </button>
