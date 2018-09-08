@@ -3,13 +3,16 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { GlobalDataService } from '../../services/global-data.service';
 import { MatDialog } from '@angular/material';
 import { DialogComponent } from '../../components/dialog/dialog.component';
-import { LoadingDialogComponent } from '../../components/loading-dialog/loading-dialog.component';
 import { HttpClient } from '@angular/common/http';
 import { InputDialogComponent } from '../../components/input-dialog/input-dialog.component';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
 
-declare let Payjp: any;
+declare let Stripe: any;
+
+const stripePublicKey =
+    //"";
+    "pk_test_sVIc8W1jrazk2t1LxqAdnls3";
 
 @Component({
     selector: 'app-event',
@@ -199,42 +202,42 @@ export class EventComponent implements OnInit {
             return;
         }
 
-        let dialogRef = this.dialog.open(LoadingDialogComponent, { disableClose: true });
-
-        Payjp.setPublicKey("pk_test_50f13f3a317e8ccf17c27134");
-        Payjp.createToken({
+        Stripe.setPublishableKey(stripePublicKey);
+        Stripe.card.createToken({
             number: result.details.cardNumber,
             cvc: result.details.cardSecurityCode,
             exp_month: result.details.expiryMonth,
             exp_year: result.details.expiryYear
         }, async (status: any, response: any) => {
+            if (response.error) {
+                result.complete("fail");
+
+                return;
+            }
+            
             try {
-                if (status == 200) {
-                    await this.http.post(
-                        "https://us-central1-ticket-p2p.cloudfunctions.net/capacitySupplement",
-                        {
-                            userId: this.auth.auth.currentUser!.uid,
-                            eventId: this.id,
-                            capacity: capacity,
-                            token: response.id
-                        }
-                    ).toPromise();
+                await this.http.post(
+                    "https://us-central1-ticket-p2p.cloudfunctions.net/capacitySupplement",
+                    {
+                        userId: this.auth.auth.currentUser!.uid,
+                        eventId: this.id,
+                        capacity: capacity,
+                        token: response.id
+                    }
+                ).toPromise();
 
-                    result.complete("success");
+                result.complete("success");
 
-                    this.dialog.open(DialogComponent, {
-                        data: {
-                            title: this.translation.completed[this.global.lang],
-                            content: "",
-                            cancel: this.translation.cancel[this.global.lang],
-                            confirm: this.translation.confirm[this.global.lang]
-                        }
-                    }).afterClosed().subscribe(async () => {
-                        await this.refresh();
-                    });
-                } else {
-                    throw Error();
-                }
+                this.dialog.open(DialogComponent, {
+                    data: {
+                        title: this.translation.completed[this.global.lang],
+                        content: "",
+                        cancel: this.translation.cancel[this.global.lang],
+                        confirm: this.translation.confirm[this.global.lang]
+                    }
+                }).afterClosed().subscribe(async () => {
+                    await this.refresh();
+                });
             } catch {
                 this.dialog.open(DialogComponent, {
                     data: {
@@ -244,11 +247,8 @@ export class EventComponent implements OnInit {
                         confirm: this.translation.confirm[this.global.lang]
                     }
                 });
+                
                 result.complete("fail");
-
-                return;
-            } finally {
-                dialogRef.close();
             }
         });
     }
