@@ -32,9 +32,38 @@
         <mat-form-field fxFill>
             <textarea matInput readonly placeholder="{{translation.postParameters[global.lang]}}" [(ngModel)]="postParameters" rows="6"></textarea>
         </mat-form-field>
-        <iframe [src]="safeSite" fxFill></iframe>
         <button mat-fab color="accent" class="scan-button" routerLink="/events/{{id}}/scan">
             <mat-icon>center_focus_strong</mat-icon>
         </button>
+        <table mat-table>
+            <tr>
+                <th>事業者名</th>
+                <td>株式会社LCNEM</td>
+            </tr>
+            <tr>
+                <th>所在地</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>連絡先</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>商品販売価格</th>
+                <td>チケット販売権1枚につき50円+税</td>
+            </tr>
+            <tr>
+                <th>送料・手数料</th>
+                <td>なし</td>
+            </tr>
+            <tr>
+                <th>代金の支払方法</th>
+                <td>クレジットカード</td>
+            </tr>
+            <tr>
+                <th>返品</th>
+                <td>不可</td>
+            </tr>
+        </table>
     </ng-template>
 </div>
