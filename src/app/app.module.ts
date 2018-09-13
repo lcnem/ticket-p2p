@@ -20,17 +20,12 @@ import {
     MatFormFieldModule,
     MatSidenavModule,
     MatRippleModule,
-    MatGridListModule,
     MatProgressSpinnerModule,
-    MatTabsModule,
     MatDividerModule,
-    MatAutocompleteModule,
     MatDialogModule,
     MatListModule,
     MatSlideToggleModule,
-    MatStepperModule,
     MatCheckboxModule,
-    MatTableModule,
     MatMenuModule
 } from '@angular/material';
 
@@ -84,7 +79,6 @@ import { ArchivedComponent } from './events/archived/archived.component';
         MatCardModule,
         MatInputModule,
         MatSelectModule,
-        MatGridListModule,
         MatIconModule,
         MatTooltipModule,
         MatFormFieldModule,
@@ -93,14 +87,10 @@ import { ArchivedComponent } from './events/archived/archived.component';
         MatRippleModule,
         HttpClientModule,
         MatProgressSpinnerModule,
-        MatTabsModule,
         MatDividerModule,
-        MatAutocompleteModule,
         MatDialogModule,
         MatListModule,
         MatSlideToggleModule,
-        MatStepperModule,
-        MatTableModule,
         MatMenuModule
     ],
     entryComponents: [
