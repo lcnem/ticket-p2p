@@ -29,12 +29,53 @@
         <mat-form-field fxFill>
             <input matInput readonly placeholder="{{translation.postUrl[global.lang]}}" [(ngModel)]="postUrl" />
         </mat-form-field>
-        <mat-form-field fxFill>
-            <textarea matInput readonly placeholder="{{translation.postParameters[global.lang]}}" [(ngModel)]="postParameters" rows="6"></textarea>
-        </mat-form-field>
-        <iframe [src]="safeSite" fxFill></iframe>
+        <pre><code>{{postParameters}}</code></pre>
         <button mat-fab color="accent" class="scan-button" routerLink="/events/{{id}}/scan">
             <mat-icon>center_focus_strong</mat-icon>
         </button>
+        <mat-list>
+            <h3 mat-subheader>特定商取引法に関する表記</h3>
+            <mat-list-item>
+                <span>事業者名</span>
+                <span class="fill-remaining-space"></span>
+                <span>株式会社LCNEM</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <span>所在地</span>
+                <span class="fill-remaining-space"></span>
+                <span>京都市上京区油小路中立売下る甲斐守町97番地西陣産業創造會舘2階</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <span>連絡先</span>
+                <span class="fill-remaining-space"></span>
+                <span>サイトに記載</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <span>商品販売価格</span>
+                <span class="fill-remaining-space"></span>
+                <span>チケット販売権1枚につき50円+税</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <span>送料・手数料</span>
+                <span class="fill-remaining-space"></span>
+                <span>なし</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <span>代金の支払方法</span>
+                <span class="fill-remaining-space"></span>
+                <span>クレジットカード</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <span>返品</span>
+                <span class="fill-remaining-space"></span>
+                <span>不可</span>
+            </mat-list-item>
+        </mat-list>
     </ng-template>
 </div>
