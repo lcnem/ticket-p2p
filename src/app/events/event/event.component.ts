@@ -317,10 +317,6 @@ export class EventComponent implements OnInit {
         postUrl: {
             en: "POST URL",
             ja: "POST URL"
-        },
-        postParameters: {
-            en: "POST Parameters",
-            ja: "POST パラメータ"
         }
     } as { [key: string]: { [key: string]: string } };
 }
