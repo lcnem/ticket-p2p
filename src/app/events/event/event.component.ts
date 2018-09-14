@@ -25,8 +25,9 @@ export class EventComponent implements OnInit {
     public eventName?: string;
     public purchased?: number;
     public capacity?: number;
-    public postUrl = "https://us-central1-ticket-p2p.cloudfunctions.net/createTicket/";
-    public postParameters?: string;
+
+    public userId?: string;
+    public nonce?: string;
 
     constructor(
         public global: GlobalDataService,
@@ -71,17 +72,12 @@ export class EventComponent implements OnInit {
         }
 
         this.eventName = event.name;
-        let nonce = event.nonce;
 
         this.purchased = event.purchases;
         this.capacity = event.capacity;
 
-        this.postParameters = JSON.stringify({
-            userId: this.auth.auth.currentUser!.uid,
-            eventId: this.id,
-            nonce: nonce,
-            amount: 1
-        }, null, 2);
+        this.userId = this.auth.auth.currentUser!.uid;
+        this.nonce = event.nonce;
     }
 
     public async refresh() {
@@ -314,9 +310,9 @@ export class EventComponent implements OnInit {
             en: "Submit",
             ja: "決定"
         },
-        postUrl: {
-            en: "POST URL",
-            ja: "POST URL"
+        userId: {
+            en: "User ID",
+            ja: "ユーザーID"
         }
     } as { [key: string]: { [key: string]: string } };
 }

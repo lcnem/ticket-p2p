@@ -11,25 +11,43 @@
 <div class="out-toolbar">
     <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
     <ng-template #loaded>
-        <mat-form-field fxFill>
-            <input matInput readonly placeholder="{{translation.eventId[global.lang]}}" [(ngModel)]="id" />
-        </mat-form-field>
-        <mat-form-field fxFill>
-            <input matInput readonly placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="eventName" />
-            <button mat-button color="accent" matSuffix (click)="editEventName()" matTooltip="{{translation.edit[global.lang]}}">
-                <mat-icon>edit</mat-icon>
-            </button>
-        </mat-form-field>
-        <mat-form-field fxFill>
-            <input matInput readonly type="number" placeholder="{{translation.capacity[global.lang]}}" [(ngModel)]="capacity" />
-            <button mat-button color="accent" matSuffix (click)="capacitySupplement()" matTooltip="{{translation.supplement[global.lang]}}">
-                <mat-icon>add</mat-icon>
-            </button>
-        </mat-form-field>
-        <mat-form-field fxFill>
-            <input matInput readonly placeholder="{{translation.postUrl[global.lang]}}" [(ngModel)]="postUrl" />
-        </mat-form-field>
-        <pre><code>{{postParameters}}</code></pre>
+        <mat-list>
+            <mat-list-item>
+                <span>{{translation.userId[global.lang]}}</span>
+                <span class="fill-remaining-space"></span>
+                <span>{{userId}}</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <span>{{translation.eventId[global.lang]}}</span>
+                <span class="fill-remaining-space"></span>
+                <span>{{id}}</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <span>nonce</span>
+                <span class="fill-remaining-space"></span>
+                <span>{{nonce}}</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <span>{{translation.eventName[global.lang]}}</span>
+                <span class="fill-remaining-space"></span>
+                <span>{{eventName}}</span>
+                <button mat-icon-button color="accent" (click)="editEventName()" matTooltip="{{translation.edit[global.lang]}}">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <span>{{translation.capacity[global.lang]}}</span>
+                <span class="fill-remaining-space"></span>
+                <span>{{capacity}}</span>
+                <button mat-icon-button color="accent" (click)="capacitySupplement()" matTooltip="{{translation.supplement[global.lang]}}">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-list-item>
+        </mat-list>
         <button mat-fab color="accent" class="scan-button" routerLink="/events/{{id}}/scan">
             <mat-icon>center_focus_strong</mat-icon>
         </button>
