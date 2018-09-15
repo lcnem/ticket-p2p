@@ -1,0 +1,15 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+  <button mat-icon-button>
+    <mat-icon>lock_open</mat-icon>
+  </button>
+  <span>{{translation.login[global.lang]}}</span>
+  <span class="fill-remaining-space"></span>
+</mat-toolbar>
+<div class="out-toolbar">
+  <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
+  <ng-template #loaded>
+    <iframe [src]="safeSite" fxFill></iframe>
+    <mat-checkbox [(ngModel)]="agree">{{translation.agree[global.lang]}}</mat-checkbox>
+    <button mat-raised-button fxFill color="accent" [disabled]="!agree" (click)="login()">{{translation.login[global.lang]}}</button>
+  </ng-template>
+</div>

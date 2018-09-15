@@ -1,0 +1,99 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+  <button mat-icon-button routerLink="/">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <span>{{eventName}}</span>
+  <span class="fill-remaining-space"></span>
+  <button mat-icon-button (click)="refresh()" [disabled]="loading">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</mat-toolbar>
+<div class="out-toolbar">
+  <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
+  <ng-template #loaded>
+    <mat-list>
+      <mat-list-item>
+        <span>{{translation.userId[global.lang]}}</span>
+        <span class="fill-remaining-space"></span>
+        <span>{{userId}}</span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span>{{translation.eventId[global.lang]}}</span>
+        <span class="fill-remaining-space"></span>
+        <span>{{id}}</span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span>nonce</span>
+        <span class="fill-remaining-space"></span>
+        <span>{{nonce}}</span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span>{{translation.eventName[global.lang]}}</span>
+        <span class="fill-remaining-space"></span>
+        <span>{{eventName}}</span>
+        <button mat-icon-button color="accent" (click)="editEventName()" matTooltip="{{translation.edit[global.lang]}}">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span>{{translation.capacity[global.lang]}}</span>
+        <span class="fill-remaining-space"></span>
+        <span>{{capacity}}</span>
+        <button mat-icon-button color="accent" (click)="capacitySupplement()" matTooltip="{{translation.supplement[global.lang]}}">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+    <button mat-fab color="accent" class="scan-button" routerLink="/events/{{id}}/scan">
+      <mat-icon>center_focus_strong</mat-icon>
+    </button>
+    <mat-list>
+      <h3 mat-subheader>特定商取引法に関する表記</h3>
+      <mat-list-item>
+        <span>事業者名</span>
+        <span class="fill-remaining-space"></span>
+        <span>株式会社LCNEM</span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span>所在地</span>
+        <span class="fill-remaining-space"></span>
+        <span>京都市上京区油小路中立売下る甲斐守町97番地西陣産業創造會舘2階</span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span>連絡先</span>
+        <span class="fill-remaining-space"></span>
+        <span>サイトに記載</span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span>商品販売価格</span>
+        <span class="fill-remaining-space"></span>
+        <span>チケット販売権1枚につき50円+税</span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span>送料・手数料</span>
+        <span class="fill-remaining-space"></span>
+        <span>なし</span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span>代金の支払方法</span>
+        <span class="fill-remaining-space"></span>
+        <span>クレジットカード</span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <span>返品</span>
+        <span class="fill-remaining-space"></span>
+        <span>不可</span>
+      </mat-list-item>
+    </mat-list>
+  </ng-template>
+</div>

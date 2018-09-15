@@ -1,0 +1,14 @@
+<form #form="ngForm">
+  <h2 mat-dialog-title>{{data.title}}</h2>
+  <mat-dialog-content>
+    <mat-form-field fxFill>
+      <input matInput #input [(ngModel)]="model" name="model" required
+        [max]="data.input.max" [maxlength]="data.input.maxlength" [min]="data.input.min" [minlength]="data.input.minlength" [pattern]="data.input.pattern" [placeholder]="data.input.placeholder" [step]="data.input.step" [type]="data.input.type" />
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <span class="fill-remaining-space"></span>
+      <button mat-raised-button mat-dialog-close color="warn">Cancel</button>
+      <button mat-raised-button [mat-dialog-close]="model" color="accent" [disabled]="form.invalid">OK</button>
+  </mat-dialog-actions>
+</form>

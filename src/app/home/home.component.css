@@ -1,0 +1,16 @@
+
+.add-button {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 99;
+}
+
+mat-card {
+    margin: 6px;
+}
+
+.capacity {
+    font-size: 400%;
+    text-align: center;
+}
