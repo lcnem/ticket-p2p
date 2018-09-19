@@ -13,7 +13,7 @@ const routes: Routes = [
   {path: "accounts/login", component: LoginComponent},
   {path: "events/archived", component: ArchivedComponent},
   {path: "events/:id", component: EventComponent},
-  {path: "events/:id/scan", component: ScanComponent},
+  {path: "events/:eventId/scan", component: ScanComponent},
   {path: "**", component: PageNotFoundComponent}
 ];
 

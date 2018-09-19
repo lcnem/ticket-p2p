@@ -4,12 +4,28 @@
   </button>
   <span>{{translation.login[global.lang]}}</span>
   <span class="fill-remaining-space"></span>
+  <mat-menu #langMenu="matMenu" [overlapTrigger]="false">
+    <button mat-menu-item (click)="global.lang = 'en'">
+      English
+      <mat-icon *ngIf="global.lang == 'en'">check</mat-icon>
+    </button>
+    <button mat-menu-item (click)="global.lang = 'ja'">
+      日本語
+      <mat-icon *ngIf="global.lang == 'ja'">check</mat-icon>
+    </button>
+  </mat-menu>
+  <button mat-icon-button [matMenuTriggerFor]="langMenu" yPosition="below">
+    {{global.lang}}
+  </button>
 </mat-toolbar>
 <div class="out-toolbar">
   <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
   <ng-template #loaded>
     <iframe [src]="safeSite" fxFill></iframe>
     <mat-checkbox [(ngModel)]="agree">{{translation.agree[global.lang]}}</mat-checkbox>
-    <button mat-raised-button fxFill color="accent" [disabled]="!agree" (click)="login()">{{translation.login[global.lang]}}</button>
+    <button mat-raised-button fxFill color="accent" [disabled]="!agree" (click)="login()">
+      <mat-icon class="background-contain" [ngStyle]="{'background-image': 'url(assets/google.svg)'}"></mat-icon>
+      　{{translation.login[global.lang]}}
+    </button>
   </ng-template>
 </div>
