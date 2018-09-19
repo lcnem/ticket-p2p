@@ -13,7 +13,8 @@ import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog
   styleUrls: ['./scan.component.css']
 })
 export class ScanComponent implements OnInit {
-  public id?: string;
+  public userId?: string;
+  public eventId?: string;
   public scanning = false;
 
   @ViewChild('scanner')
@@ -33,7 +34,8 @@ export class ScanComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id') || undefined;
+    this.userId = this.route.snapshot.queryParamMap.get('userId') || undefined;
+    this.eventId = this.route.snapshot.paramMap.get('eventId') || undefined;
 
     if (!this.scanner) {
       return;
@@ -53,15 +55,19 @@ export class ScanComponent implements OnInit {
     });
 
     this.scanner.scanSuccess.subscribe((result: any) => {
-      let dialog = this.dialog.open(LoadingDialogComponent);
+      console.log(result);
+      let dialog = this.dialog.open(LoadingDialogComponent, { disableClose: true });
 
       this.http.post(
         "https://us-central1-ticket-p2p.cloudfunctions.net/checkTicket",
         {
-          nemAddress: result.text
+          userId: this.userId,
+          eventId: this.eventId,
+          nemAddress: result
         }
       ).subscribe(
         (value) => {
+          dialog.close();
           this.dialog.open(AlertDialogComponent, {
             data: {
               title: this.translation.completed[this.global.lang],
@@ -70,15 +76,13 @@ export class ScanComponent implements OnInit {
           });
         },
         (error) => {
+          dialog.close();
           this.dialog.open(AlertDialogComponent, {
             data: {
               title: this.translation.error[this.global.lang],
               content: this.translation.invalid[this.global.lang]
             }
           });
-        },
-        () => {
-          dialog.close();
         }
       )
     });

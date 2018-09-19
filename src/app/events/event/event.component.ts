@@ -11,8 +11,8 @@ import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dia
 declare let Stripe: any;
 
 const stripePublicKey =
-  //"";
-  "pk_test_sVIc8W1jrazk2t1LxqAdnls3";
+  "pk_live_U7J2IacDFZyCvYILl45onao9";
+  //"pk_test_sVIc8W1jrazk2t1LxqAdnls3";
 
 @Component({
   selector: 'app-event',
