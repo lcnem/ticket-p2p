@@ -1,6 +1,8 @@
 <mat-sidenav-container>
     <mat-sidenav #sidenav class="mat-elevation-z16">
-        <mat-toolbar class="background-contain" [ngStyle]="{'background-image': 'url(favicon.svg)'}">
+        <mat-toolbar>
+          <button mat-icon-button class="background-contain" [ngStyle]="{'background-image': 'url(favicon.svg)'}"></button>
+          <a mat-button href="https://lcnem.cc" target="_blank">LCNEM</a>
         </mat-toolbar>
         <div fxLayout="column">
             <mat-nav-list>
@@ -21,7 +23,6 @@
             <button mat-icon-button (click)="sidenav.toggle()">
                 <mat-icon>menu</mat-icon>
             </button>
-            <button mat-icon-button class="background-contain" [ngStyle]="{'background-image': 'url(favicon.svg)'}"></button>
             <span>ちけっとピアツーピア</span>
 
             <span class="fill-remaining-space"></span>
