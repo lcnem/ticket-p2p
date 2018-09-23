@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { GlobalDataService } from '../../services/global-data.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
 import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dialog.component';
+import { Event } from '../../../models/event';
+import { firestore } from 'firebase';
 
 declare let Stripe: any;
 
@@ -22,12 +24,15 @@ const stripePublicKey =
 export class EventComponent implements OnInit {
   public loading = true;
   public id?: string;
-  public eventName?: string;
-  public purchased?: number;
-  public capacity?: number;
-
+  public event!: Event;
   public userId?: string;
-  public nonce?: string;
+
+  public dataSource?: MatTableDataSource<{
+    timestamp: string,
+    address: string
+  }>;
+  public displayedColumns = ["timestamp", "address"];
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     public global: GlobalDataService,
@@ -56,9 +61,9 @@ export class EventComponent implements OnInit {
   }
 
   public async initialize() {
-    let event = this.global.events![this.id!];
+    this.event = this.global.events![this.id!];
 
-    if (!event || event.archived) {
+    if (!this.event || this.event.archived) {
       this.dialog.open(AlertDialogComponent, {
         data: {
           title: this.translation.error[this.global.lang],
@@ -68,14 +73,22 @@ export class EventComponent implements OnInit {
         this.router.navigate([""]);
       });
     }
-
-    this.eventName = event.name;
-
-    this.purchased = event.purchases;
-    this.capacity = event.capacity;
-
     this.userId = this.auth.auth.currentUser!.uid;
-    this.nonce = event.nonce;
+
+    let tableData = [];
+
+    let purchases = await this.firestore.collection("users").doc(this.userId).collection("events").doc(this.id!).collection("purchases").ref.get();
+    for(let i = 0; i < purchases.size; i++) {
+      let data = purchases.docs[i].data();
+      if(data) {
+        tableData.push({
+          timestamp: data.createdAt && (data.createdAt as firestore.Timestamp).toDate().toTimeString(),
+          address: data.address
+        });
+      }
+    }
+    this.dataSource = new MatTableDataSource(tableData);
+    this.dataSource.paginator = this.paginator;
   }
 
   public async refresh() {
@@ -92,12 +105,12 @@ export class EventComponent implements OnInit {
       data: {
         title: this.translation.edit[this.global.lang],
         input: {
-          value: this.eventName,
+          value: this.event.name,
           placeholder: this.translation.eventName[this.global.lang]
         }
       }
     }).afterClosed().subscribe(async (result) => {
-      if (!result || this.eventName == result) {
+      if (!result || this.event.name == result) {
         return;
       }
 
@@ -284,6 +297,14 @@ export class EventComponent implements OnInit {
     userId: {
       en: "User ID",
       ja: "ユーザーID"
+    },
+    timestamp: {
+      en: "Timestamp",
+      ja: "タイムスタンプ"
+    },
+    address: {
+      en: "Address",
+      ja: "アドレス"
     }
   } as { [key: string]: { [key: string]: string } };
 }
