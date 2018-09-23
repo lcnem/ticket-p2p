@@ -28,7 +28,9 @@ import {
   MatListModule,
   MatSlideToggleModule,
   MatCheckboxModule,
-  MatMenuModule
+  MatMenuModule,
+  MatTableModule,
+  MatPaginatorModule
 } from '@angular/material';
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -78,6 +80,7 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
     MatInputModule,
     MatSelectModule,
     MatIconModule,
+    MatTableModule,
     MatTooltipModule,
     MatFormFieldModule,
     FlexLayoutModule,
@@ -89,7 +92,8 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
     MatDialogModule,
     MatListModule,
     MatSlideToggleModule,
-    MatMenuModule
+    MatMenuModule,
+    MatPaginatorModule
   ],
   entryComponents: [
     AlertDialogComponent,
