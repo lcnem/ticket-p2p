@@ -55,36 +55,48 @@ export class ScanComponent implements OnInit {
     });
 
     this.scanner.scanSuccess.subscribe((result: any) => {
+      if(this.scanning) {
+        return;
+      }
       console.log(result);
+      this.scanning = true;
+
       let dialog = this.dialog.open(LoadingDialogComponent, { disableClose: true });
 
-      this.http.post(
-        "https://us-central1-ticket-p2p.cloudfunctions.net/checkTicket",
-        {
-          userId: this.userId,
-          eventId: this.eventId,
-          nemAddress: result
-        }
-      ).subscribe(
-        (value) => {
-          dialog.close();
-          this.dialog.open(AlertDialogComponent, {
-            data: {
-              title: this.translation.completed[this.global.lang],
-              content: ""
-            }
-          });
-        },
-        (error) => {
-          dialog.close();
-          this.dialog.open(AlertDialogComponent, {
-            data: {
-              title: this.translation.error[this.global.lang],
-              content: this.translation.invalid[this.global.lang]
-            }
-          });
-        }
-      )
+      try {
+        this.http.post(
+          "https://us-central1-ticket-p2p.cloudfunctions.net/checkTicket",
+          {
+            userId: this.userId,
+            eventId: this.eventId,
+            nemAddress: result
+          }
+        ).subscribe(
+          (value) => {
+            this.dialog.open(AlertDialogComponent, {
+              data: {
+                title: this.translation.completed[this.global.lang],
+                content: ""
+              }
+            }).afterClosed().subscribe(() => {
+              this.scanning = false;
+            });
+          },
+          (error) => {
+            this.dialog.open(AlertDialogComponent, {
+              data: {
+                title: this.translation.error[this.global.lang],
+                content: this.translation.invalid[this.global.lang]
+              }
+            }).afterClosed().subscribe(() => {
+              this.scanning = false;
+            });
+          }
+        );
+      } catch {
+      } finally {
+        dialog.close();
+      }
     });
   }
 
