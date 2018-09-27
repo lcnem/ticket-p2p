@@ -17,9 +17,7 @@ export class ArchivedComponent implements OnInit {
   constructor(
     public global: GlobalDataService,
     private router: Router,
-    private route: ActivatedRoute,
     private dialog: MatDialog,
-    private http: HttpClient,
     private auth: AngularFireAuth,
     private firestore: AngularFirestore
   ) {

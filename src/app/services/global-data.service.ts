@@ -17,6 +17,7 @@ export class GlobalDataService {
 
   public lang = "en";
 
+  public photoUrl = "";
   public eventIds?: Array<string>;
   public archivedEventIds?: Array<string>;
   public events?: { [key: string]: Event };
@@ -45,6 +46,7 @@ export class GlobalDataService {
     if (this.initialized) {
       return;
     }
+    this.photoUrl = this.auth.auth.currentUser!.photoURL!;
 
     let uid = this.auth.auth.currentUser!.uid;
     let docRef = this.firestore.collection("users").doc(uid).ref;

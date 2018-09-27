@@ -14,13 +14,13 @@ import { PromptDialogComponent } from '../components/prompt-dialog/prompt-dialog
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  public loading = true
-
+  public loading = true;
+  
   constructor(
     public global: GlobalDataService,
     private router: Router,
     private dialog: MatDialog,
-    private auth: AngularFireAuth,
+    public auth: AngularFireAuth,
     private firestore: AngularFirestore
   ) { }
 
