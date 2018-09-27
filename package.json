@@ -26,10 +26,9 @@
     "@angular/pwa": "^0.8.2",
     "@angular/router": "^6.1.0",
     "@angular/service-worker": "^6.1.0",
-    "@firebase/app": "^0.3.4",
     "@zxing/ngx-scanner": "^1.1.0",
     "core-js": "^2.5.4",
-    "firebase": "^5.5.0",
+    "firebase": "^5.5.1",
     "rxjs": "^6.3.0",
     "rxjs-compat": "^6.3.2",
     "zone.js": "~0.8.26"
