@@ -2,7 +2,7 @@
   <button mat-icon-button routerLink="/">
     <mat-icon>arrow_back</mat-icon>
   </button>
-  <span>{{event && event.name}}</span>
+  <span>{{event && event.data.name}}</span>
   <span class="fill-remaining-space"></span>
   <button mat-icon-button (click)="refresh()" [disabled]="loading">
     <mat-icon>refresh</mat-icon>
@@ -16,7 +16,7 @@
         <mat-list-item>
           <span>{{translation.eventName[global.lang]}}</span>
           <span class="fill-remaining-space"></span>
-          <span>{{event.name}}</span>
+          <span>{{event.data.name}}</span>
           <button mat-icon-button color="accent" (click)="editEventName()"><mat-icon>edit</mat-icon></button>
         </mat-list-item>
         <mat-divider></mat-divider>
@@ -29,13 +29,13 @@
         <mat-list-item>
           <span>{{translation.eventId[global.lang]}}</span>
           <span class="fill-remaining-space"></span>
-          <span>{{id}}</span>
+          <span>{{event.id}}</span>
         </mat-list-item>
         <mat-divider></mat-divider>
         <mat-list-item>
           <span>nonce</span>
           <span class="fill-remaining-space"></span>
-          <span>{{event.nonce}}</span>
+          <span>{{event.data.nonce}}</span>
         </mat-list-item>
       </mat-list>
     </mat-card>
@@ -60,12 +60,12 @@
       </mat-card-header>
       <mat-card-content>
         <p class="capacity">
-          {{event.purchases}}/{{event.capacity}}
+          {{event.purchases.length}}
         </p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-raised-button fxFill color="accent" (click)="capacitySupplement()">
-          {{translation.supplement[global.lang]}}
+        <button mat-raised-button fxFill color="accent" (click)="endSelling()">
+          {{translation.endSelling[global.lang]}}
         </button>
       </mat-card-actions>
       <mat-card-footer>
@@ -115,7 +115,7 @@
         </mat-list>
       </mat-card-footer>
     </mat-card>
-    <button mat-fab color="accent" class="scan-button" routerLink="/events/{{id}}/scan" [queryParams]="{ userId: userId }">
+    <button mat-fab color="accent" class="scan-button" routerLink="/events/{{event.id}}/scan" [queryParams]="{ userId: userId }">
       <mat-icon>center_focus_strong</mat-icon>
     </button>
   </ng-template>

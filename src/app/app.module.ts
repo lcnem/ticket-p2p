@@ -43,7 +43,6 @@ import { LoginComponent } from './accounts/login/login.component';
 import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
 import { EventComponent } from './events/event/event.component';
 import { ScanComponent } from './events/scan/scan.component';
-import { ArchivedComponent } from './events/archived/archived.component';
 import { AlertDialogComponent } from './components/alert-dialog/alert-dialog.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { LoadingDialogComponent } from './components/loading-dialog/loading-dialog.component';
@@ -57,7 +56,6 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
     PageNotFoundComponent,
     EventComponent,
     ScanComponent,
-    ArchivedComponent,
     AlertDialogComponent,
     ConfirmDialogComponent,
     LoadingDialogComponent,

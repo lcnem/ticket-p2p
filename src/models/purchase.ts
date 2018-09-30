@@ -1,3 +1,10 @@
 export interface Purchase {
-    txHash: string;
+  group: string,
+  address: string,
+  reservation: string,
+  profile: {
+    name: string,
+    email: string,
+    phone: string
+  }
 }

@@ -49,5 +49,5 @@ export class LoginComponent implements OnInit {
       en: "Log in",
       ja: "ログイン"
     }
-  } as { [key: string]: { [key: string]: string } };
+  };
 }

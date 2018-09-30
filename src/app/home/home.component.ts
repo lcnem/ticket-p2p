@@ -7,6 +7,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { PromptDialogComponent } from '../components/prompt-dialog/prompt-dialog.component';
+import { AlertDialogComponent } from '../components/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -53,9 +54,9 @@ export class HomeComponent implements OnInit {
   public async createEvent() {
     let dialog = this.dialog.open(PromptDialogComponent, {
       data: {
-        title: this.translation.createEvent[this.global.lang],
+        title: (this.translation.createEvent as any)[this.global.lang],
         input: {
-          placeholder: this.translation.eventName[this.global.lang],
+          placeholder: (this.translation.eventName as any)[this.global.lang],
         }
       }
     });
@@ -69,8 +70,11 @@ export class HomeComponent implements OnInit {
 
       let newEvent = await this.firestore.collection("users").doc(uid).collection("events").add({
         name: eventName,
+        sellingStarted: false,
+        sellingEnded: false,
         nonce: Math.random(),
-        archived: false
+        groups: {},
+        date: Date.now()
       });
 
       await this.refresh();
@@ -78,11 +82,21 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  public async archiveEvent(eventId: string) {
+  public async deleteEvent(event: {id: string, data: Event}) {
+    if(event.data.sellingStarted) {
+      this.dialog.open(AlertDialogComponent, {
+        data: {
+          title: (this.translation.error as any)[this.global.lang],
+          content: (this.translation.cantDelete as any)[this.global.lang]
+        }
+      });
+      return;
+    }
+
     this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: this.translation.confirmation[this.global.lang],
-        content: this.translation.archiveConfirmation[this.global.lang]
+        title: (this.translation.confirmation as any)[this.global.lang],
+        content: (this.translation.deleteConfirmation as any)[this.global.lang]
       }
     }).afterClosed().subscribe(async (result) => {
       if (!result) {
@@ -91,9 +105,7 @@ export class HomeComponent implements OnInit {
 
       let uid = this.auth.auth.currentUser!.uid;
 
-      await this.firestore.collection("users").doc(uid).collection("events").doc(eventId).set({
-        archived: true
-      }, { merge: true });
+      await this.firestore.collection("users").doc(uid).collection("events").doc(event.id).delete();
 
       await this.refresh();
     });
@@ -104,10 +116,6 @@ export class HomeComponent implements OnInit {
     language: {
       en: "Language",
       ja: "言語"
-    },
-    archived: {
-      en: "Archived",
-      ja: "アーカイブ"
     },
     logout: {
       en: "Log out",
@@ -125,13 +133,21 @@ export class HomeComponent implements OnInit {
       en: "There is no event.",
       ja: "イベントはありません。"
     },
+    error: {
+      en: "Error",
+      ja: "エラー"
+    },
+    cantDelete: {
+      en: "You can't delete an event during the selling.",
+      ja: "販売中のイベントを削除することはできません。"
+    },
     confirmation: {
       en: "Confirmation",
       ja: "確認"
     },
-    archiveConfirmation: {
-      en: "Do you want to archive the event?",
-      ja: "イベントをアーカイブしますか？"
+    deleteConfirmation: {
+      en: "Are you sure to delete the event?",
+      ja: "イベントを削除しますか？"
     }
-  } as { [key: string]: { [key: string]: string } };
+  };
 }

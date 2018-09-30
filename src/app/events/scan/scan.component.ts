@@ -75,7 +75,7 @@ export class ScanComponent implements OnInit {
           (value) => {
             this.dialog.open(AlertDialogComponent, {
               data: {
-                title: this.translation.completed[this.global.lang],
+                title: (this.translation.completed as any)[this.global.lang],
                 content: ""
               }
             }).afterClosed().subscribe(() => {
@@ -85,8 +85,8 @@ export class ScanComponent implements OnInit {
           (error) => {
             this.dialog.open(AlertDialogComponent, {
               data: {
-                title: this.translation.error[this.global.lang],
-                content: this.translation.invalid[this.global.lang]
+                title: (this.translation.error as any)[this.global.lang],
+                content: (this.translation.invalid as any)[this.global.lang]
               }
             }).afterClosed().subscribe(() => {
               this.scanning = false;
@@ -140,5 +140,5 @@ export class ScanComponent implements OnInit {
       en: "This ticket is already used or invalid.",
       ja: "このチケットは既に使用されているか、無効なチケットです。"
     }
-  } as { [key: string]: { [key: string]: string } };
+  };
 }

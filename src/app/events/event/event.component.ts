@@ -9,6 +9,8 @@ import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog
 import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dialog.component';
 import { Event } from '../../../models/event';
 import { firestore } from 'firebase';
+import { Purchase } from '../../../models/purchase';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 declare let Stripe: any;
 
@@ -23,9 +25,12 @@ const stripePublicKey =
 })
 export class EventComponent implements OnInit {
   public loading = true;
-  public id?: string;
-  public event!: Event;
-  public userId?: string;
+  public userId!: string;
+  public event!: {
+    id: string,
+    data: Event,
+    purchases: Purchase[]
+  };
 
   public dataSource?: MatTableDataSource<{
     timestamp: string,
@@ -46,8 +51,6 @@ export class EventComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id') || undefined;
-
     this.auth.authState.subscribe(async (user) => {
       if (user == null) {
         this.router.navigate(["accounts", "login"]);
@@ -61,32 +64,33 @@ export class EventComponent implements OnInit {
   }
 
   public async initialize() {
-    this.event = this.global.events![this.id!];
+    this.userId = this.auth.auth.currentUser!.uid;
 
-    if (!this.event || this.event.archived) {
+    let id = this.route.snapshot.paramMap.get('id');
+    let event = this.global.events.find(event => id == event.id);
+
+    if (!event) {
       this.dialog.open(AlertDialogComponent, {
         data: {
-          title: this.translation.error[this.global.lang],
+          title: (this.translation.error as any)[this.global.lang],
           content: ""
         }
       }).afterClosed().subscribe(() => {
         this.router.navigate([""]);
       });
+      return;
     }
-    this.userId = this.auth.auth.currentUser!.uid;
+    this.event = event;
 
     let tableData = [];
 
-    let purchases = await this.firestore.collection("users").doc(this.userId).collection("events").doc(this.id!).collection("purchases").ref.get();
-    for(let i = 0; i < purchases.size; i++) {
-      let data = purchases.docs[i].data();
-      if(data) {
-        tableData.push({
-          timestamp: data.createdAt && (data.createdAt as firestore.Timestamp).toDate().toTimeString(),
-          address: data.address
-        });
-      }
+    for(let purchase of this.event.purchases) {
+      tableData.push({
+        timestamp: "",
+        address: purchase.address
+      });
     }
+
     this.dataSource = new MatTableDataSource(tableData);
     this.dataSource.paginator = this.paginator;
   }
@@ -103,20 +107,20 @@ export class EventComponent implements OnInit {
   public async editEventName() {
     this.dialog.open(PromptDialogComponent, {
       data: {
-        title: this.translation.edit[this.global.lang],
+        title: (this.translation.edit as any)[this.global.lang],
         input: {
-          value: this.event.name,
-          placeholder: this.translation.eventName[this.global.lang]
+          value: this.event.data.name,
+          placeholder: (this.translation.eventName as any)[this.global.lang]
         }
       }
     }).afterClosed().subscribe(async (result) => {
-      if (!result || this.event.name == result) {
+      if (!result || this.event.data.name == result) {
         return;
       }
 
       let uid = this.auth.auth.currentUser!.uid;
 
-      await this.firestore.collection("users").doc(uid).collection("events").doc(this.id!).set({
+      await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
         name: result
       }, { merge: true });
 
@@ -124,13 +128,13 @@ export class EventComponent implements OnInit {
     });
   }
 
-  public async capacitySupplement() {
+  public changeCapacity(group: string) {
     this.dialog.open(PromptDialogComponent, {
       data: {
-        title: this.translation.supplement[this.global.lang],
+        title: (this.translation.changeCapacity as any)[this.global.lang],
         input: {
           type: "number",
-          placeholder: this.translation.capacity[this.global.lang],
+          placeholder: (this.translation.capacity as any)[this.global.lang],
           min: 1
         }
       }
@@ -138,15 +142,32 @@ export class EventComponent implements OnInit {
       if (!result) {
         return;
       }
-      await this.chargeCreditCard(result);
+
     });
   }
 
-  public async chargeCreditCard(capacity: number) {
+  public startSelling() {
+    this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: (this.translation.startSelling as any)[this.global.lang],
+        content: (this.translation.startSellingBody as any)[this.global.lang]
+      }
+    }).afterClosed().subscribe(async (result) => {
+      if (!result) {
+        return;
+      }
+      let uid = this.auth.auth.currentUser!.uid;
+      await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
+        sellingStarted: true
+      }, { merge: true });
+    });
+  }
+
+  public async endSelling(capacity: number) {
     if (!(window as any).PaymentRequest) {
       this.dialog.open(AlertDialogComponent, {
         data: {
-          title: this.translation.error[this.global.lang],
+          title: (this.translation.error as any)[this.global.lang],
           content: ""
         }
       });
@@ -157,10 +178,7 @@ export class EventComponent implements OnInit {
       data: {
         supportedNetworks: [
           'visa',
-          'mastercard',
-          'amex',
-          'diners',
-          'jcb'
+          'mastercard'
         ]
       }
     }];
@@ -168,25 +186,25 @@ export class EventComponent implements OnInit {
     let details = {
       displayItems: [
         {
-          label: `${this.translation.fee[this.global.lang]}: 50 * ${capacity}`,
+          label: `${(this.translation.fee as any)[this.global.lang]}: 100 * ${capacity}`,
           amount: {
             currency: "JPY",
-            value: (capacity * 50).toString()
+            value: (capacity * 100).toString()
           }
         },
         {
-          label: `${this.translation.tax[this.global.lang]}: 4 * ${capacity}`,
+          label: (this.translation.tax as any)[this.global.lang],
           amount: {
             currency: "JPY",
-            value: (capacity * 4).toString()
+            value: (capacity * 8).toString()
           }
         }
       ],
       total: {
-        label: this.translation.total[this.global.lang],
+        label: (this.translation.total as any)[this.global.lang],
         amount: {
           currency: "JPY",
-          value: (capacity * 54).toString()
+          value: (capacity * 108).toString()
         }
       }
     };
@@ -213,11 +231,10 @@ export class EventComponent implements OnInit {
 
       try {
         await this.http.post(
-          "https://us-central1-ticket-p2p.cloudfunctions.net/capacitySupplement",
+          "https://us-central1-ticket-p2p.cloudfunctions.net/endSelling",
           {
             userId: this.auth.auth.currentUser!.uid,
-            eventId: this.id,
-            capacity: capacity,
+            eventId: this.event.id,
             token: response.id
           }
         ).toPromise();
@@ -226,7 +243,7 @@ export class EventComponent implements OnInit {
 
         this.dialog.open(AlertDialogComponent, {
           data: {
-            title: this.translation.completed[this.global.lang],
+            title: (this.translation.completed as any)[this.global.lang],
             content: ""
           }
         }).afterClosed().subscribe(async () => {
@@ -235,7 +252,7 @@ export class EventComponent implements OnInit {
       } catch {
         this.dialog.open(AlertDialogComponent, {
           data: {
-            title: this.translation.error[this.global.lang],
+            title: (this.translation.error as any)[this.global.lang],
             content: ""
           }
         });
@@ -246,10 +263,6 @@ export class EventComponent implements OnInit {
   }
 
   public translation = {
-    amount: {
-      en: "Amount",
-      ja: "金額"
-    },
     error: {
       en: "Error",
       ja: "エラー"
@@ -286,13 +299,25 @@ export class EventComponent implements OnInit {
       en: "Edit",
       ja: "編集"
     },
+    changeCapacity: {
+      en: "Change capacity",
+      ja: "定員変更"
+    },
     capacity: {
       en: "Capacity",
       ja: "定員"
     },
-    supplement: {
-      en: "Supplement",
-      ja: "枠追加"
+    startSelling: {
+      en: "Start selling",
+      ja: "販売を開始する"
+    },
+    startSellingBody: {
+      en: "Are you sure to start selling? After this operation, you cant modify the event information.",
+      ja: "販売を開始しますか？これ以降、イベント情報を修正することはできません。"
+    },
+    endSelling: {
+      en: "End selling",
+      ja: "販売を終了する"
     },
     userId: {
       en: "User ID",
@@ -306,5 +331,5 @@ export class EventComponent implements OnInit {
       en: "Address",
       ja: "アドレス"
     }
-  } as { [key: string]: { [key: string]: string } };
+  };
 }

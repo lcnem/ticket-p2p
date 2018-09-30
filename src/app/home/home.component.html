@@ -7,12 +7,7 @@
     </mat-toolbar>
     <div fxLayout="column">
       <mat-nav-list>
-        <mat-list-item routerLink="/events/archived">
-          <mat-icon mat-list-icon>archive</mat-icon>
-          {{translation.archived[global.lang]}}
-        </mat-list-item>
-        <mat-divider></mat-divider>
-        <mat-list-item (click)="logout()">
+        <mat-list-item>
           <mat-icon mat-list-icon>lock_open</mat-icon>
           {{translation.logout[global.lang]}}
         </mat-list-item>
@@ -50,27 +45,25 @@
       <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
       <ng-template #loaded>
         <div fxLayout="row wrap">
-          <div *ngFor="let event of global.eventIds" fxFlex.xs="100" fxFlex.sm="50" fxFlex="25">
+          <div *ngFor="let event of global.events" fxFlex.xs="100" fxFlex.sm="50" fxFlex="25">
             <mat-card>
-              <img mat-card-image src="https://chart.googleapis.com/chart?cht=p&amp;chd=t:{{global.events[event].purchases}},{{global.events[event].available}}&amp;chs=300x300"
-                *ngIf="global.events[event].capacity">
-              <img mat-card-image src="https://chart.googleapis.com/chart?cht=p&amp;chd=t:0,1&amp;chs=300x300" *ngIf="!global.events[event].capacity">
               <mat-card-header>
                 <mat-card-title>
-                  {{global.events[event].name}}
+                  {{event.data.name}}
                 </mat-card-title>
               </mat-card-header>
               <mat-card-content>
-                <p class="capacity">
-                  {{global.events[event].purchases}}/{{global.events[event].capacity}}
-                </p>
+                <mat-list>
+                  <mat-list-item *ngFor="let group of event.data.groups">
+                    <span>{{group.name}}</span>
+                    <span class="fill-remaining-space"></span>
+                    <span>{{group.capacity}}</span>
+                  </mat-list-item>
+                </mat-list>
               </mat-card-content>
               <mat-card-actions style="display: flex;">
                 <span class="fill-remaining-space"></span>
-                <button mat-icon-button (click)="archiveEvent(event)">
-                  <mat-icon>archive</mat-icon>
-                </button>
-                <button mat-icon-button routerLink="/events/{{event}}">
+                <button mat-icon-button routerLink="/events/{{event.id}}">
                   <mat-icon>open_in_new</mat-icon>
                 </button>
               </mat-card-actions>
