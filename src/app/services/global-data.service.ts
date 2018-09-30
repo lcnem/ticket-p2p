@@ -7,7 +7,7 @@ import 'firebase/auth'
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Event } from '../../models/event';
-import { CapacitySupplement } from '../../models/capacityAddition';
+import { Purchase } from '../../models/purchase';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +18,11 @@ export class GlobalDataService {
   public lang = "en";
 
   public photoUrl = "";
-  public eventIds?: Array<string>;
-  public archivedEventIds?: Array<string>;
-  public events?: { [key: string]: Event };
+  public events!: {
+    id: string,
+    data: Event,
+    purchases: Purchase[]
+  }[];
 
   constructor(
     private auth: AngularFireAuth,
@@ -61,38 +63,17 @@ export class GlobalDataService {
 
   public async refresh() {
     let uid = this.auth.auth.currentUser!.uid;
-    let eventsRef = this.firestore.collection("users").doc(uid).collection("events").ref;
+    let events = await this.firestore.collection("users").doc(uid).collection("events").ref.get();
 
-    this.eventIds = [];
-    this.archivedEventIds = [];
-    this.events = {};
+    this.events = [];
+    for(let doc of events.docs) {
+      let purchases = await this.firestore.collection("users").doc(uid).collection("events").doc(doc.id).collection("purchases").ref.get();
 
-    let events = await eventsRef.get();
-
-    events.forEach(event => {
-      let data = event.data() as any as Event;
-      if (data.archived) {
-        this.archivedEventIds!.push(event.id);
-      } else {
-        this.eventIds!.push(event.id);
-      }
-      this.events![event.id] = data;
-    });
-
-    for (let key in this.events!) {
-      let purchases = await this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("purchases").ref.get();
- 
-      this.events![key].purchases = purchases.docs.length;
-
-      let supplements = await this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("capacitySupplements").ref.get();
-
-      this.events![key].capacity = 0;
-      supplements.forEach(supplement => {
-        let data = supplement.data() as any as CapacitySupplement;
-        this.events![key].capacity += Number(data.capacity);
+      this.events.push({
+        id: doc.id,
+        data: doc.data() as Event,
+        purchases: purchases.docs.map(doc => doc.data() as Purchase)
       });
-
-      this.events![key].available = this.events![key].capacity - this.events![key].purchases;
     }
   }
 }

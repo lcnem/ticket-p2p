@@ -1,8 +1,15 @@
+import { firestore } from "firebase";
+import { Purchase } from "./purchase";
+
 export interface Event {
-    name: string;
-    nonce: string;
-    archived: boolean;
-    purchases: number;
-    capacity: number;
-    available: number;
+  name: string,
+  sellingStarted: boolean,
+  sellingEnded: boolean,
+  nonce: string,
+  groups: {
+    name: string,
+    capacity: number
+  }[],
+  date: firestore.Timestamp,
+  purchases?: Purchase[]
 }
