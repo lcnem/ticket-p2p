@@ -18,11 +18,11 @@ export class GlobalDataService {
   public lang = "en";
 
   public photoUrl = "";
-  public events!: {
+  public events: {
     id: string,
     data: Event,
     purchases: Purchase[]
-  }[];
+  }[] = [];
 
   constructor(
     private auth: AngularFireAuth,
@@ -67,7 +67,7 @@ export class GlobalDataService {
 
     this.events = [];
     for(let doc of events.docs) {
-      let purchases = await this.firestore.collection("users").doc(uid).collection("events").doc(doc.id).collection("purchases").ref.get();
+      let purchases = await doc.ref.collection("purchases").get();
 
       this.events.push({
         id: doc.id,

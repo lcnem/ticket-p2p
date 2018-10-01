@@ -70,8 +70,7 @@
             </mat-card>
           </div>
         </div>
-
-        <p *ngIf="!global.eventIds.length" style="text-align: center;">{{translation.empty[global.lang]}}</p>
+        <p *ngIf="!global.events.length" style="text-align: center;">{{translation.empty[global.lang]}}</p>
         <button mat-fab color="accent" class="add-button" (click)="createEvent()">
           <mat-icon>add</mat-icon>
         </button>

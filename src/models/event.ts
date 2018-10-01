@@ -10,6 +10,5 @@ export interface Event {
     name: string,
     capacity: number
   }[],
-  date: firestore.Timestamp,
-  purchases?: Purchase[]
+  date: firestore.Timestamp
 }
