@@ -8,6 +8,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Event } from '../../models/event';
 import { Purchase } from '../../models/purchase';
+import { NEMLibrary, NetworkTypes } from 'nem-library';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,7 @@ export class GlobalDataService {
     private firestore: AngularFirestore,
     private http: HttpClient
   ) {
+    NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
     const settings = { timestampsInSnapshots: true };
     firestore.firestore.settings(settings);
 

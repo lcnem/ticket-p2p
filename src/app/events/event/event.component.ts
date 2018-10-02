@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { GlobalDataService } from '../../services/global-data.service';
-import { MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatDialog, MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
 import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dialog.component';
 import { Event } from '../../../models/event';
-import { firestore } from 'firebase';
 import { Purchase } from '../../../models/purchase';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
@@ -31,13 +30,6 @@ export class EventComponent implements OnInit {
     data: Event,
     purchases: Purchase[]
   };
-
-  public dataSource?: MatTableDataSource<{
-    timestamp: string,
-    address: string
-  }>;
-  public displayedColumns = ["timestamp", "address"];
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     public global: GlobalDataService,
@@ -81,18 +73,6 @@ export class EventComponent implements OnInit {
       return;
     }
     this.event = event;
-
-    let tableData = [];
-
-    for(let purchase of this.event.purchases) {
-      tableData.push({
-        timestamp: "",
-        address: purchase.address
-      });
-    }
-
-    this.dataSource = new MatTableDataSource(tableData);
-    this.dataSource.paginator = this.paginator;
   }
 
   public async refresh() {
@@ -287,6 +267,38 @@ export class EventComponent implements OnInit {
       en: "Total",
       ja: "合計"
     },
+    eventOperations: {
+      en: "Event operations",
+      ja: "イベントに対する操作"
+    },
+    startSelling: {
+      en: "Start selling",
+      ja: "販売を開始する"
+    },
+    startSellingBody: {
+      en: "Enabling the API for selling. Once you start selling, you can't change settings of this event.",
+      ja: "販売を開始するためのAPIを有効化します。販売を開始すると、イベントの設定を変更することはできません。"
+    },
+    endSelling: {
+      en: "End selling",
+      ja: "販売を終了する"
+    },
+    endSellingBody: {
+      en: "Ending selling and Enabling the scanning the QR-codes of tickets. To do this operation, we charge the fee as you go.　Price: 100 Yen per ticket",
+      ja: "販売を終了し、QRコードのスキャン機能を有効化します。この機能を使うために、使用した分だけ、利用料を支払います。価格: 100円/枚"
+    },
+    startCamera: {
+      en: "Start the camera",
+      ja: "カメラを起動"
+    },
+    startCameraBody: {
+      en: "Starting the camera to scan QR-code of tickets.",
+      ja: "チケットのQRコードを読み取るためのカメラを起動します。"
+    },
+    eventDescription: {
+      en: "Event description",
+      ja: "イベント詳細"
+    },
     eventId: {
       en: "Event ID",
       ja: "イベントID"
@@ -307,29 +319,9 @@ export class EventComponent implements OnInit {
       en: "Capacity",
       ja: "定員"
     },
-    startSelling: {
-      en: "Start selling",
-      ja: "販売を開始する"
-    },
-    startSellingBody: {
-      en: "Are you sure to start selling? After this operation, you cant modify the event information.",
-      ja: "販売を開始しますか？これ以降、イベント情報を修正することはできません。"
-    },
-    endSelling: {
-      en: "End selling",
-      ja: "販売を終了する"
-    },
     userId: {
       en: "User ID",
       ja: "ユーザーID"
-    },
-    timestamp: {
-      en: "Timestamp",
-      ja: "タイムスタンプ"
-    },
-    address: {
-      en: "Address",
-      ja: "アドレス"
     }
   };
 }

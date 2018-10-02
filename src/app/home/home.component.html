@@ -11,6 +11,10 @@
           <mat-icon mat-list-icon>lock_open</mat-icon>
           {{translation.logout[global.lang]}}
         </mat-list-item>
+        <mat-list-item routerLink="/accounts/terms">
+          <mat-icon>list_alt</mat-icon>
+          {{translation.terms[global.lang]}}
+        </mat-list-item>
         <mat-divider></mat-divider>
         <a mat-list-item href="https://lcnem.cc" target="_blank">
           <mat-icon mat-list-icon class="background-contain" [ngStyle]="{'background-image': 'url(assets/lcnem.svg)'}"></mat-icon>
@@ -45,8 +49,8 @@
       <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
       <ng-template #loaded>
         <div fxLayout="row wrap">
-          <div *ngFor="let event of global.events" fxFlex.xs="100" fxFlex.sm="50" fxFlex="25">
-            <mat-card>
+          <div *ngFor="let event of global.events" fxFlex.xs="100" fxFlex="50">
+            <mat-card matRipple routerLink="/events/{{event.id}}">
               <mat-card-header>
                 <mat-card-title>
                   {{event.data.name}}
@@ -61,12 +65,6 @@
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
-              <mat-card-actions style="display: flex;">
-                <span class="fill-remaining-space"></span>
-                <button mat-icon-button routerLink="/events/{{event.id}}">
-                  <mat-icon>open_in_new</mat-icon>
-                </button>
-              </mat-card-actions>
             </mat-card>
           </div>
         </div>
