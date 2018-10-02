@@ -13,13 +13,14 @@ import { GlobalDataService } from '../../../services/global-data.service';
 export class PurchasesListComponent implements OnInit {
   public loading = true;
   public dataSource?: MatTableDataSource<{
+    customerId: string,
     address: string,
     group: string,
     reservation: string,
     status: string,
     invalidator: string
   }>;
-  public displayedColumns = ["address", "group", "reservation", "status", "invalidator"];
+  public displayedColumns = ["customerId", "address", "group", "reservation", "status", "invalidator"];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   @Input() purchases!: Purchase[];
@@ -33,6 +34,7 @@ export class PurchasesListComponent implements OnInit {
 
     for(let purchase of this.purchases) {
       tableData.push({
+        customerId: purchase.customerId,
         address: purchase.address,
         group: purchase.group,
         reservation: purchase.reservation,
@@ -87,6 +89,10 @@ export class PurchasesListComponent implements OnInit {
   }
 
   public translation = {
+    customerId: {
+      en: "Customer ID",
+      ja: "顧客ID"
+    },
     address: {
       en: "Address",
       ja: "アドレス"
