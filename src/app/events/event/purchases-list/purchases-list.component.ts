@@ -36,22 +36,24 @@ export class PurchasesListComponent implements OnInit {
         address: purchase.address,
         group: purchase.group,
         reservation: purchase.reservation,
-        status: "check_box_outline_blank",
+        status: "",
         invalidator: ""
       });
     }
 
     this.dataSource = new MatTableDataSource(tableData);
     this.dataSource.paginator = this.paginator;
+    this.paginator.length = this.dataSource!.data.length;
+    this.paginator.pageSize = 10;
 
     this.onPageChanged({
-      length: tableData.length,
-      pageIndex: 0,
-      pageSize: 10
+      length: this.paginator.length,
+      pageIndex: this.paginator.pageIndex,
+      pageSize: this.paginator.pageSize
     });//awaitなしでよい
   }
   
-  public async onPageChanged(pageEvent :PageEvent) {
+  public async onPageChanged(pageEvent :PageEvent) {console.log(pageEvent)
     this.loading = true;
 
     let accountHttp = new AccountHttp(nodes);
