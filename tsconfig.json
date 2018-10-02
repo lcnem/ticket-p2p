@@ -17,7 +17,6 @@
       "es2017",
       "dom"
     ],
-    "strict": true,
-    "skipLibCheck": true
+    "strict": true
   }
 }
