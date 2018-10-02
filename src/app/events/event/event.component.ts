@@ -84,48 +84,6 @@ export class EventComponent implements OnInit {
     this.loading = false;
   }
 
-  public async editEventName() {
-    this.dialog.open(PromptDialogComponent, {
-      data: {
-        title: (this.translation.edit as any)[this.global.lang],
-        input: {
-          value: this.event.data.name,
-          placeholder: (this.translation.eventName as any)[this.global.lang]
-        }
-      }
-    }).afterClosed().subscribe(async (result) => {
-      if (!result || this.event.data.name == result) {
-        return;
-      }
-
-      let uid = this.auth.auth.currentUser!.uid;
-
-      await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
-        name: result
-      }, { merge: true });
-
-      await this.refresh();
-    });
-  }
-
-  public changeCapacity(group: string) {
-    this.dialog.open(PromptDialogComponent, {
-      data: {
-        title: (this.translation.changeCapacity as any)[this.global.lang],
-        input: {
-          type: "number",
-          placeholder: (this.translation.capacity as any)[this.global.lang],
-          min: 1
-        }
-      }
-    }).afterClosed().subscribe(async (result) => {
-      if (!result) {
-        return;
-      }
-
-    });
-  }
-
   public startSelling() {
     this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -267,6 +225,34 @@ export class EventComponent implements OnInit {
       en: "Total",
       ja: "合計"
     },
+    eventDescription: {
+      en: "Event description",
+      ja: "イベント詳細"
+    },
+    eventName: {
+      en: "Event name",
+      ja: "イベント名"
+    },
+    capacity: {
+      en: "Capacity",
+      ja: "定員"
+    },
+    edit: {
+      en: "Edit",
+      ja: "編集"
+    },
+    userId: {
+      en: "User ID",
+      ja: "ユーザーID"
+    },
+    eventId: {
+      en: "Event ID",
+      ja: "イベントID"
+    },
+    privateKey: {
+      en: "Private key",
+      ja: "秘密鍵"
+    },
     eventOperations: {
       en: "Event operations",
       ja: "イベントに対する操作"
@@ -294,34 +280,6 @@ export class EventComponent implements OnInit {
     startCameraBody: {
       en: "Starting the camera to scan QR-code of tickets.",
       ja: "チケットのQRコードを読み取るためのカメラを起動します。"
-    },
-    eventDescription: {
-      en: "Event description",
-      ja: "イベント詳細"
-    },
-    eventId: {
-      en: "Event ID",
-      ja: "イベントID"
-    },
-    eventName: {
-      en: "Event name",
-      ja: "イベント名"
-    },
-    edit: {
-      en: "Edit",
-      ja: "編集"
-    },
-    changeCapacity: {
-      en: "Change capacity",
-      ja: "定員変更"
-    },
-    capacity: {
-      en: "Capacity",
-      ja: "定員"
-    },
-    userId: {
-      en: "User ID",
-      ja: "ユーザーID"
     }
   };
 }

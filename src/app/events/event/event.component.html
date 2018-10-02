@@ -13,6 +13,36 @@
   <ng-template #loaded>
     <mat-card>
       <mat-list>
+        <h3 mat-subheader>{{translation.eventDescription[global.lang]}}</h3>
+        <mat-list-item>
+          <span>{{translation.eventName[global.lang]}}</span>
+          <span class="fill-remaining-space"></span>
+          <span>{{event.data.name}}</span>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <span>{{translation.userId[global.lang]}}</span>
+          <span class="fill-remaining-space"></span>
+          <span>{{userId}}</span>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <span>{{translation.eventId[global.lang]}}</span>
+          <span class="fill-remaining-space"></span>
+          <span>{{event.id}}</span>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <span>{{translation.privateKey[global.lang]}}</span>
+          <span class="fill-remaining-space"></span>
+          <span>{{event.data.privateKey}}</span>
+        </mat-list-item>
+      </mat-list>
+      <button mat-raised-button color="accent" fxFill routerLink="/events/{{event.id}}/edit">{{translation.edit[global.lang]}}</button>
+    </mat-card>
+    <br>
+    <mat-card>
+      <mat-list>
         <h3 mat-subheader>{{translation.eventOperations[global.lang]}}</h3>
         <mat-list-item>
           <span matLine>{{translation.startSelling[global.lang]}}</span>
@@ -44,32 +74,6 @@
       </mat-list>
     </mat-card>
     <br />
-    <mat-card>
-      <mat-list>
-        <h3 mat-subheader>{{translation.eventDescription[global.lang]}}</h3>
-        <mat-list-item>
-          <span>{{translation.eventName[global.lang]}}</span>
-          <span class="fill-remaining-space"></span>
-          <span>{{event.data.name}}</span>
-          <button mat-icon-button color="accent" (click)="editEventName()">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </mat-list-item>
-        <mat-divider></mat-divider>
-        <mat-list-item>
-          <span>{{translation.userId[global.lang]}}</span>
-          <span class="fill-remaining-space"></span>
-          <span>{{userId}}</span>
-        </mat-list-item>
-        <mat-divider></mat-divider>
-        <mat-list-item>
-          <span>{{translation.eventId[global.lang]}}</span>
-          <span class="fill-remaining-space"></span>
-          <span>{{event.id}}</span>
-        </mat-list-item>
-      </mat-list>
-    </mat-card>
-    <br>
     <mat-card>
       <app-purchases-list [purchases]="event.purchases"></app-purchases-list>
     </mat-card>

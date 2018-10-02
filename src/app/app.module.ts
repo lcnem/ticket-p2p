@@ -30,7 +30,8 @@ import {
   MatCheckboxModule,
   MatMenuModule,
   MatTableModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatDatepickerModule
 } from '@angular/material';
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -49,6 +50,7 @@ import { LoadingDialogComponent } from './components/loading-dialog/loading-dial
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { TermsComponent } from './accounts/terms/terms.component';
 import { PurchasesListComponent } from './events/event/purchases-list/purchases-list.component';
+import { EditComponent } from './events/edit/edit.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,8 @@ import { PurchasesListComponent } from './events/event/purchases-list/purchases-
     LoadingDialogComponent,
     PromptDialogComponent,
     TermsComponent,
-    PurchasesListComponent
+    PurchasesListComponent,
+    EditComponent
   ],
   imports: [
     BrowserModule,
@@ -96,7 +99,8 @@ import { PurchasesListComponent } from './events/event/purchases-list/purchases-
     MatSlideToggleModule,
     MatMenuModule,
     MatPaginatorModule,
-    MatRippleModule
+    MatRippleModule,
+    MatDatepickerModule
   ],
   entryComponents: [
     AlertDialogComponent,

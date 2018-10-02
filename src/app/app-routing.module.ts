@@ -7,12 +7,14 @@ import { PageNotFoundComponent } from './error/page-not-found/page-not-found.com
 import { EventComponent } from './events/event/event.component';
 import { ScanComponent } from './events/scan/scan.component';
 import { TermsComponent } from './accounts/terms/terms.component';
+import { EditComponent } from './events/edit/edit.component';
 
 const routes: Routes = [
   {path: "", component: HomeComponent},
   {path: "accounts/login", component: LoginComponent},
   {path: "accounts/terms", component: TermsComponent},
   {path: "events/:id", component: EventComponent},
+  {path: "events/:id/edit", component: EditComponent},
   {path: "events/:eventId/scan", component: ScanComponent},
   {path: "**", component: PageNotFoundComponent}
 ];

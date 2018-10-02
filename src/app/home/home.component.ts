@@ -8,6 +8,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { PromptDialogComponent } from '../components/prompt-dialog/prompt-dialog.component';
 import { AlertDialogComponent } from '../components/alert-dialog/alert-dialog.component';
+import { Account, Wallet, SimpleWallet, Password } from 'nem-library';
 
 @Component({
   selector: 'app-home',
@@ -68,11 +69,14 @@ export class HomeComponent implements OnInit {
 
       let uid = this.auth.auth.currentUser!.uid;
 
+      let password = new Password(uid);
+      let privateKey = SimpleWallet.create(uid, password).open(password).privateKey;
+
       let newEvent = await this.firestore.collection("users").doc(uid).collection("events").add({
         name: eventName,
+        privateKey: privateKey,
         sellingStarted: false,
         sellingEnded: false,
-        nonce: Math.random(),
         groups: {},
         date: Date.now()
       });
@@ -116,6 +120,10 @@ export class HomeComponent implements OnInit {
     language: {
       en: "Language",
       ja: "言語"
+    },
+    ticketP2p: {
+      en: "Ticket Peer to Peer",
+      ja: "ちけっとピアツーピア"
     },
     logout: {
       en: "Log out",

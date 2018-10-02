@@ -55,7 +55,7 @@ export class PurchasesListComponent implements OnInit {
     });//awaitなしでよい
   }
   
-  public async onPageChanged(pageEvent :PageEvent) {console.log(pageEvent)
+  public async onPageChanged(pageEvent :PageEvent) {
     this.loading = true;
 
     let accountHttp = new AccountHttp(nodes);
