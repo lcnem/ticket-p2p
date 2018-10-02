@@ -1,10 +1,6 @@
 export interface Purchase {
-  group: string,
+  customerId: string,
   address: string,
-  reservation: string,
-  profile: {
-    name: string,
-    email: string,
-    phone: string
-  }
+  group: string,
+  reservation: string
 }

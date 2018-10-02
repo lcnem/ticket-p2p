@@ -5,7 +5,6 @@ export interface Event {
   name: string,
   sellingStarted: boolean,
   sellingEnded: boolean,
-  nonce: string,
   groups: {
     name: string,
     capacity: number

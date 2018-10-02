@@ -65,18 +65,18 @@ export class ScanComponent implements OnInit {
 
       try {
         this.http.post(
-          "https://us-central1-ticket-p2p.cloudfunctions.net/checkTicket",
+          "/api/check-ticket",
           {
             userId: this.userId,
             eventId: this.eventId,
             nemAddress: result
           }
         ).subscribe(
-          (value) => {
+          (value: any) => {
             this.dialog.open(AlertDialogComponent, {
               data: {
                 title: (this.translation.completed as any)[this.global.lang],
-                content: ""
+                content: `${(this.translation.group as any)[this.global.lang]}:${value.group}`
               }
             }).afterClosed().subscribe(() => {
               this.scanning = false;
@@ -139,6 +139,10 @@ export class ScanComponent implements OnInit {
     invalid: {
       en: "This ticket is already used or invalid.",
       ja: "このチケットは既に使用されているか、無効なチケットです。"
+    },
+    group: {
+      en: "Group",
+      ja: "区分"
     }
   };
 }
