@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { GlobalDataService } from '../../services/global-data.service';
-import { MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatDialog, MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
 import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dialog.component';
 import { Event } from '../../../models/event';
-import { firestore } from 'firebase';
 import { Purchase } from '../../../models/purchase';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
@@ -31,14 +30,6 @@ export class EventComponent implements OnInit {
     data: Event,
     purchases: Purchase[]
   };
-
-  public dataSource?: MatTableDataSource<{
-    address: string,
-    status: string,
-    invalidator: string
-  }>;
-  public displayedColumns = ["address", "status", "invalidator"];
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     public global: GlobalDataService,
@@ -82,19 +73,6 @@ export class EventComponent implements OnInit {
       return;
     }
     this.event = event;
-
-    let tableData = [];
-
-    for(let purchase of this.event.purchases) {
-      tableData.push({
-        address: purchase.address,
-        status: "check_box_outline_blank",
-        invalidator: ""
-      });
-    }
-
-    this.dataSource = new MatTableDataSource(tableData);
-    this.dataSource.paginator = this.paginator;
   }
 
   public async refresh() {
@@ -306,8 +284,8 @@ export class EventComponent implements OnInit {
       ja: "販売を終了する"
     },
     endSellingBody: {
-      en: "Ending selling and Enabling the scanning the QR-codes of tickets. To do this operation, we charge the fee as you go..",
-      ja: "販売を終了し、QRコードのスキャン機能を有効化します。この機能を使うために、使用した分だけ、利用料を支払います。"
+      en: "Ending selling and Enabling the scanning the QR-codes of tickets. To do this operation, we charge the fee as you go.　Price: 100 Yen per ticket",
+      ja: "販売を終了し、QRコードのスキャン機能を有効化します。この機能を使うために、使用した分だけ、利用料を支払います。価格: 100円/枚"
     },
     startCamera: {
       en: "Start the camera",
@@ -344,22 +322,6 @@ export class EventComponent implements OnInit {
     userId: {
       en: "User ID",
       ja: "ユーザーID"
-    },
-    address: {
-      en: "Address",
-      ja: "アドレス"
-    },
-    status: {
-      en: "Status",
-      ja: "使用状況"
-    },
-    invalidator: {
-      en: "Invalidator address",
-      ja: "無効化したアドレス"
-    },
-    thisSystem: {
-      en: "This system",
-      ja: "このシステム"
     }
   };
 }

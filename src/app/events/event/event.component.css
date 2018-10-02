@@ -2,6 +2,7 @@ mat-card {
   border-radius: 12px;
 }
 
-.mat-table {
-  width: 100%;
+.mat-line {
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
 }

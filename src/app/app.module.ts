@@ -47,6 +47,8 @@ import { AlertDialogComponent } from './components/alert-dialog/alert-dialog.com
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { LoadingDialogComponent } from './components/loading-dialog/loading-dialog.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
+import { TermsComponent } from './accounts/terms/terms.component';
+import { PurchasesListComponent } from './events/event/purchases-list/purchases-list.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +61,9 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
     AlertDialogComponent,
     ConfirmDialogComponent,
     LoadingDialogComponent,
-    PromptDialogComponent
+    PromptDialogComponent,
+    TermsComponent,
+    PurchasesListComponent
   ],
   imports: [
     BrowserModule,
