@@ -91,7 +91,8 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
     MatListModule,
     MatSlideToggleModule,
     MatMenuModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatRippleModule
   ],
   entryComponents: [
     AlertDialogComponent,

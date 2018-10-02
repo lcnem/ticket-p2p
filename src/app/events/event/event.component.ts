@@ -33,10 +33,11 @@ export class EventComponent implements OnInit {
   };
 
   public dataSource?: MatTableDataSource<{
-    timestamp: string,
-    address: string
+    address: string,
+    status: string,
+    invalidator: string
   }>;
-  public displayedColumns = ["timestamp", "address"];
+  public displayedColumns = ["address", "status", "invalidator"];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
@@ -86,8 +87,9 @@ export class EventComponent implements OnInit {
 
     for(let purchase of this.event.purchases) {
       tableData.push({
-        timestamp: "",
-        address: purchase.address
+        address: purchase.address,
+        status: "check_box_outline_blank",
+        invalidator: ""
       });
     }
 
@@ -287,6 +289,38 @@ export class EventComponent implements OnInit {
       en: "Total",
       ja: "合計"
     },
+    eventOperations: {
+      en: "Event operations",
+      ja: "イベントに対する操作"
+    },
+    startSelling: {
+      en: "Start selling",
+      ja: "販売を開始する"
+    },
+    startSellingBody: {
+      en: "Enabling the API for selling. Once you start selling, you can't change settings of this event.",
+      ja: "販売を開始するためのAPIを有効化します。販売を開始すると、イベントの設定を変更することはできません。"
+    },
+    endSelling: {
+      en: "End selling",
+      ja: "販売を終了する"
+    },
+    endSellingBody: {
+      en: "Ending selling and Enabling the scanning the QR-codes of tickets. To do this operation, we charge the fee as you go..",
+      ja: "販売を終了し、QRコードのスキャン機能を有効化します。この機能を使うために、使用した分だけ、利用料を支払います。"
+    },
+    startCamera: {
+      en: "Start the camera",
+      ja: "カメラを起動"
+    },
+    startCameraBody: {
+      en: "Starting the camera to scan QR-code of tickets.",
+      ja: "チケットのQRコードを読み取るためのカメラを起動します。"
+    },
+    eventDescription: {
+      en: "Event description",
+      ja: "イベント詳細"
+    },
     eventId: {
       en: "Event ID",
       ja: "イベントID"
@@ -307,29 +341,25 @@ export class EventComponent implements OnInit {
       en: "Capacity",
       ja: "定員"
     },
-    startSelling: {
-      en: "Start selling",
-      ja: "販売を開始する"
-    },
-    startSellingBody: {
-      en: "Are you sure to start selling? After this operation, you cant modify the event information.",
-      ja: "販売を開始しますか？これ以降、イベント情報を修正することはできません。"
-    },
-    endSelling: {
-      en: "End selling",
-      ja: "販売を終了する"
-    },
     userId: {
       en: "User ID",
       ja: "ユーザーID"
     },
-    timestamp: {
-      en: "Timestamp",
-      ja: "タイムスタンプ"
-    },
     address: {
       en: "Address",
       ja: "アドレス"
+    },
+    status: {
+      en: "Status",
+      ja: "使用状況"
+    },
+    invalidator: {
+      en: "Invalidator address",
+      ja: "無効化したアドレス"
+    },
+    thisSystem: {
+      en: "This system",
+      ja: "このシステム"
     }
   };
 }
