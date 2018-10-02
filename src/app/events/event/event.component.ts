@@ -211,7 +211,7 @@ export class EventComponent implements OnInit {
 
       try {
         await this.http.post(
-          "https://us-central1-ticket-p2p.cloudfunctions.net/endSelling",
+          "/api/end-selling",
           {
             userId: this.auth.auth.currentUser!.uid,
             eventId: this.event.id,
