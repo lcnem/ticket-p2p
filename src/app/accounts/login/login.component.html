@@ -24,7 +24,7 @@
     <iframe [src]="safeSite" fxFill></iframe>
     <mat-checkbox [(ngModel)]="agree">{{translation.agree[global.lang]}}</mat-checkbox>
     <button mat-raised-button fxFill color="accent" [disabled]="!agree" (click)="login()">
-      <mat-icon class="background-contain" [ngStyle]="{'background-image': 'url(assets/google.svg)'}"></mat-icon>
+      <mat-icon class="background-contain" [ngStyle]="{'background-image': 'url(assets/images/google.svg)'}"></mat-icon>
       　{{translation.login[global.lang]}}
     </button>
   </ng-template>
