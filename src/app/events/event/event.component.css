@@ -26,6 +26,7 @@ dd {
   list-style: none;
   padding: 16px 0;
   display: flex;
+  justify-content: space-between;
 }
 
 .event-operation h4 {
