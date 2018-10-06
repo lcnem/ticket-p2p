@@ -11,9 +11,9 @@
 <div class="out-toolbar">
   <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
   <ng-template #loaded>
+    <h3>{{translation.eventDescription[global.lang]}}</h3>
     <mat-card>
       <mat-list>
-        <h3 mat-subheader>{{translation.eventDescription[global.lang]}}</h3>
         <mat-list-item>
           <span>{{translation.eventName[global.lang]}}</span>
           <span class="fill-remaining-space"></span>
@@ -41,9 +41,9 @@
       <button mat-raised-button color="accent" fxFill routerLink="/events/{{event.id}}/edit">{{translation.edit[global.lang]}}</button>
     </mat-card>
     <br>
+    <h3>{{translation.eventOperations[global.lang]}}</h3>
     <mat-card>
       <mat-list>
-        <h3 mat-subheader>{{translation.eventOperations[global.lang]}}</h3>
         <mat-list-item>
           <span matLine>{{translation.startSelling[global.lang]}}</span>
           <span matLine>{{translation.startSellingBody[global.lang]}}</span>
@@ -74,6 +74,7 @@
       </mat-list>
     </mat-card>
     <br />
+    <h3 mat-subheader>{{translation.eventPurchases[global.lang]}}</h3>
     <mat-card>
       <app-purchases-list [purchases]="event.purchases"></app-purchases-list>
     </mat-card>

@@ -280,6 +280,10 @@ export class EventComponent implements OnInit {
     startCameraBody: {
       en: "Starting the camera to scan QR-code of tickets.",
       ja: "チケットのQRコードを読み取るためのカメラを起動します。"
-    } as any
+    } as any,
+    eventPurchases: {
+      en: "Event Purchases",
+      ja: "購入者"
+    }
   };
 }
