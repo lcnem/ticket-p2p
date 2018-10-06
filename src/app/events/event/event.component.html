@@ -13,27 +13,25 @@
   <ng-template #loaded>
     <h3>{{translation.eventDescription[global.lang]}}</h3>
     <mat-card>
-      <mat-list class="event-description">
-        <dl>
-          <dt>{{translation.eventName[global.lang]}}</dt>
-          <dd>{{event.data.name}}</dd>
-        </dl>
-        <mat-divider></mat-divider>
-        <dl>
-          <dt>{{translation.userId[global.lang]}}</dt>
-          <dd>{{userId}}</dd>
-        </dl>
-        <mat-divider></mat-divider>
-        <dl>
-          <dt>{{translation.eventId[global.lang]}}</dt>
-          <dd>{{event.id}}</dd>
-        </dl>
-        <mat-divider></mat-divider>
-        <dl>
-          <dt>{{translation.privateKey[global.lang]}}</dt>
-          <dd>{{event.data.privateKey}}</dd>
-        </dl>
-      </mat-list>
+      <dl>
+        <dt>{{translation.eventName[global.lang]}}</dt>
+        <dd>{{event.data.name}}</dd>
+      </dl>
+      <mat-divider></mat-divider>
+      <dl>
+        <dt>{{translation.userId[global.lang]}}</dt>
+        <dd>{{userId}}</dd>
+      </dl>
+      <mat-divider></mat-divider>
+      <dl>
+        <dt>{{translation.eventId[global.lang]}}</dt>
+        <dd>{{event.id}}</dd>
+      </dl>
+      <mat-divider></mat-divider>
+      <dl>
+        <dt>{{translation.privateKey[global.lang]}}</dt>
+        <dd>{{event.data.privateKey}}</dd>
+      </dl>
       <button mat-raised-button color="accent" fxFill routerLink="/events/{{event.id}}/edit">{{translation.edit[global.lang]}}</button>
     </mat-card>
     <br>
