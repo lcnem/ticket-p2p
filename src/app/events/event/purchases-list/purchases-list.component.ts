@@ -68,9 +68,9 @@ export class PurchasesListComponent implements OnInit {
 
       //トランザクション履歴がなければ
       if(transactions.length == 0) {
-        this.dataSource!.data[i].status = (this.translation.valid as any)[this.global.lang];
+        this.dataSource!.data[i].status = this.translation.valid[this.global.lang];
       } else {
-        this.dataSource!.data[i].status = (this.translation.invalid as any)[this.global.lang];
+        this.dataSource!.data[i].status = this.translation.invalid[this.global.lang];
         //ページサイズにデータが詰まってくるのであれば、空きがでるまで回す
         while(transactions.length == pageSize) {
           let hash = transactions[pageSize - 1].getTransactionInfo().hash.data;
@@ -79,7 +79,7 @@ export class PurchasesListComponent implements OnInit {
         //一番古いトランザクションがわかる
         let invalidator = transactions[transactions.length - 1].signer!.address.plain();
         if(invalidator == "NDFRSC6OVQUOBP6NEHPDDA7ZTYQAS3VNOD6C3DCW") {
-          this.dataSource!.data[i].invalidator = (this.translation.thisSystem as any)[this.global.lang];
+          this.dataSource!.data[i].invalidator = this.translation.thisSystem[this.global.lang];
         } else {
           this.dataSource!.data[i].invalidator = invalidator;
         }
@@ -92,38 +92,38 @@ export class PurchasesListComponent implements OnInit {
     customerId: {
       en: "Customer ID",
       ja: "顧客ID"
-    },
+    } as any,
     address: {
       en: "Address",
       ja: "アドレス"
-    },
+    } as any,
     group: {
       en: "Group",
       ja: "区分"
-    },
+    } as any,
     reservation: {
       en: "Reservation information",
       ja: "予約情報"
-    },
+    } as any,
     status: {
       en: "Status",
       ja: "使用状況"
-    },
+    } as any,
     valid: {
       en: "Valid",
       ja: "有効"
-    },
+    } as any,
     invalid: {
       en: "Invalid",
       ja: "無効"
-    },
+    } as any,
     invalidator: {
       en: "Invalidator address",
       ja: "無効化したアドレス"
-    },
+    } as any,
     thisSystem: {
       en: "This system",
       ja: "このシステム"
-    }
+    } as any
   };
 }

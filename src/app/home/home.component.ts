@@ -90,8 +90,8 @@ export class HomeComponent implements OnInit {
     if(event.data.sellingStarted) {
       this.dialog.open(AlertDialogComponent, {
         data: {
-          title: (this.translation.error as any)[this.global.lang],
-          content: (this.translation.cantDelete as any)[this.global.lang]
+          title: this.translation.error[this.global.lang],
+          content: this.translation.cantDelete[this.global.lang]
         }
       });
       return;
@@ -99,8 +99,8 @@ export class HomeComponent implements OnInit {
 
     this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: (this.translation.confirmation as any)[this.global.lang],
-        content: (this.translation.deleteConfirmation as any)[this.global.lang]
+        title: this.translation.confirmation[this.global.lang],
+        content: this.translation.deleteConfirmation[this.global.lang]
       }
     }).afterClosed().subscribe(async (result) => {
       if (!result) {
@@ -120,46 +120,46 @@ export class HomeComponent implements OnInit {
     language: {
       en: "Language",
       ja: "言語"
-    },
+    } as any,
     ticketP2p: {
       en: "Ticket Peer to Peer",
       ja: "ちけっとピアツーピア"
-    },
+    } as any,
     logout: {
       en: "Log out",
       ja: "ログアウト"
-    },
+    } as any,
     terms: {
       en: "Terms of Service",
       ja: "利用規約"
-    },
+    } as any,
     createEvent: {
       en: "Create your event",
       ja: "イベントを作成"
-    },
+    } as any,
     eventName: {
       en: "Event name",
       ja: "イベント名"
-    },
+    } as any,
     empty: {
       en: "There is no event.",
       ja: "イベントはありません。"
-    },
+    } as any,
     error: {
       en: "Error",
       ja: "エラー"
-    },
+    } as any,
     cantDelete: {
       en: "You can't delete an event during the selling.",
       ja: "販売中のイベントを削除することはできません。"
-    },
+    } as any,
     confirmation: {
       en: "Confirmation",
       ja: "確認"
-    },
+    } as any,
     deleteConfirmation: {
       en: "Are you sure to delete the event?",
       ja: "イベントを削除しますか？"
-    }
+    } as any
   };
 }

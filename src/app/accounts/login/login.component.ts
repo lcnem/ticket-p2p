@@ -44,10 +44,10 @@ export class LoginComponent implements OnInit {
     agree: {
       en: "I agree.",
       ja: "同意します"
-    },
+    } as any,
     login: {
       en: "Log in",
       ja: "ログイン"
-    }
+    } as any
   };
 }

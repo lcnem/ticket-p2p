@@ -25,6 +25,6 @@ export class TermsComponent implements OnInit {
     terms: {
       en: "Terms of Service",
       ja: "利用規約"
-    }
+    } as any
   };
 }
