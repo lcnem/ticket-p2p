@@ -75,8 +75,8 @@ export class ScanComponent implements OnInit {
           (value: any) => {
             this.dialog.open(AlertDialogComponent, {
               data: {
-                title: (this.translation.completed as any)[this.global.lang],
-                content: `${(this.translation.group as any)[this.global.lang]}:${value.group}`
+                title: this.translation.completed[this.global.lang],
+                content: `${this.translation.group[this.global.lang]}:${value.group}`
               }
             }).afterClosed().subscribe(() => {
               this.scanning = false;
@@ -85,8 +85,8 @@ export class ScanComponent implements OnInit {
           (error) => {
             this.dialog.open(AlertDialogComponent, {
               data: {
-                title: (this.translation.error as any)[this.global.lang],
-                content: (this.translation.invalid as any)[this.global.lang]
+                title: this.translation.error[this.global.lang],
+                content: this.translation.invalid[this.global.lang]
               }
             }).afterClosed().subscribe(() => {
               this.scanning = false;
@@ -115,34 +115,34 @@ export class ScanComponent implements OnInit {
     noCamera: {
       en: "Cameras not found.",
       ja: "カメラが見つかりません。"
-    },
+    } as any,
     noPermission: {
       en: "Permissions required.",
       ja: "カメラ許可が必要です。"
-    },
+    } as any,
     scan: {
       en: "Scan QR-code",
       ja: "QRコードをスキャン"
-    },
+    } as any,
     selectCamera: {
       en: "Select camera",
       ja: "カメラを選択"
-    },
+    } as any,
     error: {
       en: "Error",
       ja: "エラー"
-    },
+    } as any,
     completed: {
       en: "Completed",
       ja: "完了"
-    },
+    } as any,
     invalid: {
       en: "This ticket is already used or invalid.",
       ja: "このチケットは既に使用されているか、無効なチケットです。"
-    },
+    } as any,
     group: {
       en: "Group",
       ja: "区分"
-    }
+    } as any
   };
 }

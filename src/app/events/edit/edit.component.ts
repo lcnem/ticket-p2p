@@ -59,7 +59,7 @@ export class EditComponent implements OnInit {
     if (!event) {
       this.dialog.open(AlertDialogComponent, {
         data: {
-          title: (this.translation.error as any)[this.global.lang],
+          title: this.translation.error[this.global.lang],
           content: ""
         }
       }).afterClosed().subscribe(() => {
@@ -84,18 +84,18 @@ export class EditComponent implements OnInit {
     error: {
       en: "Error",
       ja: "エラー"
-    },
+    } as any,
     editEvent: {
       en: "Edit an event",
       ja: "イベントを編集"
-    },
+    } as any,
     eventName: {
       en: "Event name",
       ja: "イベント名"
-    },
+    } as any,
     submit: {
       en: "Submit",
       ja: "保存"
-    }
+    } as any
   };
 }
