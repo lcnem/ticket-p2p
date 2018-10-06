@@ -37,35 +37,38 @@
     <br>
     <h3>{{translation.eventOperations[global.lang]}}</h3>
     <mat-card>
-      <mat-list>
-        <mat-list-item>
-          <span matLine>{{translation.startSelling[global.lang]}}</span>
-          <span matLine class="detail">{{translation.startSellingBody[global.lang]}}</span>
-          <span class="fill-remaining-space"></span>
-          <span>
-            <button mat-raised-button color="accent" [disabled]="event.data.sellingStarted" (click)="startSelling()">{{translation.startSelling[global.lang]}}</button>
-          </span>
-        </mat-list-item>
+      <ul class="event-operation">
+        <li>
+          <div class="left-content">
+            <h4>{{translation.startSelling[global.lang]}}</h4>
+            <div>{{translation.startSellingBody[global.lang]}}</div>
+          </div>
+          <div class="right-content">
+            <button mat-raised-button color="accent" [disabled]="event.data.sellingStarted" (click)="startSelling()">{{translation.startSelling[global.lang]}}</button>        
+          </div>
+        </li>
         <mat-divider></mat-divider>
-        <mat-list-item>
-          <span matLine>{{translation.endSelling[global.lang]}}</span>
-          <span matLine class="detail">{{translation.endSellingBody[global.lang]}}</span>
-          <span class="fill-remaining-space"></span>
-          <span>
+        <li>
+          <div class="left-content">
+            <h4>{{translation.endSelling[global.lang]}}</h4>
+            <div>{{translation.endSellingBody[global.lang]}}</div>
+          </div>
+          <div class="right-content">
             <button mat-raised-button color="accent" [disabled]="!event.data.sellingStarted" (click)="endSelling()">{{translation.endSelling[global.lang]}}</button>
-          </span>
-        </mat-list-item>
+          </div>
+        </li>
         <mat-divider></mat-divider>
-        <mat-list-item>
-          <span matLine>{{translation.startCamera[global.lang]}}</span>
-          <span matLine class="detail">{{translation.startCameraBody[global.lang]}}</span>
-          <span class="fill-remaining-space"></span>
-          <span>
+        <li>
+          <div class="left-content">
+            <h4>{{translation.startCamera[global.lang]}}</h4>
+            <div>{{translation.startCameraBody[global.lang]}}</div>
+          </div>
+          <div class="right-content">
             <button mat-raised-button color="accent" routerLink="/events/{{event.id}}/scan" [queryParams]="{ userId: userId }"
-              [disabled]="!event.data.sellingEnded">{{translation.startCamera[global.lang]}}</button>
-          </span>
-        </mat-list-item>
-      </mat-list>
+                [disabled]="!event.data.sellingEnded">{{translation.startCamera[global.lang]}}</button>
+          </div>
+        </li>
+      </ul>
     </mat-card>
     <br />
     <h3 mat-subheader>{{translation.eventPurchases[global.lang]}}</h3>

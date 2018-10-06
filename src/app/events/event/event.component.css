@@ -18,6 +18,32 @@ dd {
   overflow: scroll;
 }
 
+.event-operation {
+  padding: 0;
+}
+
+.event-operation li {
+  list-style: none;
+  padding: 16px 0;
+  display: flex;
+}
+
+.event-operation h4 {
+  margin: 0;
+  margin-bottom: 2px;
+}
+
+.event-operation .left-content div {
+  color: #777;
+}
+
+.event-operation .right-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
+}
+
 .mat-line {
   word-wrap: break-word !important;
   white-space: pre-wrap !important;

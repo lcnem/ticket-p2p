@@ -259,7 +259,7 @@ export class EventComponent implements OnInit {
     } as any,
     startSelling: {
       en: "Start selling",
-      ja: "販売を開始する"
+      ja: "販売を開始"
     } as any,
     startSellingBody: {
       en: "Enabling the API for selling. Once you start selling, you can't change settings of this event.",
@@ -267,7 +267,7 @@ export class EventComponent implements OnInit {
     } as any,
     endSelling: {
       en: "End selling",
-      ja: "販売を終了する"
+      ja: "販売を終了"
     } as any,
     endSellingBody: {
       en: "Ending selling and Enabling the scanning the QR-codes of tickets. To do this operation, we charge the fee as you go.　Price: 100 Yen per ticket",
