@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="mat-elevation-z4">
+<mat-toolbar color="primary" class="mat-elevation-z4 top-toolbar">
   <button mat-icon-button>
     <mat-icon>lock_open</mat-icon>
   </button>
@@ -7,18 +7,16 @@
   <mat-menu #langMenu="matMenu" [overlapTrigger]="false">
     <button mat-menu-item (click)="global.lang = 'en'">
       English
-      <mat-icon *ngIf="global.lang == 'en'">check</mat-icon>
     </button>
     <button mat-menu-item (click)="global.lang = 'ja'">
       日本語
-      <mat-icon *ngIf="global.lang == 'ja'">check</mat-icon>
     </button>
   </mat-menu>
   <button mat-icon-button [matMenuTriggerFor]="langMenu" yPosition="below">
     {{global.lang}}
   </button>
 </mat-toolbar>
-<div class="out-toolbar">
+<div class="mat-typography body-container">
   <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
   <ng-template #loaded>
     <iframe [src]="safeSite" fxFill></iframe>
