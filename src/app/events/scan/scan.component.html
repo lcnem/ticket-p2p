@@ -1,11 +1,11 @@
-<mat-toolbar color="primary" class="mat-elevation-z4">
+<mat-toolbar color="primary" class="mat-elevation-z4 top-toolbar">
   <button mat-icon-button routerLink="/events/{{eventId}}">
     <mat-icon>arrow_back</mat-icon>
   </button>
   <span>{{translation.scan[global.lang]}}</span>
   <span class="fill-remaining-space"></span>
 </mat-toolbar>
-<div class="out-toolbar">
+<div class="mat-typography body-container">
   <mat-form-field fxFill>
     <mat-select placeholder="{{translation.selectCamera[global.lang]}}" [(ngModel)]="selected">
       <mat-option *ngFor="let device of availableDevices; let i = index" [value]="i">{{device.label}}</mat-option>
