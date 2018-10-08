@@ -11,7 +11,12 @@
 <div class="mat-typography body-container">
   <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
   <ng-template #loaded>
-    <h3>{{translation.eventDescription[global.lang]}}</h3>
+    <h3>
+      <a routerLink="/events/{{event.id}}/edit">
+        {{translation.eventDescription[global.lang]}}
+        <span><mat-icon color="accent">edit</mat-icon></span>
+      </a>
+    </h3>
     <mat-card>
       <dl>
         <dt>{{translation.eventName[global.lang]}}</dt>

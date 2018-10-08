@@ -18,6 +18,21 @@ dd {
   overflow: scroll;
 }
 
+h3 a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+h3 mat-icon {
+  font-size: 20px;
+  vertical-align: sub;
+  transition-duration: .2s;
+}
+
+h3:hover mat-icon {
+  opacity: .7;
+}
+
 .event-operation {
   padding: 0;
 }
