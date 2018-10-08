@@ -1,5 +1,6 @@
 mat-card {
   border-radius: 5px;
+  padding: 0 24px;
 }
 
 dl {

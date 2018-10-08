@@ -11,12 +11,7 @@
 <div class="mat-typography body-container">
   <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
   <ng-template #loaded>
-    <h3>
-      <a routerLink="/events/{{event.id}}/edit">
-        {{translation.eventDescription[global.lang]}}
-        <span><mat-icon color="accent">edit</mat-icon></span>
-      </a>
-    </h3>
+    <h3>{{translation.eventDescription[global.lang]}}</h3>
     <mat-card>
       <dl>
         <dt>{{translation.eventName[global.lang]}}</dt>
@@ -37,12 +32,21 @@
         <dt>{{translation.privateKey[global.lang]}}</dt>
         <dd>{{event.data.privateKey}}</dd>
       </dl>
-      <button mat-raised-button color="accent" fxFill routerLink="/events/{{event.id}}/edit">{{translation.edit[global.lang]}}</button>
     </mat-card>
     <br>
     <h3>{{translation.eventOperations[global.lang]}}</h3>
     <mat-card>
       <ul class="event-operation">
+        <li>
+          <div class="left-content">
+            <h4>{{translation.editEventDetails[global.lang]}}</h4>
+            <div>{{translation.editEventDetailsBody[global.lang]}}</div>
+          </div>
+          <div class="right-content">
+            <button mat-raised-button color="accent" [disabled]="event.data.sellingStarted" routerLink="/events/{{event.id}}/edit">イベントを編集</button>        
+          </div>
+        </li>
+        <mat-divider></mat-divider>
         <li>
           <div class="left-content">
             <h4>{{translation.startSelling[global.lang]}}</h4>

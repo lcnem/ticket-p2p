@@ -257,6 +257,14 @@ export class EventComponent implements OnInit {
       en: "Event operations",
       ja: "イベントに対する操作"
     } as any,
+    editEventDetails: {
+      en: "Edit event",
+      ja: "イベントの編集"
+    } as any,
+    editEventDetailsBody: {
+      en: "Edit your event details. Once you start selling, you can't change settings of this event.",
+      ja: "イベントの設定を編集します。販売開始後は、イベントの設定を変更することはできません。"
+    } as any,
     startSelling: {
       en: "Start selling",
       ja: "販売を開始"
