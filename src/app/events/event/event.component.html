@@ -59,22 +59,22 @@
         <mat-divider></mat-divider>
         <li>
           <div class="left-content">
-            <h4>{{translation.endSelling[global.lang]}}</h4>
-            <div>{{translation.endSellingBody[global.lang]}}</div>
-          </div>
-          <div class="right-content">
-            <button mat-raised-button color="accent" [disabled]="!event.data.sellingStarted" (click)="endSelling()">{{translation.endSelling[global.lang]}}</button>
-          </div>
-        </li>
-        <mat-divider></mat-divider>
-        <li>
-          <div class="left-content">
             <h4>{{translation.startCamera[global.lang]}}</h4>
             <div>{{translation.startCameraBody[global.lang]}}</div>
           </div>
           <div class="right-content">
             <button mat-raised-button color="accent" routerLink="/events/{{event.id}}/scan" [queryParams]="{ userId: userId }"
                 [disabled]="!event.data.sellingEnded">{{translation.startCamera[global.lang]}}</button>
+          </div>
+        </li>
+        <mat-divider></mat-divider>
+        <li>
+          <div class="left-content">
+            <h4>{{translation.deleteEvent[global.lang]}}</h4>
+            <div>{{translation.deleteEventBody[global.lang]}}</div>
+          </div>
+          <div class="right-content">
+            <button mat-raised-button color="accent" (click)="deleteEvent()">{{translation.deleteEvent[global.lang]}}</button>
           </div>
         </li>
       </ul>

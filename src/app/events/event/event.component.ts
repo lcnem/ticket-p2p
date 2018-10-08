@@ -84,6 +84,10 @@ export class EventComponent implements OnInit {
     this.loading = false;
   }
 
+  public async deleteEvent() {
+    console.log("delete!");
+  }
+
   public startSelling() {
     this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -280,6 +284,14 @@ export class EventComponent implements OnInit {
     endSellingBody: {
       en: "Ending selling and Enabling the scanning the QR-codes of tickets. To do this operation, we charge the fee as you go.　Price: 100 Yen per ticket",
       ja: "販売を終了し、QRコードのスキャン機能を有効化します。この機能を使うために、使用した分だけ、利用料を支払います。価格: 100円/枚"
+    } as any,
+    deleteEvent: {
+      en: "Delete event",
+      ja: "イベントの削除"
+    } as any,
+    deleteEventBody: {
+      en: "Delete this event.",
+      ja: "イベントを削除します。"
     } as any,
     startCamera: {
       en: "Start the camera",
