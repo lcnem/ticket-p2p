@@ -7,7 +7,7 @@ import 'firebase/auth'
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Event } from '../../models/event';
-import { Purchase } from '../../models/purchase';
+import { Sale } from '../../models/sale';
 import { NEMLibrary, NetworkTypes } from 'nem-library';
 
 @Injectable({
@@ -22,7 +22,7 @@ export class GlobalDataService {
   public events: {
     id: string,
     data: Event,
-    purchases: Purchase[]
+    sales: Sale[]
   }[] = [];
 
   constructor(
@@ -69,12 +69,12 @@ export class GlobalDataService {
 
     this.events = [];
     for(let doc of events.docs) {
-      let purchases = await doc.ref.collection("purchases").get();
+      let sales = await doc.ref.collection("sales").get();
 
       this.events.push({
         id: doc.id,
         data: doc.data() as Event,
-        purchases: purchases.docs.map(doc => doc.data() as Purchase)
+        sales: sales.docs.map(doc => doc.data() as Sale)
       });
     }
   }

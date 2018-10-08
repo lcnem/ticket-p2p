@@ -4,7 +4,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Event } from '../../../models/event';
-import { Purchase } from '../../../models/purchase';
+import { Sale } from '../../../models/sale';
 import { MatDialog } from '@angular/material';
 import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
 import * as firebase from 'firebase';
@@ -19,7 +19,7 @@ export class EditComponent implements OnInit {
   public event!: {
     id: string,
     data: Event,
-    purchases: Purchase[]
+    sales: Sale[]
   };
   public form: {
     name: string,

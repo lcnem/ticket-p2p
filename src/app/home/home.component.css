@@ -8,8 +8,6 @@
 
 mat-card {
   border-radius: 12px;
-  cursor: pointer;
-  margin: 6px;
 }
 
 .capacity {
