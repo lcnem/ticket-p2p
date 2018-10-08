@@ -1,11 +1,11 @@
-<mat-toolbar color="primary" class="mat-elevation-z4">
-  <button mat-icon-button routerLink="/">
+<mat-toolbar color="primary" class="mat-elevation-z4 top-toolbar">
+  <button mat-icon-button (click)="global.back()">
     <mat-icon>arrow_back</mat-icon>
   </button>
   <span>{{translation.terms[global.lang]}}</span>
   <span class="fill-remaining-space"></span>
 </mat-toolbar>
-<div class="out-toolbar">
+<div class="mat-typography body-container">
   <iframe [src]="safeSite" fxFill></iframe>
 </div>
 <mat-list>

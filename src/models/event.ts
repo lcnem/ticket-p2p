@@ -1,11 +1,10 @@
 import { firestore } from "firebase";
-import { Purchase } from "./purchase";
+import { Sale } from "./sale";
 
 export interface Event {
   name: string,
   privateKey: string,
   sellingStarted: boolean,
-  sellingEnded: boolean,
   groups: {
     name: string,
     capacity: number

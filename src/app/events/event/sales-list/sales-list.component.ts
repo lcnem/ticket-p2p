@@ -2,15 +2,15 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
 import { AccountHttp, Address } from 'nem-library';
 import { nodes } from '../../../../models/nodes';
-import { Purchase } from '../../../../models/purchase';
+import { Sale } from '../../../../models/sale';
 import { GlobalDataService } from '../../../services/global-data.service';
 
 @Component({
-  selector: 'app-purchases-list',
-  templateUrl: './purchases-list.component.html',
-  styleUrls: ['./purchases-list.component.css']
+  selector: 'app-sales-list',
+  templateUrl: './sales-list.component.html',
+  styleUrls: ['./sales-list.component.css']
 })
-export class PurchasesListComponent implements OnInit {
+export class SalesListComponent implements OnInit {
   public loading = true;
   public dataSource?: MatTableDataSource<{
     customerId: string,
@@ -23,7 +23,7 @@ export class PurchasesListComponent implements OnInit {
   public displayedColumns = ["customerId", "address", "group", "reservation", "status", "invalidator"];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  @Input() purchases!: Purchase[];
+  @Input() sales!: Sale[];
 
   constructor(
     public global: GlobalDataService
@@ -32,10 +32,10 @@ export class PurchasesListComponent implements OnInit {
   ngOnInit() {
     let tableData = [];
 
-    for(let purchase of this.purchases) {
+    for(let purchase of this.sales) {
       tableData.push({
         customerId: purchase.customerId,
-        address: purchase.address,
+        address: purchase.ticket,
         group: purchase.group,
         reservation: purchase.reservation,
         status: "",
@@ -63,7 +63,7 @@ export class PurchasesListComponent implements OnInit {
 
     //テーブル表示範囲をiで回す
     for(let i = pageEvent.pageIndex * pageEvent.pageSize; i < (pageEvent.pageIndex + 1) * pageEvent.pageSize && i < pageEvent.length; i++) {
-      let address = this.purchases[i].address;
+      let address = this.sales[i].ticket;
       let transactions = await accountHttp.allTransactions(new Address(address), {pageSize: pageSize}).toPromise();
 
       //トランザクション履歴がなければ

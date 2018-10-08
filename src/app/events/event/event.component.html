@@ -1,5 +1,5 @@
-<mat-toolbar color="primary" class="mat-elevation-z4">
-  <button mat-icon-button routerLink="/">
+<mat-toolbar color="primary" class="mat-elevation-z4 top-toolbar">
+  <button mat-icon-button (click)="global.back()">
     <mat-icon>arrow_back</mat-icon>
   </button>
   <span>{{event && event.data.name}}</span>
@@ -8,7 +8,7 @@
     <mat-icon>refresh</mat-icon>
   </button>
 </mat-toolbar>
-<div class="out-toolbar">
+<div class="mat-typography body-container">
   <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
   <ng-template #loaded>
     <h3>{{translation.eventDescription[global.lang]}}</h3>
@@ -73,7 +73,7 @@
     <br />
     <h3 mat-subheader>{{translation.eventPurchases[global.lang]}}</h3>
     <mat-card>
-      <app-purchases-list [purchases]="event.purchases"></app-purchases-list>
+      <app-sales-list [sales]="event.sales"></app-sales-list>
     </mat-card>
   </ng-template>
 </div>

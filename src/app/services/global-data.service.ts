@@ -7,8 +7,9 @@ import 'firebase/auth'
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Event } from '../../models/event';
-import { Purchase } from '../../models/purchase';
+import { Sale } from '../../models/sale';
 import { NEMLibrary, NetworkTypes } from 'nem-library';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -22,19 +23,26 @@ export class GlobalDataService {
   public events: {
     id: string,
     data: Event,
-    purchases: Purchase[]
+    sales: Sale[]
   }[] = [];
 
   constructor(
     private auth: AngularFireAuth,
     private firestore: AngularFirestore,
-    private http: HttpClient
+    private router: Router
   ) {
     NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
     const settings = { timestampsInSnapshots: true };
     firestore.firestore.settings(settings);
 
     this.lang = window.navigator.language.substr(0, 2) == "ja" ? "ja" : "en";
+  }
+
+  public back() {
+    if (document.referrer.startsWith(location.protocol + "//" + location.host)) {
+      history.back();
+    }
+    this.router.navigate([""]);
   }
 
   public async login() {
@@ -68,13 +76,13 @@ export class GlobalDataService {
     let events = await this.firestore.collection("users").doc(uid).collection("events").ref.get();
 
     this.events = [];
-    for(let doc of events.docs) {
-      let purchases = await doc.ref.collection("purchases").get();
+    for (let doc of events.docs) {
+      let sales = await doc.ref.collection("sales").get();
 
       this.events.push({
         id: doc.id,
         data: doc.data() as Event,
-        purchases: purchases.docs.map(doc => doc.data() as Purchase)
+        sales: sales.docs.map(doc => doc.data() as Sale)
       });
     }
   }

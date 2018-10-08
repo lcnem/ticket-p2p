@@ -1,36 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body, main{
+html, body {
   height: 100%;
   margin: 0;
 }
 
 mat-sidenav-container {
   height: 100%;
-  margin: 0;
-}
-
-mat-toolbar {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
 mat-sidenav {
-  width: 240px;
+  width: 300px;
+  overflow: auto;
 }
 
 .fill-remaining-space{
   flex: 1 1 auto;
 }
 
-mat-spinner {
-  margin: 0 auto;
+.top-toolbar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 4;
 }
 
-.out-toolbar {
+.body-container {
   padding: 16px;
+}
+
+mat-spinner {
+  margin: 0 auto;
 }
 
 .background-contain {
