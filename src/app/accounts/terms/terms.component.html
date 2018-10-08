@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="mat-elevation-z4 top-toolbar">
-  <button mat-icon-button routerLink="/">
+  <button mat-icon-button (click)="global.back()">
     <mat-icon>arrow_back</mat-icon>
   </button>
   <span>{{translation.terms[global.lang]}}</span>
