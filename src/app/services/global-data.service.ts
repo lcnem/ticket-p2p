@@ -9,6 +9,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Event } from '../../models/event';
 import { Sale } from '../../models/sale';
 import { NEMLibrary, NetworkTypes } from 'nem-library';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -28,13 +29,20 @@ export class GlobalDataService {
   constructor(
     private auth: AngularFireAuth,
     private firestore: AngularFirestore,
-    private http: HttpClient
+    private router: Router
   ) {
     NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
     const settings = { timestampsInSnapshots: true };
     firestore.firestore.settings(settings);
 
     this.lang = window.navigator.language.substr(0, 2) == "ja" ? "ja" : "en";
+  }
+
+  public back() {
+    if (document.referrer.startsWith(location.protocol + "//" + location.host)) {
+      history.back();
+    }
+    this.router.navigate([""]);
   }
 
   public async login() {
@@ -68,7 +76,7 @@ export class GlobalDataService {
     let events = await this.firestore.collection("users").doc(uid).collection("events").ref.get();
 
     this.events = [];
-    for(let doc of events.docs) {
+    for (let doc of events.docs) {
       let sales = await doc.ref.collection("sales").get();
 
       this.events.push({

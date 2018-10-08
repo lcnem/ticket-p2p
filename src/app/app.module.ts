@@ -30,8 +30,7 @@ import {
   MatMenuModule,
   MatTableModule,
   MatPaginatorModule,
-  MatDatepickerModule,
-  MatRippleModule
+  MatDatepickerModule
 } from '@angular/material';
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -98,8 +97,7 @@ import { EditComponent } from './events/edit/edit.component';
     MatSlideToggleModule,
     MatMenuModule,
     MatPaginatorModule,
-    MatDatepickerModule,
-    MatRippleModule
+    MatDatepickerModule
   ],
   entryComponents: [
     AlertDialogComponent,
