@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { GlobalDataService } from '../services/global-data.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatTableDataSource } from '@angular/material';
 import { Event } from '../../models/event';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -9,6 +9,7 @@ import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dia
 import { PromptDialogComponent } from '../components/prompt-dialog/prompt-dialog.component';
 import { AlertDialogComponent } from '../components/alert-dialog/alert-dialog.component';
 import { Account, Wallet, SimpleWallet, Password } from 'nem-library';
+import { firestore } from 'firebase';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +18,16 @@ import { Account, Wallet, SimpleWallet, Password } from 'nem-library';
 })
 export class HomeComponent implements OnInit {
   public loading = true;
-  
+
+  public dataSource?: MatTableDataSource<{
+    id: string,
+    eventName: string,
+    status: string,
+    sales: number,
+    capacity: number
+  }>;
+  public displayedColumns = ["eventName", "status", "capacity"];
+
   constructor(
     public global: GlobalDataService,
     private router: Router,
@@ -34,6 +44,7 @@ export class HomeComponent implements OnInit {
       }
 
       await this.global.initialize();
+      await this.initialize();
 
       this.loading = false;
     });
@@ -41,13 +52,36 @@ export class HomeComponent implements OnInit {
 
   public async logout() {
     await this.global.logout();
-    this.router.navigate(["/accounts/login"]);
+    this.router.navigate(["accounts", "login"]);
+  }
+
+  public async initialize() {
+    let tableData = this.global.events.map(event => {
+      let status = event.data.sellingStarted ? this.translation.sellingStarted[this.global.lang] : this.translation.sellingNotStarted[this.global.lang];
+      let sales = event.sales.length;
+      let capacity = 0;
+      if (event.data.groups) {
+        for (let group of event.data.groups) {
+          capacity += group.capacity;
+        }
+      }
+
+      return {
+        id: event.id,
+        eventName: event.data.name,
+        status: status,
+        sales: sales,
+        capacity: capacity
+      }
+    })
+    this.dataSource = new MatTableDataSource(tableData);
   }
 
   public async refresh() {
     this.loading = true;
 
     await this.global.refresh();
+    await this.initialize();
 
     this.loading = false;
   }
@@ -76,44 +110,13 @@ export class HomeComponent implements OnInit {
         name: eventName,
         privateKey: privateKey,
         sellingStarted: false,
-        sellingEnded: false,
-        groups: {},
-        date: Date.now()
-      });
+        groups: [],
+        date: firestore.Timestamp.fromDate(new Date())
+      } as Event);
 
       await this.refresh();
       this.router.navigate(["events", newEvent.id]);
     });
-  }
-
-  public async deleteEvent(event: {id: string, data: Event}) {
-    if(event.data.sellingStarted) {
-      this.dialog.open(AlertDialogComponent, {
-        data: {
-          title: this.translation.error[this.global.lang],
-          content: this.translation.cantDelete[this.global.lang]
-        }
-      });
-      return;
-    }
-
-    this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: this.translation.confirmation[this.global.lang],
-        content: this.translation.deleteConfirmation[this.global.lang]
-      }
-    }).afterClosed().subscribe(async (result) => {
-      if (!result) {
-        return;
-      }
-
-      let uid = this.auth.auth.currentUser!.uid;
-
-      await this.firestore.collection("users").doc(uid).collection("events").doc(event.id).delete();
-
-      await this.refresh();
-    });
-
   }
 
   public translation = {
@@ -149,17 +152,21 @@ export class HomeComponent implements OnInit {
       en: "Error",
       ja: "エラー"
     } as any,
-    cantDelete: {
-      en: "You can't delete an event during the selling.",
-      ja: "販売中のイベントを削除することはできません。"
+    status: {
+      en: "Status",
+      ja: "ステータス"
     } as any,
-    confirmation: {
-      en: "Confirmation",
-      ja: "確認"
+    capacity: {
+      en: "Capacity",
+      ja: "定員"
     } as any,
-    deleteConfirmation: {
-      en: "Are you sure to delete the event?",
-      ja: "イベントを削除しますか？"
+    sellingNotStarted: {
+      en: "Not on sale",
+      ja: "未販売"
+    } as any,
+    sellingStarted: {
+      en: "Now on sale",
+      ja: "販売中"
     } as any
   };
 }

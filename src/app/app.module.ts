@@ -21,7 +21,6 @@ import {
   MatTooltipModule,
   MatFormFieldModule,
   MatSidenavModule,
-  MatRippleModule,
   MatProgressSpinnerModule,
   MatDividerModule,
   MatDialogModule,
@@ -31,7 +30,8 @@ import {
   MatMenuModule,
   MatTableModule,
   MatPaginatorModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatRippleModule
 } from '@angular/material';
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -49,7 +49,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { LoadingDialogComponent } from './components/loading-dialog/loading-dialog.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { TermsComponent } from './accounts/terms/terms.component';
-import { PurchasesListComponent } from './events/event/purchases-list/purchases-list.component';
+import { SalesListComponent } from './events/event/sales-list/sales-list.component';
 import { EditComponent } from './events/edit/edit.component';
 
 @NgModule({
@@ -65,7 +65,7 @@ import { EditComponent } from './events/edit/edit.component';
     LoadingDialogComponent,
     PromptDialogComponent,
     TermsComponent,
-    PurchasesListComponent,
+    SalesListComponent,
     EditComponent
   ],
   imports: [
@@ -90,7 +90,6 @@ import { EditComponent } from './events/edit/edit.component';
     MatTooltipModule,
     MatFormFieldModule,
     MatSidenavModule,
-    MatRippleModule,
     HttpClientModule,
     MatProgressSpinnerModule,
     MatDividerModule,
@@ -99,8 +98,8 @@ import { EditComponent } from './events/edit/edit.component';
     MatSlideToggleModule,
     MatMenuModule,
     MatPaginatorModule,
-    MatRippleModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatRippleModule
   ],
   entryComponents: [
     AlertDialogComponent,

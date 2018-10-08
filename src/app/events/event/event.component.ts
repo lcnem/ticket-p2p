@@ -8,7 +8,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
 import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dialog.component';
 import { Event } from '../../../models/event';
-import { Purchase } from '../../../models/purchase';
+import { Sale } from '../../../models/sale';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 declare let Stripe: any;
@@ -28,7 +28,7 @@ export class EventComponent implements OnInit {
   public event!: {
     id: string,
     data: Event,
-    purchases: Purchase[]
+    sales: Sale[]
   };
 
   constructor(
