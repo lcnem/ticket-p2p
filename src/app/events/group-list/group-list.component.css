@@ -1,0 +1,14 @@
+tr {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    text-align: left;
+    font-weight: normal;
+    color: #888;
+}
+
+th, tb {
+    min-width: 100px;
+}

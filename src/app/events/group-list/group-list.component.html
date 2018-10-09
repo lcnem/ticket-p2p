@@ -1,10 +1,10 @@
-<table [hidden]="loading">
-  <tr>
-    <th>グループ名</th>
-    <th>人数</th>
+<table fxFill [hidden]="loading">
+  <tr fxFill>
+    <th fxFlex="30">グループ名</th>
+    <th fxFlex>人数</th>
   </tr>
   <tr *ngFor="let g of groups">
-    <td>{{g.name}}</td>
-    <td>{{g.capacity}}</td>
+    <td fxFlex="30">{{g.name}}</td>
+    <td fxFlex>{{g.capacity}}</td>
   </tr>
 </table>
