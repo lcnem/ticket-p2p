@@ -16,7 +16,7 @@ dt {
 
 dd {
   width: 70%;
-  overflow: scroll;
+  overflow: auto;
 }
 
 h3 a {

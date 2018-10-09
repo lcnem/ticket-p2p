@@ -80,13 +80,17 @@ export class EditComponent implements OnInit {
 
   }
 
-  public async addGroup() {
+  public addGroup() {
     const groups = {
       name: "",
       capacity: 0
     };
 
     this.groups.push(groups)
+  }
+
+  public deleteGroup(index: number) {
+    this.groups = this.groups.filter((g, i) => i != index);
   }
 
   public translation = {

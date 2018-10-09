@@ -18,14 +18,15 @@
         </mat-form-field>
         <h3>枠の追加</h3>
         <div *ngFor="let group of groups; let i = index" fxLayoutAlign="space-between center">
-          <mat-form-field fxFlex="69">
-            <input matInput placeholder="{{translation.groupName[global.lang]}}" [(ngModel)]="group.name" name="group{{i}}-name"
+          <mat-form-field fxFlex="65">
+            <input matInput placeholder="{{translation.groupName[global.lang]}}" [(ngModel)]="group.name" name="group{{i}}-name" id="group{{i}}-name"
               required />
           </mat-form-field>
-          <mat-form-field fxFlex="29">
+          <mat-form-field fxFlex="30">
             <input matInput type="number" placeholder="{{translation.capacity[global.lang]}}" [(ngModel)]="group.capacity" name="group{{i}}-capacity"
               required />
           </mat-form-field>
+          <div fxFlex="2" (click)="deleteGroup(i)"><mat-icon>delete</mat-icon></div>
         </div>
         <div fxLayoutAlign="space-between center">
           <button mat-raised-button fxFlex="49" color="primary" (click)="addGroup()">枠の追加</button>
