@@ -22,11 +22,10 @@ export class HomeComponent implements OnInit {
   public dataSource?: MatTableDataSource<{
     id: string,
     eventName: string,
-    status: string,
     sales: number,
     capacity: number
   }>;
-  public displayedColumns = ["eventName", "status", "capacity"];
+  public displayedColumns = ["eventName", "capacity"];
 
   constructor(
     public global: GlobalDataService,
@@ -57,21 +56,13 @@ export class HomeComponent implements OnInit {
 
   public async initialize() {
     let tableData = this.global.events.map(event => {
-      let status = event.data.sellingStarted ? this.translation.sellingStarted[this.global.lang] : this.translation.sellingNotStarted[this.global.lang];
       let sales = event.sales.length;
-      let capacity = 0;
-      if (event.data.groups) {
-        for (let group of event.data.groups) {
-          capacity += group.capacity;
-        }
-      }
 
       return {
         id: event.id,
         eventName: event.data.name,
-        status: status,
         sales: sales,
-        capacity: capacity
+        capacity: event.capacity
       }
     })
     this.dataSource = new MatTableDataSource(tableData);
@@ -152,21 +143,9 @@ export class HomeComponent implements OnInit {
       en: "Error",
       ja: "エラー"
     } as any,
-    status: {
-      en: "Status",
-      ja: "ステータス"
-    } as any,
     capacity: {
       en: "Capacity",
       ja: "定員"
-    } as any,
-    sellingNotStarted: {
-      en: "Not on sale",
-      ja: "未販売"
-    } as any,
-    sellingStarted: {
-      en: "Now on sale",
-      ja: "販売中"
     } as any
   };
 }
