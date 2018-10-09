@@ -1,10 +1,12 @@
-<table fxFill [hidden]="loading">
-  <tr fxFill>
-    <th fxFlex="30">グループ名</th>
-    <th fxFlex>人数</th>
-  </tr>
-  <tr *ngFor="let g of groups">
-    <td fxFlex="30">{{g.name}}</td>
-    <td fxFlex>{{g.capacity}}</td>
-  </tr>
+<table mat-table fxFill [dataSource]="dataSource">
+  <ng-container matColumnDef="eventName">
+    <th mat-header-cell *matHeaderCellDef> {{translation.groupName[global.lang]}} </th>
+    <td mat-cell *matCellDef="let element"> {{element.groupName}} </td>
+  </ng-container>
+  <ng-container matColumnDef="capacity">
+    <th mat-header-cell *matHeaderCellDef> {{translation.capacity[global.lang]}} </th>
+    <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
