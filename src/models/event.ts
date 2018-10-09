@@ -8,6 +8,5 @@ export interface Event {
   groups: {
     name: string,
     capacity: number
-  }[],
-  date: firestore.Timestamp
+  }[]
 }
