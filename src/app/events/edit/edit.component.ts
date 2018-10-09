@@ -66,11 +66,8 @@ export class EditComponent implements OnInit {
     }
 
     this.event = event;
-    this.name = this.event.data.name;
-    this.groups = [{
-      name: "学生",
-      capacity: 100
-    }]
+    this.name = event.data.name;
+    this.groups = []; // this.groups = gropus;
   }
 
   public async submit() {
@@ -81,6 +78,18 @@ export class EditComponent implements OnInit {
       groups: this.groups
     } as Event, { merge: true });
 
+  }
+
+  public async addGroup() {
+    // ここでapiをたたいて枠の追加を行う
+
+    const groups = { // モック
+      name: "",
+      capacity: 0
+    }
+
+    this.groups.push(groups)
+    
   }
 
   public translation = {
@@ -95,6 +104,14 @@ export class EditComponent implements OnInit {
     eventName: {
       en: "Event name",
       ja: "イベント名"
+    } as any,
+    groupName: {
+      en: "Group name",
+      ja: "グループ名"
+    } as any,
+    capacity: {
+      en: "Capacity",
+      ja: "人数"
     } as any,
     submit: {
       en: "Submit",
