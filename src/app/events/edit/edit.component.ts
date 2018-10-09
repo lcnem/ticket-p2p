@@ -21,13 +21,11 @@ export class EditComponent implements OnInit {
     data: Event,
     sales: Sale[]
   };
-  public form: {
+  public name = "";
+  public groups: {
     name: string,
-    groups: {
-      name: string,
-      capacity: number
-    }[]
-  } = {} as any;
+    capacity: number
+  }[] = [] as any;
 
   constructor(
     public global: GlobalDataService,
@@ -66,15 +64,21 @@ export class EditComponent implements OnInit {
       });
       return;
     }
+
     this.event = event;
+    this.name = this.event.data.name;
+    this.groups = [{
+      name: "学生",
+      capacity: 100
+    }]
   }
 
   public async submit() {
     let uid = this.auth.auth.currentUser!.uid;
 
     await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
-      name: this.form.name,
-      groups: this.form.groups
+      name: this.name,
+      groups: this.groups
     } as Event, { merge: true });
 
   }

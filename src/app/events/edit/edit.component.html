@@ -10,9 +10,19 @@
   <ng-template #loaded>
     <form #form="ngForm" (ngSubmit)="submit()">
       <mat-form-field fxFill>
-        <input matInput placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="form.name" name="name"
+        <input matInput placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="name" name="name"
           required />
       </mat-form-field>
+      <div *ngFor="let group of groups">
+        <mat-form-field fxFill>
+          <input matInput placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="group.name" name="groupName"
+            required />
+        </mat-form-field>
+        <mat-form-field fxFill>
+          <input matInput type="number" placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="group.capacity" name="capacity"
+            required />
+        </mat-form-field>
+      </div>
       <button mat-raised-button color="accent" fxFill [disabled]="form.disabled">{{translation.submit[global.lang]}}</button>
     </form>
   </ng-template>
