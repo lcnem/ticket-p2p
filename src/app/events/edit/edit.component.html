@@ -11,7 +11,7 @@
     <h2>イベントの編集</h2>
     <mat-card>
       <form #form="ngForm" (ngSubmit)="submit()">
-        <h3>イベント名の編集編集</h3>
+        <h3>イベント名の編集</h3>
         <mat-form-field fxFill>
           <input matInput placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="name" name="name"
             required />

@@ -50,6 +50,7 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
 import { TermsComponent } from './accounts/terms/terms.component';
 import { SalesListComponent } from './events/event/sales-list/sales-list.component';
 import { EditComponent } from './events/edit/edit.component';
+import { GroupListComponent } from './events/group-list/group-list.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { EditComponent } from './events/edit/edit.component';
     PromptDialogComponent,
     TermsComponent,
     SalesListComponent,
-    EditComponent
+    EditComponent,
+    GroupListComponent
   ],
   imports: [
     BrowserModule,

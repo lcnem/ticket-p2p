@@ -67,7 +67,7 @@ export class EditComponent implements OnInit {
 
     this.event = event;
     this.name = event.data.name;
-    this.groups = []; // this.groups = gropus;
+    this.groups = [];
   }
 
   public async submit() {
