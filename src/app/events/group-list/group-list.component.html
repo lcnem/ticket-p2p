@@ -1,3 +1,10 @@
-<p>
-  group-list works!
-</p>
+<table [hidden]="loading">
+  <tr>
+    <th>グループ名</th>
+    <th>人数</th>
+  </tr>
+  <tr *ngFor="let g of groups">
+    <td>{{g.name}}</td>
+    <td>{{g.capacity}}</td>
+  </tr>
+</table>

@@ -26,6 +26,10 @@ export class EditComponent implements OnInit {
     name: string,
     capacity: number
   }[] = [] as any;
+  public addedGroups: {
+    name: string,
+    capacity: number
+  }[] = [] as any;
 
   constructor(
     public global: GlobalDataService,
@@ -68,6 +72,10 @@ export class EditComponent implements OnInit {
     this.event = event;
     this.name = event.data.name;
     this.groups = [];
+    this.addedGroups = [ // モック
+      {name: "大人", capacity: 100},
+      {name: "学生", capacity: 50}
+    ];
   }
 
   public async submit() {

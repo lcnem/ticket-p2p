@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-group-list',
@@ -6,6 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./group-list.component.css']
 })
 export class GroupListComponent implements OnInit {
+
+  @Input() groups!: {
+    name: string,
+    capacity: number
+  }[];
 
   constructor() { }
 
