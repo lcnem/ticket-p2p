@@ -1,3 +1,14 @@
 .mat-table {
   overflow: scroll;
 }
+
+.table-container {
+  padding: 24px 0;
+}
+
+.no-customer {
+  margin-left: 16px;
+  margin-top: 10px;
+  color: #888888;
+  font-size: 12px;
+}

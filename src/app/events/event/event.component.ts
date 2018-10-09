@@ -84,6 +84,10 @@ export class EventComponent implements OnInit {
     this.loading = false;
   }
 
+  public async deleteEvent() {
+    console.log("delete!");
+  }
+
   public startSelling() {
     this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -257,9 +261,17 @@ export class EventComponent implements OnInit {
       en: "Event operations",
       ja: "イベントに対する操作"
     } as any,
+    editEventDetails: {
+      en: "Edit event",
+      ja: "イベントの編集"
+    } as any,
+    editEventDetailsBody: {
+      en: "Edit your event details. Once you start selling, you can't change settings of this event.",
+      ja: "イベントの設定を編集します。販売開始後は、イベントの設定を変更することはできません。"
+    } as any,
     startSelling: {
       en: "Start selling",
-      ja: "販売を開始する"
+      ja: "販売を開始"
     } as any,
     startSellingBody: {
       en: "Enabling the API for selling. Once you start selling, you can't change settings of this event.",
@@ -267,11 +279,19 @@ export class EventComponent implements OnInit {
     } as any,
     endSelling: {
       en: "End selling",
-      ja: "販売を終了する"
+      ja: "販売を終了"
     } as any,
     endSellingBody: {
       en: "Ending selling and Enabling the scanning the QR-codes of tickets. To do this operation, we charge the fee as you go.　Price: 100 Yen per ticket",
       ja: "販売を終了し、QRコードのスキャン機能を有効化します。この機能を使うために、使用した分だけ、利用料を支払います。価格: 100円/枚"
+    } as any,
+    deleteEvent: {
+      en: "Delete event",
+      ja: "イベントの削除"
+    } as any,
+    deleteEventBody: {
+      en: "Delete this event.",
+      ja: "イベントを削除します。"
     } as any,
     startCamera: {
       en: "Start the camera",
@@ -280,6 +300,10 @@ export class EventComponent implements OnInit {
     startCameraBody: {
       en: "Starting the camera to scan QR-code of tickets.",
       ja: "チケットのQRコードを読み取るためのカメラを起動します。"
-    } as any
+    } as any,
+    eventPurchases: {
+      en: "Event Purchases",
+      ja: "購入者"
+    }
   };
 }

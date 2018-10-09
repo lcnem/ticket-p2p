@@ -26,8 +26,7 @@ export class EditComponent implements OnInit {
     groups: {
       name: string,
       capacity: number
-    }[],
-    date: Date,
+    }[]
   } = {} as any;
 
   constructor(
@@ -75,7 +74,7 @@ export class EditComponent implements OnInit {
 
     await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
       name: this.form.name,
-      date: firebase.firestore.Timestamp.fromDate(this.form.date)
+      groups: this.form.groups
     } as Event, { merge: true });
 
   }

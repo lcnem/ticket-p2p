@@ -1,8 +1,71 @@
 mat-card {
-  border-radius: 12px;
+  border-radius: 5px;
+  padding: 0 24px;
+}
+
+dl {
+  display: flex;
+  margin: 0;
+  padding: 16px 0;
+}
+
+dt {
+  width: 30%;
+  max-width: 120px;
+}
+
+dd {
+  width: 70%;
+  overflow: scroll;
+}
+
+h3 a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+h3 mat-icon {
+  font-size: 20px;
+  vertical-align: sub;
+  transition-duration: .2s;
+}
+
+h3:hover mat-icon {
+  opacity: .7;
+}
+
+.event-operation {
+  padding: 0;
+}
+
+.event-operation li {
+  list-style: none;
+  padding: 16px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.event-operation h4 {
+  margin: 0;
+  margin-bottom: 2px;
+}
+
+.event-operation .left-content div {
+  color: #777;
+}
+
+.event-operation .right-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
 }
 
 .mat-line {
   word-wrap: break-word !important;
   white-space: pre-wrap !important;
+}
+
+.mat-line.detail {
+  color: #888;
 }
