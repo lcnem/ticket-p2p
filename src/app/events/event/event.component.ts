@@ -10,12 +10,7 @@ import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dia
 import { Event } from '../../../models/event';
 import { Sale } from '../../../models/sale';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
-
-declare let Stripe: any;
-
-const stripePublicKey =
-  "pk_live_U7J2IacDFZyCvYILl45onao9";
-  //"pk_test_sVIc8W1jrazk2t1LxqAdnls3";
+import { stripeCharge } from 'src/models/stripe';
 
 @Component({
   selector: 'app-event',
@@ -110,7 +105,7 @@ export class EventComponent implements OnInit {
       this.dialog.open(AlertDialogComponent, {
         data: {
           title: this.translation.error[this.global.lang],
-          content: ""
+          content: this.translation.unsupported[this.global.lang]
         }
       });
       return;
@@ -128,17 +123,17 @@ export class EventComponent implements OnInit {
     let details = {
       displayItems: [
         {
-          label: `${this.translation.fee[this.global.lang]}: 100 * ${capacity}`,
+          label: `${this.translation.fee[this.global.lang]}: 50 * ${capacity}`,
           amount: {
             currency: "JPY",
-            value: (capacity * 100).toString()
+            value: (capacity * 50).toString()
           }
         },
         {
           label: this.translation.tax[this.global.lang],
           amount: {
             currency: "JPY",
-            value: (capacity * 8).toString()
+            value: (capacity * 5).toString()
           }
         }
       ],
@@ -146,7 +141,7 @@ export class EventComponent implements OnInit {
         label: this.translation.total[this.global.lang],
         amount: {
           currency: "JPY",
-          value: (capacity * 108).toString()
+          value: (capacity * 54).toString()
         }
       }
     };
@@ -158,13 +153,7 @@ export class EventComponent implements OnInit {
       return;
     }
 
-    Stripe.setPublishableKey(stripePublicKey);
-    Stripe.card.createToken({
-      number: result.details.cardNumber,
-      cvc: result.details.cardSecurityCode,
-      exp_month: result.details.expiryMonth,
-      exp_year: result.details.expiryYear
-    }, async (status: any, response: any) => {
+    stripeCharge(result,  async (status: any, response: any) => {
       if (response.error) {
         result.complete("fail");
 
@@ -283,7 +272,7 @@ export class EventComponent implements OnInit {
     } as any,
     endSellingBody: {
       en: "Ending selling and Enabling the scanning the QR-codes of tickets. To do this operation, we charge the fee as you go.　Price: 100 Yen per ticket",
-      ja: "販売を終了し、QRコードのスキャン機能を有効化します。この機能を使うために、使用した分だけ、利用料を支払います。価格: 100円/枚"
+      ja: "販売を終了し、QRコードのスキャン機能を有効化します。この機能を使うために、使用した分だけ、利用料を支払います。価格: 50円/枚"
     } as any,
     deleteEvent: {
       en: "Delete event",

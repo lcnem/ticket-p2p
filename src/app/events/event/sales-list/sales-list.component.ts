@@ -1,9 +1,14 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
+import { MatTableDataSource, MatPaginator, PageEvent, MatDialog } from '@angular/material';
 import { AccountHttp, Address } from 'nem-library';
 import { nodes } from '../../../../models/nodes';
 import { Sale } from '../../../../models/sale';
 import { GlobalDataService } from '../../../services/global-data.service';
+import { stripeCharge } from 'src/models/stripe';
+import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
+import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
+import { HttpClient } from '@angular/common/http';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-sales-list',
@@ -24,15 +29,24 @@ export class SalesListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   @Input() sales!: Sale[];
+  @Input() userId!: string;
+  @Input() eventId!: string;
 
   constructor(
-    public global: GlobalDataService
+    public global: GlobalDataService,
+    private dialog: MatDialog,
+    private http: HttpClient,
+    private firestore: AngularFirestore
   ) { }
 
   ngOnInit() {
+    this.initialize();
+  }
+
+  public initialize() {
     let tableData = [];
 
-    for(let purchase of this.sales) {
+    for (let purchase of this.sales) {
       tableData.push({
         customerId: purchase.customerId,
         address: purchase.ticket,
@@ -54,31 +68,31 @@ export class SalesListComponent implements OnInit {
       pageSize: this.paginator.pageSize
     });//awaitなしでよい
   }
-  
-  public async onPageChanged(pageEvent :PageEvent) {
+
+  public async onPageChanged(pageEvent: PageEvent) {
     this.loading = true;
 
     let accountHttp = new AccountHttp(nodes);
     const pageSize = 25;
 
     //テーブル表示範囲をiで回す
-    for(let i = pageEvent.pageIndex * pageEvent.pageSize; i < (pageEvent.pageIndex + 1) * pageEvent.pageSize && i < pageEvent.length; i++) {
+    for (let i = pageEvent.pageIndex * pageEvent.pageSize; i < (pageEvent.pageIndex + 1) * pageEvent.pageSize && i < pageEvent.length; i++) {
       let address = this.sales[i].ticket;
-      let transactions = await accountHttp.allTransactions(new Address(address), {pageSize: pageSize}).toPromise();
+      let transactions = await accountHttp.allTransactions(new Address(address), { pageSize: pageSize }).toPromise();
 
       //トランザクション履歴がなければ
-      if(transactions.length == 0) {
+      if (transactions.length == 0) {
         this.dataSource!.data[i].status = this.translation.valid[this.global.lang];
       } else {
         this.dataSource!.data[i].status = this.translation.invalid[this.global.lang];
         //ページサイズにデータが詰まってくるのであれば、空きがでるまで回す
-        while(transactions.length == pageSize) {
+        while (transactions.length == pageSize) {
           let hash = transactions[pageSize - 1].getTransactionInfo().hash.data;
           transactions = await accountHttp.allTransactions(new Address(address), { pageSize: pageSize, hash: hash }).toPromise();
         }
         //一番古いトランザクションがわかる
         let invalidator = transactions[transactions.length - 1].signer!.address.plain();
-        if(invalidator == "NDFRSC6OVQUOBP6NEHPDDA7ZTYQAS3VNOD6C3DCW") {
+        if (invalidator == "NDFRSC6OVQUOBP6NEHPDDA7ZTYQAS3VNOD6C3DCW") {
           this.dataSource!.data[i].invalidator = this.translation.thisSystem[this.global.lang];
         } else {
           this.dataSource!.data[i].invalidator = invalidator;
@@ -86,6 +100,118 @@ export class SalesListComponent implements OnInit {
       }
     }
     this.loading = false;
+  }
+
+  public async sendReward(address: string) {
+    if (!(window as any).PaymentRequest) {
+      this.dialog.open(AlertDialogComponent, {
+        data: {
+          title: this.translation.error[this.global.lang],
+          content: this.translation.unsupported[this.global.lang]
+        }
+      });
+      return;
+    }
+
+    let amount: number = await this.dialog.open(PromptDialogComponent, {
+      data: {
+        title: this.translation.sendReward[this.global.lang],
+        input: {
+          min: 0,
+          placeholder: this.translation.amount[this.global.lang],
+          type: "number"
+        }
+      }
+    }).afterClosed().toPromise();
+
+    let supportedInstruments: PaymentMethodData[] = [{
+      supportedMethods: ['basic-card'],
+      data: {
+        supportedNetworks: [
+          'visa',
+          'mastercard'
+        ]
+      }
+    }];
+
+    let fee = Math.floor(amount * 0.05);
+
+    let details = {
+      displayItems: [
+        {
+          label: this.translation.reward[this.global.lang],
+          amount: {
+            currency: "JPY",
+            value: amount.toString()
+          }
+        },
+        {
+          label: this.translation.fee[this.global.lang],
+          amount: {
+            currency: "JPY",
+            value: fee.toString()
+          }
+        }
+      ],
+      total: {
+        label: this.translation.total[this.global.lang],
+        amount: {
+          currency: "JPY",
+          value: (amount + fee).toString()
+        }
+      }
+    };
+
+    let request = new PaymentRequest(supportedInstruments, details, { requestShipping: false });
+
+    let result = await request.show();
+    if (!result) {
+      return;
+    }
+
+    stripeCharge(result, async (status: any, response: any) => {
+      if (response.error) {
+        result.complete("fail");
+
+        return;
+      }
+
+      try {
+        await this.http.post(
+          "/api/send-reward",
+          {
+            amount: amount,
+            token: response.id,
+            address: address
+          }
+        ).toPromise();
+
+        let query = await this.firestore.collection("users").doc(this.userId).collection("events").doc(this.eventId).collection("sales").ref.where("ticket", "==", address).get();
+        if(!query.empty) {
+          await query.docs[0].ref.delete();
+        }
+
+        result.complete("success");
+
+        await this.dialog.open(AlertDialogComponent, {
+          data: {
+            title: this.translation.completed[this.global.lang],
+            content: ""
+          }
+        }).afterClosed().toPromise();
+
+        this.initialize();
+      } catch {
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            title: this.translation.error[this.global.lang],
+            content: ""
+          }
+        });
+
+        result.complete("fail");
+      }
+    });
   }
 
   public translation = {
@@ -124,6 +250,38 @@ export class SalesListComponent implements OnInit {
     thisSystem: {
       en: "This system",
       ja: "このシステム"
+    } as any,
+    sendReward: {
+      en: "Send a reward for the report",
+      ja: "通報に対する報酬を送る"
+    } as any,
+    amount: {
+      en: "Amount",
+      ja: "量"
+    } as any,
+    unsupported: {
+      en: "Request Payment API is not supported in this browser.",
+      ja: "Request Payment APIがこのブラウザではサポートされていません。"
+    } as any,
+    error: {
+      en: "Error",
+      ja: "エラー"
+    } as any,
+    completed: {
+      en: "Completed",
+      ja: "完了"
+    } as any,
+    reward: {
+      en: "Reward",
+      ja: "報酬"
+    } as any,
+    fee: {
+      en: "Fee",
+      ja: "手数料"
+    } as any,
+    total: {
+      en: "Total",
+      ja: "合計"
     } as any
   };
 }
