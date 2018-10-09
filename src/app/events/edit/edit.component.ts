@@ -81,15 +81,12 @@ export class EditComponent implements OnInit {
   }
 
   public async addGroup() {
-    // ここでapiをたたいて枠の追加を行う
-
-    const groups = { // モック
+    const groups = {
       name: "",
       capacity: 0
-    }
+    };
 
     this.groups.push(groups)
-    
   }
 
   public translation = {
