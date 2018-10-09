@@ -74,8 +74,7 @@ export class EditComponent implements OnInit {
     let uid = this.auth.auth.currentUser!.uid;
 
     await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
-      name: this.name,
-      groups: this.groups
+      name: this.name
     } as Event, { merge: true });
 
   }

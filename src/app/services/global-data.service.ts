@@ -10,6 +10,7 @@ import { Event } from '../../models/event';
 import { Sale } from '../../models/sale';
 import { NEMLibrary, NetworkTypes } from 'nem-library';
 import { Router } from '@angular/router';
+import { Group } from 'src/models/group';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,9 @@ export class GlobalDataService {
   public events: {
     id: string,
     data: Event,
-    sales: Sale[]
+    groups: Group[],
+    sales: Sale[],
+    capacity: number
   }[] = [];
 
   constructor(
@@ -77,12 +80,20 @@ export class GlobalDataService {
 
     this.events = [];
     for (let doc of events.docs) {
+      let groups = await doc.ref.collection("groups").get();
+      let groupsData = groups.docs.map(doc => doc.data() as Group);
       let sales = await doc.ref.collection("sales").get();
+      let capacity = 0;
+      for(let group of groupsData) {
+        capacity += group.capacity;
+      }
 
       this.events.push({
         id: doc.id,
         data: doc.data() as Event,
-        sales: sales.docs.map(doc => doc.data() as Sale)
+        groups: groupsData,
+        sales: sales.docs.map(doc => doc.data() as Sale),
+        capacity: capacity
       });
     }
   }
