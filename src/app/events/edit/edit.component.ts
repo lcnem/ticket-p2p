@@ -7,7 +7,8 @@ import { Event } from '../../../models/event';
 import { Sale } from '../../../models/sale';
 import { MatDialog } from '@angular/material';
 import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
-import * as firebase from 'firebase';
+import { stripeCharge } from 'src/models/stripe';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-edit',
@@ -21,13 +22,15 @@ export class EditComponent implements OnInit {
     data: Event,
     sales: Sale[]
   };
-  public form: {
+  public name = "";
+  public groups: {
     name: string,
-    groups: {
-      name: string,
-      capacity: number
-    }[]
-  } = {} as any;
+    capacity: number
+  }[] = [] as any;
+  public addedGroups: {
+    name: string,
+    capacity: number
+  }[] = [] as any;
 
   constructor(
     public global: GlobalDataService,
@@ -35,7 +38,8 @@ export class EditComponent implements OnInit {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private auth: AngularFireAuth,
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
@@ -66,17 +70,130 @@ export class EditComponent implements OnInit {
       });
       return;
     }
+
     this.event = event;
+    this.name = event.data.name;
+    this.groups = [];
+    this.addedGroups = [ // モック
+      {name: "大人", capacity: 100},
+      {name: "学生", capacity: 50}
+    ];
   }
 
   public async submit() {
     let uid = this.auth.auth.currentUser!.uid;
 
     await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
-      name: this.form.name,
-      groups: this.form.groups
+      name: this.name
     } as Event, { merge: true });
 
+    //イベント名の保存と、定員保存分けたほうがええかもしれん
+    let capacity = 0;//追加する人数
+
+    if (!(window as any).PaymentRequest) {
+      this.dialog.open(AlertDialogComponent, {
+        data: {
+          title: this.translation.error[this.global.lang],
+          content: this.translation.unsupported[this.global.lang]
+        }
+      });
+      return;
+    }
+    let supportedInstruments: PaymentMethodData[] = [{
+      supportedMethods: ['basic-card'],
+      data: {
+        supportedNetworks: [
+          'visa',
+          'mastercard'
+        ]
+      }
+    }];
+
+    let details = {
+      displayItems: [
+        {
+          label: `${this.translation.fee[this.global.lang]}: 50 * ${capacity}`,
+          amount: {
+            currency: "JPY",
+            value: (capacity * 50).toString()
+          }
+        },
+        {
+          label: this.translation.tax[this.global.lang],
+          amount: {
+            currency: "JPY",
+            value: (capacity * 4).toString()
+          }
+        }
+      ],
+      total: {
+        label: this.translation.total[this.global.lang],
+        amount: {
+          currency: "JPY",
+          value: (capacity * 54).toString()
+        }
+      }
+    };
+
+    let request = new PaymentRequest(supportedInstruments, details, { requestShipping: false });
+
+    let result = await request.show();
+    if (!result) {
+      return;
+    }
+
+    stripeCharge(result,  async (status: any, response: any) => {
+      if (response.error) {
+        result.complete("fail");
+
+        return;
+      }
+
+      try {
+        await this.http.post(
+          "/api/v1/add-capacity",
+          {
+            userId: this.auth.auth.currentUser!.uid,
+            eventId: this.event.id,
+            token: response.id
+          }
+        ).toPromise();
+
+        result.complete("success");
+
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            title: this.translation.completed[this.global.lang],
+            content: ""
+          }
+        }).afterClosed().subscribe(async () => {
+          await this.global.back();
+        });
+      } catch {
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            title: this.translation.error[this.global.lang],
+            content: ""
+          }
+        });
+
+        result.complete("fail");
+      }
+    });
+
+  }
+
+  public addGroup() {
+    const groups = {
+      name: "",
+      capacity: 0
+    };
+
+    this.groups.push(groups)
+  }
+
+  public deleteGroup(index: number) {
+    this.groups = this.groups.filter((g, i) => i != index);
   }
 
   public translation = {
@@ -88,13 +205,53 @@ export class EditComponent implements OnInit {
       en: "Edit an event",
       ja: "イベントを編集"
     } as any,
+    editEventName: {
+      en: "Edit an event name",
+      ja: "イベント名を編集"
+    } as any,
     eventName: {
       en: "Event name",
       ja: "イベント名"
     } as any,
+    addGroup: {
+      en: "Add group",
+      ja: "枠の追加"
+    } as any,
+    groupName: {
+      en: "Group name",
+      ja: "グループ名"
+    } as any,
+    capacity: {
+      en: "Capacity",
+      ja: "人数"
+    } as any,
     submit: {
       en: "Submit",
       ja: "保存"
+    } as any,
+    history: {
+      en: "History",
+      ja: "枠の追加履歴"
+    } as any,
+    unsupported: {
+      en: "Request Payment API is not supported in this browser.",
+      ja: "Request Payment APIがこのブラウザではサポートされていません。"
+    } as any,
+    fee: {
+      en: "Fee",
+      ja: "手数料"
+    } as any,
+    tax: {
+      en: "Consumption tax",
+      ja: "消費税"
+    } as any,
+    total: {
+      en: "Total",
+      ja: "合計"
+    } as any,
+    completed: {
+      en: "Completed",
+      ja: "完了"
     } as any
   };
 }

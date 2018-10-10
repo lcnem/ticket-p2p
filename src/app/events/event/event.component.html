@@ -43,17 +43,7 @@
             <div>{{translation.editEventDetailsBody[global.lang]}}</div>
           </div>
           <div class="right-content">
-            <button mat-raised-button color="accent" [disabled]="event.data.sellingStarted" routerLink="/events/{{event.id}}/edit">イベントを編集</button>        
-          </div>
-        </li>
-        <mat-divider></mat-divider>
-        <li>
-          <div class="left-content">
-            <h4>{{translation.startSelling[global.lang]}}</h4>
-            <div>{{translation.startSellingBody[global.lang]}}</div>
-          </div>
-          <div class="right-content">
-            <button mat-raised-button color="accent" [disabled]="event.data.sellingStarted" (click)="startSelling()">{{translation.startSelling[global.lang]}}</button>        
+            <button mat-raised-button color="accent" routerLink="/events/{{event.id}}/edit">イベントを編集</button>        
           </div>
         </li>
         <mat-divider></mat-divider>
@@ -63,8 +53,7 @@
             <div>{{translation.startCameraBody[global.lang]}}</div>
           </div>
           <div class="right-content">
-            <button mat-raised-button color="accent" routerLink="/events/{{event.id}}/scan" [queryParams]="{ userId: userId }"
-                [disabled]="!event.data.sellingEnded">{{translation.startCamera[global.lang]}}</button>
+            <button mat-raised-button color="accent" routerLink="/events/{{event.id}}/scan" [queryParams]="{ userId: userId }">{{translation.startCamera[global.lang]}}</button>
           </div>
         </li>
         <mat-divider></mat-divider>
@@ -82,7 +71,7 @@
     <br />
     <h3 mat-subheader>{{translation.eventPurchases[global.lang]}}</h3>
     <mat-card>
-      <app-sales-list [sales]="event.sales"></app-sales-list>
+      <app-sales-list [sales]="event.sales" [userId]="userId" [eventId]="event.id"></app-sales-list>
     </mat-card>
   </ng-template>
 </div>
