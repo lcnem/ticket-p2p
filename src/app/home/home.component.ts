@@ -78,36 +78,34 @@ export class HomeComponent implements OnInit {
   }
 
   public async createEvent() {
-    let dialog = this.dialog.open(PromptDialogComponent, {
+    let eventName: string = await this.dialog.open(PromptDialogComponent, {
       data: {
-        title: (this.translation.createEvent as any)[this.global.lang],
+        title: this.translation.createEvent[this.global.lang],
         input: {
-          placeholder: (this.translation.eventName as any)[this.global.lang],
+          placeholder: this.translation.eventName[this.global.lang],
         }
       }
-    });
+    }).afterClosed().toPromise();
 
-    dialog.afterClosed().subscribe(async (eventName) => {
-      if (!eventName) {
-        return;
-      }
+    if (!eventName) {
+      return;
+    }
 
-      let uid = this.auth.auth.currentUser!.uid;
+    let uid = this.auth.auth.currentUser!.uid;
 
-      let password = new Password(uid);
-      let privateKey = SimpleWallet.create(uid, password).open(password).privateKey;
+    let password = new Password(uid);
+    let privateKey = SimpleWallet.create(uid, password).open(password).privateKey;
 
-      let newEvent = await this.firestore.collection("users").doc(uid).collection("events").add({
-        name: eventName,
-        privateKey: privateKey,
-        sellingStarted: false,
-        groups: [],
-        date: firestore.Timestamp.fromDate(new Date())
-      } as Event);
+    let newEvent = await this.firestore.collection("users").doc(uid).collection("events").add({
+      name: eventName,
+      privateKey: privateKey,
+      sellingStarted: false,
+      groups: [],
+      date: firestore.Timestamp.fromDate(new Date())
+    } as Event);
 
-      await this.refresh();
-      this.router.navigate(["events", newEvent.id]);
-    });
+    await this.refresh();
+    this.router.navigate(["events", newEvent.id]);
   }
 
   public translation = {

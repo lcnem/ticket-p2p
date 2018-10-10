@@ -7,7 +7,8 @@ import { Event } from '../../../models/event';
 import { Sale } from '../../../models/sale';
 import { MatDialog } from '@angular/material';
 import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
-import * as firebase from 'firebase';
+import { stripeCharge } from 'src/models/stripe';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-edit',
@@ -37,7 +38,8 @@ export class EditComponent implements OnInit {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private auth: AngularFireAuth,
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
@@ -84,6 +86,100 @@ export class EditComponent implements OnInit {
     await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
       name: this.name
     } as Event, { merge: true });
+
+    //イベント名の保存と、定員保存分けたほうがええかもしれん
+    let capacity = 0;//追加する人数
+
+    if (!(window as any).PaymentRequest) {
+      this.dialog.open(AlertDialogComponent, {
+        data: {
+          title: this.translation.error[this.global.lang],
+          content: this.translation.unsupported[this.global.lang]
+        }
+      });
+      return;
+    }
+    let supportedInstruments: PaymentMethodData[] = [{
+      supportedMethods: ['basic-card'],
+      data: {
+        supportedNetworks: [
+          'visa',
+          'mastercard'
+        ]
+      }
+    }];
+
+    let details = {
+      displayItems: [
+        {
+          label: `${this.translation.fee[this.global.lang]}: 50 * ${capacity}`,
+          amount: {
+            currency: "JPY",
+            value: (capacity * 50).toString()
+          }
+        },
+        {
+          label: this.translation.tax[this.global.lang],
+          amount: {
+            currency: "JPY",
+            value: (capacity * 4).toString()
+          }
+        }
+      ],
+      total: {
+        label: this.translation.total[this.global.lang],
+        amount: {
+          currency: "JPY",
+          value: (capacity * 54).toString()
+        }
+      }
+    };
+
+    let request = new PaymentRequest(supportedInstruments, details, { requestShipping: false });
+
+    let result = await request.show();
+    if (!result) {
+      return;
+    }
+
+    stripeCharge(result,  async (status: any, response: any) => {
+      if (response.error) {
+        result.complete("fail");
+
+        return;
+      }
+
+      try {
+        await this.http.post(
+          "/api/v1/add-capacity",
+          {
+            userId: this.auth.auth.currentUser!.uid,
+            eventId: this.event.id,
+            token: response.id
+          }
+        ).toPromise();
+
+        result.complete("success");
+
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            title: this.translation.completed[this.global.lang],
+            content: ""
+          }
+        }).afterClosed().subscribe(async () => {
+          await this.global.back();
+        });
+      } catch {
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            title: this.translation.error[this.global.lang],
+            content: ""
+          }
+        });
+
+        result.complete("fail");
+      }
+    });
 
   }
 
@@ -136,6 +232,26 @@ export class EditComponent implements OnInit {
     history: {
       en: "History",
       ja: "枠の追加履歴"
+    } as any,
+    unsupported: {
+      en: "Request Payment API is not supported in this browser.",
+      ja: "Request Payment APIがこのブラウザではサポートされていません。"
+    } as any,
+    fee: {
+      en: "Fee",
+      ja: "手数料"
+    } as any,
+    tax: {
+      en: "Consumption tax",
+      ja: "消費税"
+    } as any,
+    total: {
+      en: "Total",
+      ja: "合計"
+    } as any,
+    completed: {
+      en: "Completed",
+      ja: "完了"
     } as any
   };
 }

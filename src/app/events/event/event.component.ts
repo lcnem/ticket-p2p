@@ -11,12 +11,6 @@ import { Event } from '../../../models/event';
 import { Sale } from '../../../models/sale';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
-declare let Stripe: any;
-
-const stripePublicKey =
-  "pk_live_U7J2IacDFZyCvYILl45onao9";
-  //"pk_test_sVIc8W1jrazk2t1LxqAdnls3";
-
 @Component({
   selector: 'app-event',
   templateUrl: './event.component.html',
@@ -36,7 +30,6 @@ export class EventComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private http: HttpClient,
     private auth: AngularFireAuth,
     private firestore: AngularFirestore
   ) {
@@ -85,149 +78,26 @@ export class EventComponent implements OnInit {
   }
 
   public async deleteEvent() {
-    console.log("delete!");
-  }
-
-  public startSelling() {
-    this.dialog.open(ConfirmDialogComponent, {
+    let result = await this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: this.translation.startSelling[this.global.lang],
-        content: this.translation.startSellingBody[this.global.lang]
+        title: this.translation.deleteEvent[this.global.lang],
+        content: ""
       }
-    }).afterClosed().subscribe(async (result) => {
-      if (!result) {
-        return;
-      }
-      let uid = this.auth.auth.currentUser!.uid;
-      await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
-        sellingStarted: true
-      }, { merge: true });
-    });
-  }
+    }).afterClosed().toPromise();
 
-  public async endSelling(capacity: number) {
-    if (!(window as any).PaymentRequest) {
-      this.dialog.open(AlertDialogComponent, {
-        data: {
-          title: this.translation.error[this.global.lang],
-          content: ""
-        }
-      });
-      return;
-    }
-    let supportedInstruments: PaymentMethodData[] = [{
-      supportedMethods: ['basic-card'],
-      data: {
-        supportedNetworks: [
-          'visa',
-          'mastercard'
-        ]
-      }
-    }];
-
-    let details = {
-      displayItems: [
-        {
-          label: `${this.translation.fee[this.global.lang]}: 100 * ${capacity}`,
-          amount: {
-            currency: "JPY",
-            value: (capacity * 100).toString()
-          }
-        },
-        {
-          label: this.translation.tax[this.global.lang],
-          amount: {
-            currency: "JPY",
-            value: (capacity * 8).toString()
-          }
-        }
-      ],
-      total: {
-        label: this.translation.total[this.global.lang],
-        amount: {
-          currency: "JPY",
-          value: (capacity * 108).toString()
-        }
-      }
-    };
-
-    let request = new PaymentRequest(supportedInstruments, details, { requestShipping: false });
-
-    let result = await request.show();
-    if (!result) {
+    if(!result) {
       return;
     }
 
-    Stripe.setPublishableKey(stripePublicKey);
-    Stripe.card.createToken({
-      number: result.details.cardNumber,
-      cvc: result.details.cardSecurityCode,
-      exp_month: result.details.expiryMonth,
-      exp_year: result.details.expiryYear
-    }, async (status: any, response: any) => {
-      if (response.error) {
-        result.complete("fail");
-
-        return;
-      }
-
-      try {
-        await this.http.post(
-          "/api/end-selling",
-          {
-            userId: this.auth.auth.currentUser!.uid,
-            eventId: this.event.id,
-            token: response.id
-          }
-        ).toPromise();
-
-        result.complete("success");
-
-        this.dialog.open(AlertDialogComponent, {
-          data: {
-            title: this.translation.completed[this.global.lang],
-            content: ""
-          }
-        }).afterClosed().subscribe(async () => {
-          await this.refresh();
-        });
-      } catch {
-        this.dialog.open(AlertDialogComponent, {
-          data: {
-            title: this.translation.error[this.global.lang],
-            content: ""
-          }
-        });
-
-        result.complete("fail");
-      }
-    });
+    let uid = this.auth.auth.currentUser!.uid;
+    await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).delete();
+    this.router.navigate([""]);
   }
 
   public translation = {
     error: {
       en: "Error",
       ja: "エラー"
-    } as any,
-    completed: {
-      en: "Completed",
-      ja: "完了"
-    } as any,
-    unsupported: {
-      en: "Request Payment API is not supported in this browser.",
-      ja: "Request Payment APIがこのブラウザではサポートされていません。"
-    } as any,
-    fee: {
-      en: "Fee",
-      ja: "手数料"
-    } as any,
-    tax: {
-      en: "Consumption tax",
-      ja: "消費税"
-    } as any,
-    total: {
-      en: "Total",
-      ja: "合計"
     } as any,
     eventDescription: {
       en: "Event description",
@@ -268,22 +138,6 @@ export class EventComponent implements OnInit {
     editEventDetailsBody: {
       en: "Edit your event details. Once you start selling, you can't change settings of this event.",
       ja: "イベントの設定を編集します。販売開始後は、イベントの設定を変更することはできません。"
-    } as any,
-    startSelling: {
-      en: "Start selling",
-      ja: "販売を開始"
-    } as any,
-    startSellingBody: {
-      en: "Enabling the API for selling. Once you start selling, you can't change settings of this event.",
-      ja: "販売を開始するためのAPIを有効化します。販売を開始すると、イベントの設定を変更することはできません。"
-    } as any,
-    endSelling: {
-      en: "End selling",
-      ja: "販売を終了"
-    } as any,
-    endSellingBody: {
-      en: "Ending selling and Enabling the scanning the QR-codes of tickets. To do this operation, we charge the fee as you go.　Price: 100 Yen per ticket",
-      ja: "販売を終了し、QRコードのスキャン機能を有効化します。この機能を使うために、使用した分だけ、利用料を支払います。価格: 100円/枚"
     } as any,
     deleteEvent: {
       en: "Delete event",
