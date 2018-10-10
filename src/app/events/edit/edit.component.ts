@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material';
 import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
 import { stripeCharge } from 'src/models/stripe';
 import { HttpClient } from '@angular/common/http';
+import { Group } from 'src/models/group';
 
 @Component({
   selector: 'app-edit',
@@ -23,14 +24,12 @@ export class EditComponent implements OnInit {
     sales: Sale[]
   };
   public name = "";
-  public groups: {
-    name: string,
-    capacity: number
-  }[] = [] as any;
-  public addedGroups: {
-    name: string,
-    capacity: number
-  }[] = [] as any;
+  public groups: Group[] = [];
+
+  public forms = {
+    name: "",
+    groups: [{}] as Group[]
+  }
 
   constructor(
     public global: GlobalDataService,
@@ -73,22 +72,46 @@ export class EditComponent implements OnInit {
 
     this.event = event;
     this.name = event.data.name;
-    this.groups = [];
-    this.addedGroups = [ // モック
-      {name: "大人", capacity: 100},
-      {name: "学生", capacity: 50}
-    ];
+    this.groups = event.groups;
+    this.forms.name = this.name;
   }
 
-  public async submit() {
+  public async changeName() {
     let uid = this.auth.auth.currentUser!.uid;
 
     await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
       name: this.name
     } as Event, { merge: true });
 
-    //イベント名の保存と、定員保存分けたほうがええかもしれん
-    let capacity = 0;//追加する人数
+    this.dialog.open(AlertDialogComponent, {
+      data: {
+        title: this.translation.completed[this.global.lang],
+        content: ""
+      }
+    });
+  }
+
+  public addGroup(index: number) {
+    if(index != this.forms.groups.length - 1) {
+      return;
+    }
+    this.forms.groups.push({} as any);
+  }
+
+  public deleteGroup(index: number) {
+    this.forms.groups.splice(index, 1);
+  }
+
+  public async addCapacity() {
+    let groups = this.groups.filter(g => g.name && g.capacity > 0);
+    if(!groups.length) {
+      return;
+    }
+
+    let capacity = 0;
+    for(let group of groups) {
+      capacity += group.capacity;
+    }
 
     if (!(window as any).PaymentRequest) {
       this.dialog.open(AlertDialogComponent, {
@@ -180,20 +203,6 @@ export class EditComponent implements OnInit {
         result.complete("fail");
       }
     });
-
-  }
-
-  public addGroup() {
-    const groups = {
-      name: "",
-      capacity: 0
-    };
-
-    this.groups.push(groups)
-  }
-
-  public deleteGroup(index: number) {
-    this.groups = this.groups.filter((g, i) => i != index);
   }
 
   public translation = {
@@ -223,15 +232,11 @@ export class EditComponent implements OnInit {
     } as any,
     capacity: {
       en: "Capacity",
-      ja: "人数"
+      ja: "定員"
     } as any,
     submit: {
       en: "Submit",
       ja: "保存"
-    } as any,
-    history: {
-      en: "History",
-      ja: "枠の追加履歴"
     } as any,
     unsupported: {
       en: "Request Payment API is not supported in this browser.",
