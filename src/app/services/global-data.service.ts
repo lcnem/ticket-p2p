@@ -42,8 +42,9 @@ export class GlobalDataService {
   }
 
   public back() {
-    if (document.referrer.startsWith(location.protocol + "//" + location.host)) {
+    if (history.length > 1) {
       history.back();
+      return;
     }
     this.router.navigate([""]);
   }

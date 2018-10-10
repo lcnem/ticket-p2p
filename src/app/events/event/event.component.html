@@ -53,8 +53,7 @@
             <div>{{translation.startCameraBody[global.lang]}}</div>
           </div>
           <div class="right-content">
-            <button mat-raised-button color="accent" routerLink="/events/{{event.id}}/scan" [queryParams]="{ userId: userId }"
-                [disabled]="!event.data.sellingEnded">{{translation.startCamera[global.lang]}}</button>
+            <button mat-raised-button color="accent" routerLink="/events/{{event.id}}/scan" [queryParams]="{ userId: userId }">{{translation.startCamera[global.lang]}}</button>
           </div>
         </li>
         <mat-divider></mat-divider>
