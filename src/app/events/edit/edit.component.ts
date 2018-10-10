@@ -109,9 +109,17 @@ export class EditComponent implements OnInit {
       en: "Edit an event",
       ja: "イベントを編集"
     } as any,
+    editEventName: {
+      en: "Edit an event name",
+      ja: "イベント名を編集"
+    } as any,
     eventName: {
       en: "Event name",
       ja: "イベント名"
+    } as any,
+    addGroup: {
+      en: "Add group",
+      ja: "枠の追加"
     } as any,
     groupName: {
       en: "Group name",
@@ -124,6 +132,10 @@ export class EditComponent implements OnInit {
     submit: {
       en: "Submit",
       ja: "保存"
+    } as any,
+    history: {
+      en: "History",
+      ja: "枠の追加履歴"
     } as any
   };
 }

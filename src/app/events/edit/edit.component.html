@@ -8,15 +8,15 @@
 <div class="mat-typography body-container">
   <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
   <ng-template #loaded>
-    <h2>イベントの編集</h2>
+    <h2>{{translation.editEvent[global.lang]}}</h2>
     <mat-card>
       <form #form="ngForm" (ngSubmit)="submit()">
-        <h3>イベント名の編集</h3>
+        <h3>{{translation.editEvent[global.lang]}}</h3>
         <mat-form-field fxFill>
           <input matInput placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="name" name="name"
             required />
         </mat-form-field>
-        <h3>枠の追加</h3>
+        <h3>{{translation.addGroup[global.lang]}}</h3>
         <div *ngFor="let group of groups; let i = index" fxLayoutAlign="space-between center">
           <mat-form-field fxFlex="65">
             <input matInput placeholder="{{translation.groupName[global.lang]}}" [(ngModel)]="group.name" name="group{{i}}-name" id="group{{i}}-name"
@@ -29,13 +29,13 @@
           <div fxFlex="2" (click)="deleteGroup(i)"><mat-icon>delete</mat-icon></div>
         </div>
         <div fxLayoutAlign="space-between center">
-          <button mat-raised-button fxFlex="49" color="primary" (click)="addGroup()">枠の追加</button>
+          <button mat-raised-button fxFlex="49" color="primary" (click)="addGroup()">{{translation.addGroup[global.lang]}}</button>
           <button mat-raised-button color="accent" fxFlex="49" [disabled]="form.disabled">{{translation.submit[global.lang]}}</button>
         </div>
       </form>
     </mat-card>
     <br>
-    <h2>枠の追加履歴</h2>
+    <h2>{{translation.history[global.lang]}}</h2>
     <mat-card>
       <app-group-list [groups]="addedGroups"></app-group-list>
     </mat-card>
