@@ -8,7 +8,6 @@ import { stripeCharge } from 'src/models/stripe';
 import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
 import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
 import { HttpClient } from '@angular/common/http';
-import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-sales-list',
@@ -35,8 +34,7 @@ export class SalesListComponent implements OnInit {
   constructor(
     public global: GlobalDataService,
     private dialog: MatDialog,
-    private http: HttpClient,
-    private firestore: AngularFirestore
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
@@ -180,16 +178,14 @@ export class SalesListComponent implements OnInit {
         await this.http.post(
           "/api/send-reward",
           {
+            userId: this.userId,
+            eventId: this.eventId,
             amount: amount,
+            fee: fee,
             token: response.id,
             address: address
           }
         ).toPromise();
-
-        let query = await this.firestore.collection("users").doc(this.userId).collection("events").doc(this.eventId).collection("sales").ref.where("ticket", "==", address).get();
-        if(!query.empty) {
-          await query.docs[0].ref.delete();
-        }
 
         result.complete("success");
 
