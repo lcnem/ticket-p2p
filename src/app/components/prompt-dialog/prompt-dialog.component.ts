@@ -16,21 +16,14 @@ export class PromptDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: {
       title: string,
       input: {
-        max: number,
         maxlength: number,
-        min: number,
         minlength: number,
         pattern: string,
         placeholder: string,
-        step: number,
-        type: "text" | "number",
         value: any
       }
     }
   ) {
-    if(!data.input) {
-      (data.input as any) = {};
-    }
-    this.model = data.input.value;
+    this.model = data && data.input && data.input.value;
   }
 }
