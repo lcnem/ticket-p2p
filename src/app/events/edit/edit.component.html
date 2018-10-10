@@ -40,7 +40,7 @@
           </mat-form-field>
           <mat-form-field class="fill-remaining-space">
             <input matInput color="accent" type="number" placeholder="{{translation.capacity[global.lang]}}"
-              [(ngModel)]="group.capacity" name="group{{i}}-capacity" min="1" required="{{!l}}"
+              [(ngModel)]="group.capacity" name="group{{i}}-capacity" required="{{!l}}" min="1" minlength="1" pattern="[1-9][0-9]*"
               (focus)="addGroup(i)" />
           </mat-form-field>
           <ng-container *ngIf="!l">
