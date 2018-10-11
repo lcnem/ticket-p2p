@@ -215,6 +215,10 @@ export class SalesListComponent implements OnInit {
       en: "Customer ID",
       ja: "顧客ID"
     } as any,
+    noSales: {
+      en: "There is no sales history.",
+      ja: "購入履歴はありません。"
+    } as any,
     address: {
       en: "Address",
       ja: "アドレス"

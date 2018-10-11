@@ -1,22 +1,27 @@
-<mat-toolbar color="primary" class="mat-elevation-z4 top-toolbar">
-  <button mat-icon-button (click)="global.back()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <span>{{translation.scan[global.lang]}}</span>
-  <span class="fill-remaining-space"></span>
-</mat-toolbar>
-<div class="mat-typography body-container">
-  <mat-form-field fxFill>
-    <mat-select placeholder="{{translation.selectCamera[global.lang]}}" [(ngModel)]="selected">
-      <mat-option *ngFor="let device of availableDevices; let i = index" [value]="i">{{device.label}}</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <zxing-scanner fxFill #scanner [device]="selectedDevice" [hidden]="!selectedDevice">
-  </zxing-scanner>
-  <p *ngIf="noCamera">
-    {{translation.noCamera[global.lang]}}
-  </p>
-  <p *ngIf="!hasPermission">
-    {{translation.noPermission[global.lang]}}
-  </p>
-</div>
+<mat-sidenav-container>
+  <mat-sidenav></mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar class="mat-elevation-z4 top-toolbar">
+      <button mat-icon-button (click)="global.back()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span>{{translation.scan[global.lang]}}</span>
+      <span class="fill-remaining-space"></span>
+    </mat-toolbar>
+    <div class="mat-typography body-container">
+      <mat-form-field fxFill>
+        <mat-select placeholder="{{translation.selectCamera[global.lang]}}" [(ngModel)]="selected">
+          <mat-option *ngFor="let device of availableDevices; let i = index" [value]="i">{{device.label}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <zxing-scanner fxFill #scanner [device]="selectedDevice" [hidden]="!selectedDevice">
+      </zxing-scanner>
+      <p *ngIf="noCamera">
+        {{translation.noCamera[global.lang]}}
+      </p>
+      <p *ngIf="!hasPermission">
+        {{translation.noPermission[global.lang]}}
+      </p>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
