@@ -33,8 +33,20 @@ mat-spinner {
   margin: 0 auto;
 }
 
-.background-contain {
-  background-position: center !important;
-  background-size: contain !important;
-  background-repeat: no-repeat !important;
+.icon {
+  padding: 0;
+  min-width: 0;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  line-height: 40px;
+  border-radius: 50%;
+}
+
+.mat-fab.floating-action-button {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 16px;
+  bottom: 16px;
+  z-index: 1;
 }
