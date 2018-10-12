@@ -1,0 +1,28 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{user} {
+      allow read, update: if request.auth.uid == user;
+      allow create: if request.auth.uid != null;
+      
+      match /events/{event} {
+        allow read, write: if request.auth.uid == user;
+
+        match /groups/{group} {
+          allow read: if request.auth.uid == user;
+        }
+
+        match /sales/{sale} {
+          allow read, create: if request.auth.uid == user;
+        }
+        
+        match /capacitySupplements/{capacitySupplement} {
+          allow read: if request.auth.uid == user;
+        }
+        
+        match /purchases/{purchase} {
+          allow read, create: if request.auth.uid == user;
+        }
+      }
+    }
+  }
+}
