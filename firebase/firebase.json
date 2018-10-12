@@ -1,0 +1,51 @@
+{
+  "functions": {
+    "predeploy": [
+      "npm --prefix \"%RESOURCE_DIR%\" run lint",
+      "npm --prefix \"%RESOURCE_DIR%\" run build"
+    ],
+    "source": "functions"
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/v1/add-capacity",
+        "function": "addCapacityV1"
+      },
+      {
+        "source": "/api/v1/sales-condition",
+        "function": "salesConditionV1"
+      },
+      {
+        "source": "/api/v1/issue-tickets",
+        "function": "issueTicketsV1"
+      },
+      {
+        "source": "/api/v1/check-ticket",
+        "function": "checkTicketV1"
+      },
+      {
+        "source": "/api/v1/cancel-ticket",
+        "function": "cancelTicketV1"
+      },
+      {
+        "source": "/api/v1/send-reward",
+        "function": "sendRewardV1"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "firestore": {
+    "rules": "firestore/firestore.rules",
+    "indexes": "firestore/firestore.indexes.json"
+  }
+}
