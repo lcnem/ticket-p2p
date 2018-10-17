@@ -30,7 +30,8 @@ import {
   MatMenuModule,
   MatTableModule,
   MatPaginatorModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatProgressBarModule
 } from '@angular/material';
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -99,7 +100,8 @@ import { GroupListComponent } from './events/group-list/group-list.component';
     MatSlideToggleModule,
     MatMenuModule,
     MatPaginatorModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatProgressBarModule
   ],
   entryComponents: [
     AlertDialogComponent,
