@@ -46,6 +46,7 @@
         {{global.lang}}
       </button>
     </mat-toolbar>
+    <mat-progress-bar mode="determinate" value="{{global.progress}}"></mat-progress-bar>
     <div class="mat-typography body-container">
       <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
       <ng-template #loaded>

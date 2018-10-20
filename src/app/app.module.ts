@@ -30,7 +30,8 @@ import {
   MatMenuModule,
   MatTableModule,
   MatPaginatorModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatProgressBarModule
 } from '@angular/material';
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -101,7 +102,8 @@ import { PrivacyPolicyComponent } from './terms/privacy-policy/privacy-policy.co
     MatSlideToggleModule,
     MatMenuModule,
     MatPaginatorModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatProgressBarModule
   ],
   entryComponents: [
     AlertDialogComponent,

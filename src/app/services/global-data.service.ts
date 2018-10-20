@@ -17,6 +17,7 @@ import { Group } from 'src/models/group';
 })
 export class GlobalDataService {
   private initialized = false;
+  public progress = 0;
 
   public lang = "en";
 
@@ -76,16 +77,20 @@ export class GlobalDataService {
   }
 
   public async refresh() {
+    this.progress = 0;
     let uid = this.auth.auth.currentUser!.uid;
+    this.progress = 10;
     let events = await this.firestore.collection("users").doc(uid).collection("events").ref.get();
+    this.progress = 20;
 
     this.events = [];
-    for (let doc of events.docs) {
+    for (let i = 0; i < events.docs.length; i++) {
+      let doc = events.docs[i]
       let groups = await doc.ref.collection("groups").get();
       let groupsData = groups.docs.map(doc => doc.data() as Group);
       let sales = await doc.ref.collection("sales").get();
       let capacity = 0;
-      for(let group of groupsData) {
+      for (let group of groupsData) {
         capacity += group.capacity;
       }
 
@@ -96,6 +101,8 @@ export class GlobalDataService {
         sales: sales.docs.map(doc => doc.data() as Sale),
         capacity: capacity
       });
+      this.progress = (i + 1) * 80 / events.docs.length + 20;
     }
+    this.progress = 100;
   }
 }
