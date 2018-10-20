@@ -45,9 +45,12 @@ mat-spinner {
   border-radius: 50%;
 }
 
-.mat-fab.floating-action-button {
-  position: fixed;
-  left: 16px;
+.floating-action-button.mat-fab {
+  position: -webkit-sticky;
+  position: sticky;
   bottom: 16px;
+  display: block;
+  margin: 16px;
+  margin-left: auto;
   z-index: 1;
 }
