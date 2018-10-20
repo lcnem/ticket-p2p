@@ -15,7 +15,7 @@ export class TermsComponent implements OnInit {
     public global: GlobalDataService,
     sanitizer: DomSanitizer
   ) {
-    this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/${global.lang}.txt`);
+    this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/terms/${global.lang}.txt`);
   }
 
   ngOnInit() {

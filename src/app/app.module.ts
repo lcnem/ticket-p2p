@@ -47,10 +47,11 @@ import { AlertDialogComponent } from './components/alert-dialog/alert-dialog.com
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { LoadingDialogComponent } from './components/loading-dialog/loading-dialog.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
-import { TermsComponent } from './accounts/terms/terms.component';
+import { TermsComponent } from './terms/terms/terms.component';
 import { SalesListComponent } from './events/event/sales-list/sales-list.component';
 import { EditComponent } from './events/edit/edit.component';
 import { GroupListComponent } from './events/group-list/group-list.component';
+import { PrivacyPolicyComponent } from './terms/privacy-policy/privacy-policy.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { GroupListComponent } from './events/group-list/group-list.component';
     TermsComponent,
     SalesListComponent,
     EditComponent,
-    GroupListComponent
+    GroupListComponent,
+    PrivacyPolicyComponent
   ],
   imports: [
     BrowserModule,

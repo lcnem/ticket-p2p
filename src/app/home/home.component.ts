@@ -125,6 +125,10 @@ export class HomeComponent implements OnInit {
       en: "Terms of Service",
       ja: "利用規約"
     } as any,
+    privacyPolicy: {
+      en: "Privacy Policy",
+      ja: "プライバシーポリシー"
+    } as any,
     createEvent: {
       en: "Create your event",
       ja: "イベントを作成"

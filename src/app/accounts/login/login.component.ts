@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     private auth: AngularFireAuth,
     sanitizer: DomSanitizer
   ) {
-    this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/${global.lang}.txt`);
+    this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/terms/${global.lang}.txt`);
   }
 
   ngOnInit() {
