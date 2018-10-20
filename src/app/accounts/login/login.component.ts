@@ -5,6 +5,9 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AngularFireAuth } from '@angular/fire/auth';
 
+import * as firebase from 'firebase';
+import 'firebase/auth';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -36,7 +39,7 @@ export class LoginComponent implements OnInit {
   }
 
   public async login() {
-    await this.global.login();
+    await this.auth.auth.signInWithPopup(new firebase.auth!.GoogleAuthProvider);
     this.router.navigate(["/"]);
   }
 

@@ -47,14 +47,13 @@ export class EditComponent implements OnInit {
         this.router.navigate(["accounts", "login"]);
         return;
       }
-      await this.global.initialize();
-      await this.initialize();
-
-      this.loading = false;
+      await this.refresh();
     });
   }
 
-  public async initialize() {
+  public async refresh() {
+    await this.global.refreshEvents();
+
     let id = this.route.snapshot.paramMap.get('id');
     let event = this.global.events.find(event => id == event.id);
 
@@ -74,6 +73,8 @@ export class EditComponent implements OnInit {
     this.name = event.data.name;
     this.groups = event.groups;
     this.forms.name = this.name;
+
+    this.loading = false;
   }
 
   public async changeName() {

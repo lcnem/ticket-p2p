@@ -41,14 +41,15 @@ export class EventComponent implements OnInit {
         this.router.navigate(["accounts", "login"]);
         return;
       }
-      await this.global.initialize();
-      await this.initialize();
-
-      this.loading = false;
+      await this.refresh();
     });
   }
 
-  public async initialize() {
+  public async refresh(force?: boolean) {
+    this.loading = true;
+
+    await this.global.refreshEvents(force);
+
     this.userId = this.auth.auth.currentUser!.uid;
 
     let id = this.route.snapshot.paramMap.get('id');
@@ -66,13 +67,6 @@ export class EventComponent implements OnInit {
       return;
     }
     this.event = event;
-  }
-
-  public async refresh() {
-    this.loading = true;
-
-    await this.global.refresh();
-    await this.initialize();
 
     this.loading = false;
   }

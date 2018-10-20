@@ -18,6 +18,7 @@ import { firestore } from 'firebase';
 })
 export class HomeComponent implements OnInit {
   public loading = true;
+  public progress = 0;
 
   public dataSource?: MatTableDataSource<{
     id: string,
@@ -42,19 +43,23 @@ export class HomeComponent implements OnInit {
         return;
       }
 
-      await this.global.initialize();
-      await this.initialize();
-
-      this.loading = false;
+      await this.refresh();
     });
   }
 
   public async logout() {
-    await this.global.logout();
+    await this.auth.auth.signOut();
     this.router.navigate(["accounts", "login"]);
   }
 
-  public async initialize() {
+  public async refresh(force?: boolean) {
+    this.progress = 0;
+    this.loading = true;
+
+    this.progress = 10;
+    await this.global.refreshEvents(force);
+    this.progress = 40;
+    
     let tableData = this.global.events.map(event => {
       let sales = event.sales.length;
 
@@ -65,16 +70,12 @@ export class HomeComponent implements OnInit {
         capacity: event.capacity
       }
     })
+    this.progress = 80;
     this.dataSource = new MatTableDataSource(tableData);
-  }
-
-  public async refresh() {
-    this.loading = true;
-
-    await this.global.refresh();
-    await this.initialize();
+    this.progress = 90;
 
     this.loading = false;
+    this.progress = 100;
   }
 
   public async createEvent() {
