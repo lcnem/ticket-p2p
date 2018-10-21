@@ -7,7 +7,7 @@
       </button>
       <span>{{event && event.data.name}}</span>
       <span class="fill-remaining-space"></span>
-      <button mat-icon-button (click)="refresh()" [disabled]="loading">
+      <button mat-icon-button (click)="refresh(true)" [disabled]="loading">
         <mat-icon>refresh</mat-icon>
       </button>
     </mat-toolbar>
