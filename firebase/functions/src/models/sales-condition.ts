@@ -1,13 +1,13 @@
-import { Group } from "./group";
-import { Sale } from "./sales";
+import { Group } from "../../../../models/group";
+import { Sale } from "../../../../models/sale";
 
 export class SalesCondition {
   public groups: {
     name: string,
     sales: number,
     capacity: number
-  }[];
-  public reservations: string[];
+  }[] = [];
+  public reservations: string[] = [];
 
   public static async getFromFirebase(eventRef: FirebaseFirestore.DocumentReference) {
     const groups = await eventRef.collection("groups").get();

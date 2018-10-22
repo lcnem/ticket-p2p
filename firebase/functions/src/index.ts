@@ -15,10 +15,10 @@ import {
   AccountHttp
 } from 'nem-library';
 
-import { Group } from './models/group';
+import { Group } from '../../../models/group';
 import { SalesCondition } from './models/sales-condition';
-import { Event } from './models/event';
-import { Sale } from './models/sales';
+import { Event } from '../../../models/event';
+import { Sale } from '../../../models/sale';
 
 const stripe = require('stripe')(functions.config().stripe.sk_live);
 const cors = require('cors')({ origin: true });
