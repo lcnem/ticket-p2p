@@ -30,5 +30,5 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
-<p *ngIf="!dataSource.length" class="empty">{{translation.noSales[global.lang]}}</p>
+<p *ngIf="!dataSource || !dataSource.data.length" class="empty">{{translation.noSales[global.lang]}}</p>
 <br />

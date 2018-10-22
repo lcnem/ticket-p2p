@@ -104,7 +104,7 @@ export class EditComponent implements OnInit {
   }
 
   public async addCapacity() {
-    let groups = this.groups.filter(g => g.name && g.capacity > 0);
+    let groups = this.groups.filter(g => g.name);
     if(!groups.length) {
       return;
     }
