@@ -12,8 +12,7 @@ import {
   NetworkTypes,
   Address,
   Password,
-  AccountHttp,
-  TransactionTypes
+  AccountHttp
 } from 'nem-library';
 
 import { Group } from './models/group';
@@ -31,7 +30,7 @@ const cors = require('cors')({ origin: true });
 //  response.send("Hello from Firebase!");
 // });
 admin.initializeApp({
-  credential: admin.credential.cert(functions.config().service_account as admin.ServiceAccount),
+  credential: admin.credential.cert(JSON.parse(JSON.stringify(functions.config().service_account).replace(/\\\\n/g, "\\n"))),
   databaseURL: "https://ticket-p2p.firebaseio.com"
 });
 
@@ -54,7 +53,7 @@ export const addCapacityV1 = functions.https.onRequest(async (req, res) => {
     }
 
     let capacity = 0;
-    for (let group of groups) {
+    for (const group of groups) {
       capacity += group.capacity;
     }
 
@@ -66,7 +65,7 @@ export const addCapacityV1 = functions.https.onRequest(async (req, res) => {
     };
     await stripe.charges.create(query);
 
-    for (let group of groups) {
+    for (const group of groups) {
       await event.ref.collection("groups").add(group);
     }
 
@@ -91,7 +90,7 @@ export const salesConditionV1 = functions.https.onRequest((req, res) => {
         throw Error("INVALID_ID");
       }
 
-      let salesCondition: SalesCondition = await SalesCondition.getFromFirebase(event.ref);
+      const salesCondition: SalesCondition = await SalesCondition.getFromFirebase(event.ref);
 
       res.status(200).send(JSON.stringify(salesCondition));
     } catch (e) {
@@ -125,18 +124,18 @@ export const issueTicketsV1 = functions.https.onRequest(async (req, res) => {
       throw Error("INVALID_PRIVATE_KEY");
     }
 
-    let salesCondition: SalesCondition = await SalesCondition.getFromFirebase(event.ref);
+    const salesCondition: SalesCondition = await SalesCondition.getFromFirebase(event.ref);
 
-    for (let group of salesCondition.groups) {
-      let filtered = requests.filter(r => r.group == group.name);
+    for (const group of salesCondition.groups) {
+      const filtered = requests.filter(r => r.group == group.name);
       if(filtered.length + group.sales > group.capacity) {
         throw Error("CAPACITY_OVER");
       }
     }
 
     //検証
-    for (let request of requests) {
-      let group = salesCondition.groups.find(group => group.name == request.group);
+    for (const request of requests) {
+      const group = salesCondition.groups.find(g => g.name == request.group);
       if (!group) {
         throw Error("INVALID_GROUP");
       }
@@ -147,11 +146,11 @@ export const issueTicketsV1 = functions.https.onRequest(async (req, res) => {
       }
     }
 
-    let ret: {
+    const ret: {
       ticket: string,
       qrUrl: string
     }[] = [];
-    for (let request of requests) {
+    for (const request of requests) {
       const address = SimpleWallet.create(userId, new Password(userId)).address.plain();
       ret.push({
         ticket: address,
@@ -287,7 +286,7 @@ export const sendRewardV1 = functions.https.onRequest(async (req, res) => {
     };
     await stripe.charges.create(query);
 
-    let salesQuery = await event.ref.collection("sales").where("ticket", "==", address).get();
+    const salesQuery = await event.ref.collection("sales").where("ticket", "==", address).get();
     if (salesQuery.empty) {
       throw Error("INVALID_TICKET");
     }

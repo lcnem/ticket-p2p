@@ -14,14 +14,6 @@ service cloud.firestore {
         match /sales/{sale} {
           allow read, create: if request.auth.uid == user;
         }
-        
-        match /capacitySupplements/{capacitySupplement} {
-          allow read: if request.auth.uid == user;
-        }
-        
-        match /purchases/{purchase} {
-          allow read, create: if request.auth.uid == user;
-        }
       }
     }
   }
