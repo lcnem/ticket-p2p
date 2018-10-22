@@ -2,49 +2,58 @@ import { Injectable } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
 
-import { firebase } from '@firebase/app';
-import '@firebase/auth'
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Event } from '../../models/event';
-import { CapacitySupplement } from '../../models/capacityAddition';
+import { Sale } from '../../models/sale';
+import { NEMLibrary, NetworkTypes } from 'nem-library';
+import { Router } from '@angular/router';
+import { Group } from 'src/models/group';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GlobalDataService {
-  private initialized = false;
+  private refreshed = false;
+  private eventsRefreshed = false;
 
   public lang = "en";
 
-  public eventIds?: Array<string>;
-  public archivedEventIds?: Array<string>;
-  public events?: { [key: string]: Event };
+  public photoUrl = "";
+  public events: {
+    id: string,
+    data: Event,
+    groups: Group[],
+    sales: Sale[],
+    capacity: number
+  }[] = [];
 
   constructor(
     private auth: AngularFireAuth,
     private firestore: AngularFirestore,
-    private http: HttpClient
+    private router: Router
   ) {
+    NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
     const settings = { timestampsInSnapshots: true };
     firestore.firestore.settings(settings);
 
     this.lang = window.navigator.language.substr(0, 2) == "ja" ? "ja" : "en";
   }
 
-  public async login() {
-    await this.auth.auth.signInWithPopup(new firebase.auth!.GoogleAuthProvider);
-  }
-
-  public async logout() {
-    await this.auth.auth.signOut();
-    this.initialized = false;
-  }
-
-  public async initialize() {
-    if (this.initialized) {
+  public back() {
+    if (history.length > 1) {
+      history.back();
       return;
     }
+    this.router.navigate([""]);
+  }
+
+  public async refresh(force?: boolean) {
+    if(this.refreshed && !force) {
+      return;
+    }
+
+    this.photoUrl = this.auth.auth.currentUser!.photoURL!;
 
     let uid = this.auth.auth.currentUser!.uid;
     let docRef = this.firestore.collection("users").doc(uid).ref;
@@ -52,45 +61,38 @@ export class GlobalDataService {
     if (!doc.exists) {
       await docRef.set({});
     }
-    await this.refresh();
 
-    this.initialized = true;
+    this.refreshed = true;
   }
 
-  public async refresh() {
+  public async refreshEvents(force?: boolean) {
+    await this.refresh();
+
+    if(this.eventsRefreshed && !force) {
+      return;
+    }
+
     let uid = this.auth.auth.currentUser!.uid;
-    let eventsRef = this.firestore.collection("users").doc(uid).collection("events").ref;
+    let events = await this.firestore.collection("users").doc(uid).collection("events").ref.get();
 
-    this.eventIds = [];
-    this.archivedEventIds = [];
-    this.events = {};
-
-    let events = await eventsRef.get();
-
-    events.forEach(event => {
-      let data = event.data() as any as Event;
-      if (data.archived) {
-        this.archivedEventIds!.push(event.id);
-      } else {
-        this.eventIds!.push(event.id);
+    this.events = [];
+    for (let i = 0; i < events.docs.length; i++) {
+      let doc = events.docs[i]
+      let groups = await doc.ref.collection("groups").get();
+      let groupsData = groups.docs.map(doc => doc.data() as Group);
+      let sales = await doc.ref.collection("sales").get();
+      let capacity = 0;
+      for (let group of groupsData) {
+        capacity += group.capacity;
       }
-      this.events![event.id] = data;
-    });
 
-    for (let key in this.events!) {
-      let purchases = await this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("purchases").ref.get();
- 
-      this.events![key].purchases = purchases.docs.length;
-
-      let supplements = await this.firestore.collection("users").doc(uid).collection("events").doc(key).collection("capacitySupplements").ref.get();
-
-      this.events![key].capacity = 0;
-      supplements.forEach(supplement => {
-        let data = supplement.data() as any as CapacitySupplement;
-        this.events![key].capacity += Number(data.capacity);
+      this.events.push({
+        id: doc.id,
+        data: doc.data() as Event,
+        groups: groupsData,
+        sales: sales.docs.map(doc => doc.data() as Sale),
+        capacity: capacity
       });
-
-      this.events![key].available = this.events![key].capacity - this.events![key].purchases;
     }
   }
 }

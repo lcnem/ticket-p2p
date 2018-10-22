@@ -21,7 +21,6 @@ import {
   MatTooltipModule,
   MatFormFieldModule,
   MatSidenavModule,
-  MatRippleModule,
   MatProgressSpinnerModule,
   MatDividerModule,
   MatDialogModule,
@@ -30,7 +29,9 @@ import {
   MatCheckboxModule,
   MatMenuModule,
   MatTableModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatDatepickerModule,
+  MatProgressBarModule
 } from '@angular/material';
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -43,11 +44,15 @@ import { LoginComponent } from './accounts/login/login.component';
 import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
 import { EventComponent } from './events/event/event.component';
 import { ScanComponent } from './events/scan/scan.component';
-import { ArchivedComponent } from './events/archived/archived.component';
 import { AlertDialogComponent } from './components/alert-dialog/alert-dialog.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { LoadingDialogComponent } from './components/loading-dialog/loading-dialog.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
+import { TermsComponent } from './terms/terms/terms.component';
+import { SalesListComponent } from './events/event/sales-list/sales-list.component';
+import { EditComponent } from './events/edit/edit.component';
+import { GroupListComponent } from './events/group-list/group-list.component';
+import { PrivacyPolicyComponent } from './terms/privacy-policy/privacy-policy.component';
 
 @NgModule({
   declarations: [
@@ -57,11 +62,15 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
     PageNotFoundComponent,
     EventComponent,
     ScanComponent,
-    ArchivedComponent,
     AlertDialogComponent,
     ConfirmDialogComponent,
     LoadingDialogComponent,
-    PromptDialogComponent
+    PromptDialogComponent,
+    TermsComponent,
+    SalesListComponent,
+    EditComponent,
+    GroupListComponent,
+    PrivacyPolicyComponent
   ],
   imports: [
     BrowserModule,
@@ -69,6 +78,7 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     FormsModule,
+    FlexLayoutModule,
     ZXingScannerModule.forRoot(),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
@@ -83,9 +93,7 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
     MatTableModule,
     MatTooltipModule,
     MatFormFieldModule,
-    FlexLayoutModule,
     MatSidenavModule,
-    MatRippleModule,
     HttpClientModule,
     MatProgressSpinnerModule,
     MatDividerModule,
@@ -93,7 +101,9 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
     MatListModule,
     MatSlideToggleModule,
     MatMenuModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDatepickerModule,
+    MatProgressBarModule
   ],
   entryComponents: [
     AlertDialogComponent,

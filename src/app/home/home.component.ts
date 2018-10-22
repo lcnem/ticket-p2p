@@ -1,12 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { GlobalDataService } from '../services/global-data.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatTableDataSource } from '@angular/material';
 import { Event } from '../../models/event';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { PromptDialogComponent } from '../components/prompt-dialog/prompt-dialog.component';
+import { AlertDialogComponent } from '../components/alert-dialog/alert-dialog.component';
+import { Account, Wallet, SimpleWallet, Password } from 'nem-library';
+import { firestore } from 'firebase';
 
 @Component({
   selector: 'app-home',
@@ -14,13 +17,22 @@ import { PromptDialogComponent } from '../components/prompt-dialog/prompt-dialog
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  public loading = true
+  public loading = true;
+  public progress = 0;
+
+  public dataSource?: MatTableDataSource<{
+    id: string,
+    eventName: string,
+    sales: number,
+    capacity: number
+  }>;
+  public displayedColumns = ["eventName", "capacity"];
 
   constructor(
     public global: GlobalDataService,
     private router: Router,
     private dialog: MatDialog,
-    private auth: AngularFireAuth,
+    public auth: AngularFireAuth,
     private firestore: AngularFirestore
   ) { }
 
@@ -31,107 +43,112 @@ export class HomeComponent implements OnInit {
         return;
       }
 
-      await this.global.initialize();
-
-      this.loading = false;
+      await this.refresh();
     });
   }
 
   public async logout() {
-    await this.global.logout();
-    this.router.navigate(["/accounts/login"]);
+    await this.auth.auth.signOut();
+    this.router.navigate(["accounts", "login"]);
   }
 
-  public async refresh() {
+  public async refresh(force?: boolean) {
+    this.progress = 0;
     this.loading = true;
 
-    await this.global.refresh();
+    this.progress = 10;
+    await this.global.refreshEvents(force);
+    this.progress = 40;
+    
+    let tableData = this.global.events.map(event => {
+      let sales = event.sales.length;
+
+      return {
+        id: event.id,
+        eventName: event.data.name,
+        sales: sales,
+        capacity: event.capacity
+      }
+    })
+    this.progress = 80;
+    this.dataSource = new MatTableDataSource(tableData);
+    this.progress = 90;
 
     this.loading = false;
+    this.progress = 100;
   }
 
   public async createEvent() {
-    let dialog = this.dialog.open(PromptDialogComponent, {
+    let eventName: string = await this.dialog.open(PromptDialogComponent, {
       data: {
         title: this.translation.createEvent[this.global.lang],
         input: {
           placeholder: this.translation.eventName[this.global.lang],
         }
       }
-    });
+    }).afterClosed().toPromise();
 
-    dialog.afterClosed().subscribe(async (eventName) => {
-      if (!eventName) {
-        return;
-      }
+    if (!eventName) {
+      return;
+    }
 
-      let uid = this.auth.auth.currentUser!.uid;
+    let uid = this.auth.auth.currentUser!.uid;
 
-      let newEvent = await this.firestore.collection("users").doc(uid).collection("events").add({
-        name: eventName,
-        nonce: Math.random(),
-        archived: false
-      });
+    let password = new Password(uid);
+    let privateKey = SimpleWallet.create(uid, password).open(password).privateKey;
 
-      await this.refresh();
-      this.router.navigate(["events", newEvent.id]);
-    });
-  }
+    let newEvent = await this.firestore.collection("users").doc(uid).collection("events").add({
+      name: eventName,
+      privateKey: privateKey,
+      sellingStarted: false,
+      groups: [],
+      date: firestore.Timestamp.fromDate(new Date())
+    } as Event);
 
-  public async archiveEvent(eventId: string) {
-    this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: this.translation.confirmation[this.global.lang],
-        content: this.translation.archiveConfirmation[this.global.lang]
-      }
-    }).afterClosed().subscribe(async (result) => {
-      if (!result) {
-        return;
-      }
-
-      let uid = this.auth.auth.currentUser!.uid;
-
-      await this.firestore.collection("users").doc(uid).collection("events").doc(eventId).set({
-        archived: true
-      }, { merge: true });
-
-      await this.refresh();
-    });
-
+    await this.refresh();
+    this.router.navigate(["events", newEvent.id]);
   }
 
   public translation = {
     language: {
       en: "Language",
       ja: "言語"
-    },
-    archived: {
-      en: "Archived",
-      ja: "アーカイブ"
-    },
+    } as any,
+    ticketP2p: {
+      en: "Ticket Peer to Peer",
+      ja: "ちけっとピアツーピア"
+    } as any,
     logout: {
       en: "Log out",
       ja: "ログアウト"
-    },
+    } as any,
+    terms: {
+      en: "Terms of Service",
+      ja: "利用規約"
+    } as any,
+    privacyPolicy: {
+      en: "Privacy Policy",
+      ja: "プライバシーポリシー"
+    } as any,
     createEvent: {
       en: "Create your event",
       ja: "イベントを作成"
-    },
+    } as any,
     eventName: {
       en: "Event name",
       ja: "イベント名"
-    },
+    } as any,
     empty: {
       en: "There is no event.",
       ja: "イベントはありません。"
-    },
-    confirmation: {
-      en: "Confirmation",
-      ja: "確認"
-    },
-    archiveConfirmation: {
-      en: "Do you want to archive the event?",
-      ja: "イベントをアーカイブしますか？"
-    }
-  } as { [key: string]: { [key: string]: string } };
+    } as any,
+    error: {
+      en: "Error",
+      ja: "エラー"
+    } as any,
+    capacity: {
+      en: "Capacity",
+      ja: "定員"
+    } as any
+  };
 }

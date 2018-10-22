@@ -13,13 +13,13 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ticket-p2p",
+            "outputPath": "firebase/public",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
+            "polyfills": "src/polyfills.ts",
             "assets": [
-              "src/favicon.svg",
+              "src/favicon.png",
               "src/assets",
               "src/manifest.json"
             ],
@@ -84,7 +84,7 @@
             ],
             "scripts": [],
             "assets": [
-              "src/favicon.svg",
+              "src/favicon.png",
               "src/assets",
               "src/manifest.json"
             ]

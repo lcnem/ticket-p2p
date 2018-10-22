@@ -1,0 +1,109 @@
+<mat-sidenav-container>
+  <mat-sidenav></mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar class="mat-elevation-z4 top-toolbar">
+      <button mat-icon-button (click)="global.back()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span>{{translation.editEvent[global.lang]}}</span>
+      <span class="fill-remaining-space"></span>
+    </mat-toolbar>
+    <div class="mat-typography body-container">
+      <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
+      <ng-template #loaded>
+        <h2>{{translation.editEvent[global.lang]}}</h2>
+        <mat-card>
+          <form #nameForm="ngForm" (ngSubmit)="changeName()">
+            <h3>{{translation.editEvent[global.lang]}}</h3>
+            <mat-form-field fxFill>
+              <input matInput placeholder="{{translation.eventName[global.lang]}}" [(ngModel)]="forms.name" name="name"
+                required />
+            </mat-form-field>
+            <div fxLayout="row">
+              <span class="fill-remaining-space"></span>
+              <button mat-raised-button color="accent" [disabled]="nameForm.invalid || name == forms.name">
+                {{translation.submit[global.lang]}}
+              </button>
+            </div>
+          </form>
+        </mat-card>
+        <br />
+        <h2>{{translation.capacity[global.lang]}}</h2>
+        <mat-card>
+          <app-group-list [groups]="groups"></app-group-list>
+        </mat-card>
+        <br />
+        <h2>{{translation.addGroup[global.lang]}}</h2>
+        <mat-card>
+          <form #capacityForm="ngForm" (ngSubmit)="addCapacity()">
+            <div *ngFor="let group of forms.groups; let i = index; let l = last" fxLayout="row">
+              <mat-form-field fxFlex="50">
+                <input matInput color="accent" placeholder="{{translation.groupName[global.lang]}}" [(ngModel)]="group.name"
+                  name="group{{i}}-name" id="group{{i}}-name" required="{{!l || forms.groups.length == 1}}" (focus)="addGroup(i)" />
+              </mat-form-field>
+              <ng-container *ngIf="!l">
+                <mat-form-field class="fill-remaining-space">
+                  <input matInput color="accent" type="number" placeholder="{{translation.capacity[global.lang]}}"
+                    [(ngModel)]="group.capacity" name="group{{i}}-capacity" required min="1" minlength="1" pattern="[1-9][0-9]*" />
+                </mat-form-field>
+                <button mat-icon-button color="warn" type="button" (click)="deleteGroup(i)">
+                  <mat-icon>clear</mat-icon>
+                </button>
+              </ng-container>
+            </div>
+            <div fxLayout="row">
+              <span class="fill-remaining-space"></span>
+              <button mat-raised-button color="accent" [disabled]="capacityForm.invalid">
+                {{translation.submit[global.lang]}}
+              </button>
+            </div>
+          </form>
+        </mat-card>
+        <mat-list>
+          <h3 mat-subheader>特定商取引法に関する表記</h3>
+          <mat-list-item>
+            <span>事業者名</span>
+            <span class="fill-remaining-space"></span>
+            <span>株式会社LCNEM</span>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item>
+            <span>所在地</span>
+            <span class="fill-remaining-space"></span>
+            <span>京都市上京区油小路中立売下る甲斐守町97番地西陣産業創造會舘2階</span>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item>
+            <span>連絡先</span>
+            <span class="fill-remaining-space"></span>
+            <span>サイトに記載</span>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item>
+            <span>商品販売価格</span>
+            <span class="fill-remaining-space"></span>
+            <span>チケット販売1枚につき100円+税</span>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item>
+            <span>送料・手数料</span>
+            <span class="fill-remaining-space"></span>
+            <span>なし</span>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item>
+            <span>代金の支払方法</span>
+            <span class="fill-remaining-space"></span>
+            <span>クレジットカード</span>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item>
+            <span>返品</span>
+            <span class="fill-remaining-space"></span>
+            <span>不可</span>
+          </mat-list-item>
+        </mat-list>
+      </ng-template>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
