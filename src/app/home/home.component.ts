@@ -49,7 +49,16 @@ export class HomeComponent implements OnInit {
 
   public async logout() {
     await this.auth.auth.signOut();
-    this.router.navigate(["accounts", "login"]);
+    this.global.refreshed = false;
+
+    this.dialog.open(AlertDialogComponent, {
+      data: {
+        title: this.translation.completed[this.global.lang],
+        content: ""
+      }
+    }).afterClosed().subscribe(() => {
+      this.router.navigate(["accounts", "login"]);
+    });
   }
 
   public async refresh(force?: boolean) {
@@ -117,6 +126,10 @@ export class HomeComponent implements OnInit {
     ticketP2p: {
       en: "Ticket Peer to Peer",
       ja: "ちけっとピアツーピア"
+    } as any,
+    completed: {
+      en: "Completed",
+      ja: "完了"
     } as any,
     logout: {
       en: "Log out",

@@ -6,7 +6,7 @@
     </mat-toolbar>
     <div fxLayout="column">
       <mat-nav-list>
-        <mat-list-item>
+        <mat-list-item (click)="logout()">
           <mat-icon mat-list-icon>lock_open</mat-icon>
           {{translation.logout[global.lang]}}
         </mat-list-item>

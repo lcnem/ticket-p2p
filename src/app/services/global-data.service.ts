@@ -14,7 +14,7 @@ import { Group } from '../../../models/group';
   providedIn: 'root'
 })
 export class GlobalDataService {
-  private refreshed = false;
+  public refreshed = false;
   private eventsRefreshed = false;
 
   public lang = "en";
