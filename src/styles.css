@@ -59,11 +59,8 @@ mat-spinner {
 }
 
 .floating-action-button.mat-fab {
-  position: -webkit-sticky;
-  position: sticky;
+  position: fixed;
   bottom: 16px;
-  display: block;
-  margin: 16px;
-  margin-left: auto;
+  right: 16px;
   z-index: 1;
 }
