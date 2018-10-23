@@ -19,8 +19,8 @@
         "function": "addCapacityV1"
       },
       {
-        "source": "/api/v1/sales-condition",
-        "function": "salesConditionV1"
+        "source": "/api/v1/sales-conditions",
+        "function": "salesConditionsV1"
       },
       {
         "source": "/api/v1/issue-tickets",
