@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { GlobalDataService } from '../services/global-data.service';
 import { MatDialog, MatTableDataSource } from '@angular/material';
-import { Event } from '../../../models/event';
+import { Event } from '../../../../models/event';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';

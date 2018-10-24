@@ -4,11 +4,11 @@ import { HttpClient } from '@angular/common/http';
 
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Event } from '../../../models/event';
-import { Sale } from '../../../models/sale';
+import { Event } from '../../../../models/event';
+import { Sale } from '../../../../models/sale';
 import { NEMLibrary, NetworkTypes } from 'nem-library';
 import { Router } from '@angular/router';
-import { Group } from '../../../models/group';
+import { Group } from '../../../../models/group';
 
 @Injectable({
   providedIn: 'root'

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { GlobalDataService } from 'src/app/services/global-data.service';
+import { GlobalDataService } from '../../services/global-data.service';
 
 @Component({
   selector: 'app-group-list',

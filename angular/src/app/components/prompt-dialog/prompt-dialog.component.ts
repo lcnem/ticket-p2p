@@ -24,6 +24,12 @@ export class PromptDialogComponent {
       }
     }
   ) {
-    this.model = data && data.input && data.input.value;
+    if(!data) {
+      data = {} as any;
+    }
+    if(!data.input) {
+      data.input = {} as any;
+    }
+    this.model = data.input.value;
   }
 }

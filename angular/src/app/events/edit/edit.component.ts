@@ -3,13 +3,13 @@ import { GlobalDataService } from '../../services/global-data.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Event } from '../../../../models/event';
-import { Sale } from '../../../../models/sale';
+import { Event } from '../../../../../models/event';
+import { Sale } from '../../../../../models/sale';
 import { MatDialog } from '@angular/material';
 import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
 import { stripeCharge } from 'src/models/stripe';
 import { HttpClient } from '@angular/common/http';
-import { Group } from '../../../../models/group';
+import { Group } from '../../../../../models/group';
 
 @Component({
   selector: 'app-edit',
