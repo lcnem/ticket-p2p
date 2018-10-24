@@ -14,7 +14,7 @@ import {
 } from 'nem-library';
 import { Sale } from '../../../models/sale';
 
-export const checkTicketV1 = functions.https.onRequest(async (req, res) => {
+export const _checkTicket = functions.https.onRequest(async (req, res) => {
   try {
     NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
   } catch {}

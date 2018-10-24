@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 
 import { Event } from '../../../models/event';
 
-export const cancelTicketV1 = functions.https.onRequest(async (req, res) => {
+export const _cancelTicket = functions.https.onRequest(async (req, res) => {
   try {
     const userId = req.body.userId as string;
     const eventId = req.body.eventId as string;
@@ -20,7 +20,7 @@ export const cancelTicketV1 = functions.https.onRequest(async (req, res) => {
     }
 
     const eventData = event.data() as Event;
-    if (privateKey != eventData.privateKey) {
+    if (privateKey !== eventData.privateKey) {
       throw Error("INVALID_PRIVATE_KEY");
     }
 

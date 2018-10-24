@@ -11,7 +11,7 @@ import { SalesCondition } from './models/sales-condition';
 import { Event } from '../../../models/event';
 import { Sale } from '../../../models/sale';
 
-export const issueTicketsV1 = functions.https.onRequest(async (req, res) => {
+export const _issueTickets = functions.https.onRequest(async (req, res) => {
   try {
     NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
   } catch {}
@@ -35,14 +35,14 @@ export const issueTicketsV1 = functions.https.onRequest(async (req, res) => {
     }
 
     const eventData = event.data() as Event;
-    if (privateKey != eventData.privateKey) {
+    if (privateKey !== eventData.privateKey) {
       throw Error("INVALID_PRIVATE_KEY");
     }
 
     const salesCondition: SalesCondition = await SalesCondition.getFromFirebase(event.ref);
 
     for (const group of salesCondition.groups) {
-      const filtered = requests.filter(r => r.group == group.name);
+      const filtered = requests.filter(r => r.group === group.name);
       if(filtered.length + group.sales > group.capacity) {
         throw Error("CAPACITY_OVER");
       }
@@ -50,13 +50,13 @@ export const issueTicketsV1 = functions.https.onRequest(async (req, res) => {
 
     //検証
     for (const request of requests) {
-      const group = salesCondition.groups.find(g => g.name == request.group);
+      const group = salesCondition.groups.find(g => g.name === request.group);
       if (!group) {
         throw Error("INVALID_GROUP");
       }
 
       //空文字一致はfalseになるので問題ない
-      if (salesCondition.reservations.find(r => r == request.reservation)) {
+      if (salesCondition.reservations.find(r => r === request.reservation)) {
         throw Error("ALREADY_RESERVED");
       }
     }

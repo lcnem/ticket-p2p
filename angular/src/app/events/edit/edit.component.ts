@@ -81,7 +81,7 @@ export class EditComponent implements OnInit {
     let uid = this.auth.auth.currentUser!.uid;
 
     await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).set({
-      name: this.name
+      name: this.forms.name
     } as Event, { merge: true });
 
     this.dialog.open(AlertDialogComponent, {
@@ -90,6 +90,7 @@ export class EditComponent implements OnInit {
         content: ""
       }
     });
+    this.name = this.forms.name;
   }
 
   public addGroup(index: number) {
@@ -175,7 +176,7 @@ export class EditComponent implements OnInit {
 
       try {
         await this.http.post(
-          "/api/v1/add-capacity",
+          "/api/add-capacity",
           {
             userId: this.auth.auth.currentUser!.uid,
             eventId: this.event.id,

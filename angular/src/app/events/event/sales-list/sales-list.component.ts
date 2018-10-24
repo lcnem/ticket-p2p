@@ -176,7 +176,7 @@ export class SalesListComponent implements OnInit {
 
       try {
         await this.http.post(
-          "/api/v1/send-reward",
+          "/api/send-reward",
           {
             userId: this.userId,
             eventId: this.eventId,

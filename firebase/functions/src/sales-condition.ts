@@ -5,7 +5,7 @@ import { SalesCondition } from './models/sales-condition';
 
 const cors = require('cors')({ origin: true });
 
-export const salesConditionsV1 = functions.https.onRequest((req, res) => {
+export const _salesConditions = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
       const userId = req.body.userId as string;

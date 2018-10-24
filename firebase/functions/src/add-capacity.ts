@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { Group } from '../../../models/group';
 
-export const addCapacityV1 = functions.https.onRequest(async (req, res) => {
+export const _addCapacity = functions.https.onRequest(async (req, res) => {
   try {
     const stripe = require('stripe')(req.body.test ? functions.config().stripe.sk_test : functions.config().stripe.sk_live);
     const userId = req.body.userId as string;

@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
-export const sendRewardV1 = functions.https.onRequest(async (req, res) => {
+export const _sendReward = functions.https.onRequest(async (req, res) => {
   try {
     const stripe = require('stripe')(req.body.test ? functions.config().stripe.sk_test : functions.config().stripe.sk_live);
     const userId = req.body.userId as string;

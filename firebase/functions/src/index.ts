@@ -1,11 +1,11 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { addCapacityV1 } from './add-capacity';
-import { cancelTicketV1 } from './cancel-ticket';
-import { checkTicketV1 } from './check-ticket';
-import { issueTicketsV1 } from './issue-tickets';
-import { salesConditionsV1 } from './sales-condition';
-import { sendRewardV1 } from './send-reward';
+import { _addCapacity } from './add-capacity';
+import { _cancelTicket } from './cancel-ticket';
+import { _checkTicket } from './check-ticket';
+import { _issueTickets } from './issue-tickets';
+import { _salesConditions } from './sales-condition';
+import { _sendReward } from './send-reward';
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -18,21 +18,28 @@ admin.initializeApp({
   databaseURL: "https://ticket-p2p.firebaseio.com"
 });
 
-if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "addCapacityV1") {
-  exports.addCapacityV1 = addCapacityV1;
+export let addCapacity: functions.HttpsFunction;
+export let cancelTicket: functions.HttpsFunction;
+export let checkTicket: functions.HttpsFunction;
+export let issueTickets: functions.HttpsFunction;
+export let salesConsitions: functions.HttpsFunction;
+export let sendReward: functions.HttpsFunction;
+
+if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "addCapacity") {
+  addCapacity = _addCapacity;
 }
-if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "cancelTicketV1") {
-  exports.cancelTicketV1 = cancelTicketV1;
+if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "cancelTicket") {
+  cancelTicket = _cancelTicket;
 }
-if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "checkTicketV1") {
-  exports.checkTicketV1 = checkTicketV1;
+if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "checkTicket") {
+  checkTicket = _checkTicket;
 }
-if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "issueTicketsV1") {
-  exports.issueTicketsV1 = issueTicketsV1;
+if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "issueTickets") {
+  issueTickets = _issueTickets;
 }
-if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "salesConsitionsV1") {
-  exports.salesConsitionsV1 = salesConditionsV1;
+if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "salesConsitions") {
+  salesConsitions = _salesConditions;
 }
-if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "sendRewardV1") {
-  exports.sendRewardV1 = sendRewardV1;
+if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "sendReward") {
+  sendReward = _sendReward;
 }

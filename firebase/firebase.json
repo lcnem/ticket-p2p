@@ -15,28 +15,28 @@
     ],
     "rewrites": [
       {
-        "source": "/api/v1/add-capacity",
-        "function": "addCapacityV1"
+        "source": "/api/add-capacity",
+        "function": "addCapacity"
       },
       {
-        "source": "/api/v1/sales-conditions",
-        "function": "salesConditionsV1"
+        "source": "/api/sales-conditions",
+        "function": "salesConditions"
       },
       {
-        "source": "/api/v1/issue-tickets",
-        "function": "issueTicketsV1"
+        "source": "/api/issue-tickets",
+        "function": "issueTickets"
       },
       {
-        "source": "/api/v1/check-ticket",
-        "function": "checkTicketV1"
+        "source": "/api/check-ticket",
+        "function": "checkTicket"
       },
       {
-        "source": "/api/v1/cancel-ticket",
-        "function": "cancelTicketV1"
+        "source": "/api/cancel-ticket",
+        "function": "cancelTicket"
       },
       {
-        "source": "/api/v1/send-reward",
-        "function": "sendRewardV1"
+        "source": "/api/send-reward",
+        "function": "sendReward"
       },
       {
         "source": "**",
