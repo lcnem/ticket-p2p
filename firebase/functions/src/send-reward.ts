@@ -1,9 +1,9 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-const stripe = require('stripe')(functions.config().stripe.sk_live);
 
 export const sendRewardV1 = functions.https.onRequest(async (req, res) => {
   try {
+    const stripe = require('stripe')(req.body.test ? functions.config().stripe.sk_test : functions.config().stripe.sk_live);
     const userId = req.body.userId as string;
     const eventId = req.body.eventId as string;
     const token = req.body.token as string;
@@ -34,7 +34,7 @@ export const sendRewardV1 = functions.https.onRequest(async (req, res) => {
     await salesQuery.docs[0].ref.delete();
 
     res.status(200).send();
-  } catch (e){
+  } catch (e) {
     res.status(400).send(e.message);
   }
 });
