@@ -48,11 +48,6 @@ export const nodes: ServerConfig[] = [
   },
   {
     protocol: "https",
-    domain: "nsm.supernode.me",
-    port: 7891
-  },
-  {
-    protocol: "https",
     domain: "kohkei.supernode.me",
     port: 7891
   },
