@@ -2,10 +2,9 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { Group } from '../../../models/group';
 
-const stripe = require('stripe')(functions.config().stripe.sk_live);
-
 export const addCapacityV1 = functions.https.onRequest(async (req, res) => {
   try {
+    const stripe = require('stripe')(req.body.test ? functions.config().stripe.sk_test : functions.config().stripe.sk_live);
     const userId = req.body.userId as string;
     const eventId = req.body.eventId as string;
     const groups = req.body.groups as Group[];
