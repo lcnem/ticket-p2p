@@ -1,0 +1,66 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+mat-sidenav-container {
+  height: 100%;
+}
+
+mat-sidenav {
+  width: 300px;
+  overflow: auto;
+}
+
+.fill-remaining-space{
+  flex: 1 1 auto;
+}
+
+.top-toolbar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 4;
+}
+
+.body-container {
+  margin: 0 auto;
+  max-width: 1000px;
+  padding: 16px;
+}
+
+.top-progressbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 1;
+  transition: 1s;
+  z-index: 5;
+}
+.top-progressbar.hide {
+  opacity: 0;
+}
+
+mat-spinner {
+  margin: 0 auto;
+}
+
+.icon {
+  padding: 0;
+  min-width: 0;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  line-height: 40px;
+  border-radius: 50%;
+}
+
+.floating-action-button.mat-fab {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1;
+}

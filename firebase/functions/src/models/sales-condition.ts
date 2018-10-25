@@ -1,13 +1,13 @@
 import { Group } from "./group";
-import { Sale } from "./sales";
+import { Sale } from "./sale";
 
 export class SalesCondition {
   public groups: {
     name: string,
     sales: number,
     capacity: number
-  }[];
-  public reservations: string[];
+  }[] = [];
+  public reservations: string[] = [];
 
   public static async getFromFirebase(eventRef: FirebaseFirestore.DocumentReference) {
     const groups = await eventRef.collection("groups").get();
@@ -22,15 +22,15 @@ export class SalesCondition {
     }
 
     for(const group of groupsData) {
-      const index = ret.groups.findIndex(g => g.name == group.name);
-      if(index != -1) {
+      const index = ret.groups.findIndex(g => g.name === group.name);
+      if(index !== -1) {
         ret.groups[index].capacity += group.capacity;
         continue;
       }
 
       ret.groups.push({
         name: group.name,
-        sales: salesData.filter(sale => sale.group == group.name).length,
+        sales: salesData.filter(sale => sale.group === group.name).length,
         capacity: group.capacity
       });
     }
