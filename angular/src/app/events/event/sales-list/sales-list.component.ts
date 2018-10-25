@@ -8,6 +8,7 @@ import { stripeCharge } from 'src/models/stripe';
 import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
 import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-sales-list',
@@ -183,7 +184,8 @@ export class SalesListComponent implements OnInit {
             amount: amount,
             fee: fee,
             token: response.id,
-            address: address
+            address: address,
+            test: environment.production ? false : true
           }
         ).toPromise();
 

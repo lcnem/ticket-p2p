@@ -10,6 +10,7 @@ import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog
 import { stripeCharge } from 'src/models/stripe';
 import { HttpClient } from '@angular/common/http';
 import { Group } from '../../../../../models/group';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-edit',
@@ -61,7 +62,7 @@ export class EditComponent implements OnInit {
       this.dialog.open(AlertDialogComponent, {
         data: {
           title: this.translation.error[this.global.lang],
-          content: ""
+          content: this.translation.notFound[this.global.lang]
         }
       }).afterClosed().subscribe(() => {
         this.router.navigate([""]);
@@ -94,7 +95,7 @@ export class EditComponent implements OnInit {
   }
 
   public addGroup(index: number) {
-    if(index != this.forms.groups.length - 1) {
+    if (index != this.forms.groups.length - 1) {
       return;
     }
     this.forms.groups.push({} as any);
@@ -106,12 +107,12 @@ export class EditComponent implements OnInit {
 
   public async addCapacity() {
     let groups = this.groups.filter(g => g.name);
-    if(!groups.length) {
+    if (!groups.length) {
       return;
     }
 
     let capacity = 0;
-    for(let group of groups) {
+    for (let group of groups) {
       capacity += group.capacity;
     }
 
@@ -167,7 +168,7 @@ export class EditComponent implements OnInit {
       return;
     }
 
-    stripeCharge(result,  async (status: any, response: any) => {
+    stripeCharge(result, async (status: any, response: any) => {
       if (response.error) {
         result.complete("fail");
 
@@ -180,7 +181,8 @@ export class EditComponent implements OnInit {
           {
             userId: this.auth.auth.currentUser!.uid,
             eventId: this.event.id,
-            token: response.id
+            token: response.id,
+            test: environment.production ? false : true
           }
         ).toPromise();
 
@@ -211,6 +213,10 @@ export class EditComponent implements OnInit {
     error: {
       en: "Error",
       ja: "エラー"
+    } as any,
+    notFound: {
+      en: "Event not found",
+      ja: "このイベントは存在しません"
     } as any,
     editEvent: {
       en: "Edit an event",
