@@ -62,7 +62,7 @@ export class EditComponent implements OnInit {
       this.dialog.open(AlertDialogComponent, {
         data: {
           title: this.translation.error[this.global.lang],
-          content: ""
+          content: this.translation.notFound[this.global.lang]
         }
       }).afterClosed().subscribe(() => {
         this.router.navigate([""]);
@@ -213,6 +213,10 @@ export class EditComponent implements OnInit {
     error: {
       en: "Error",
       ja: "エラー"
+    } as any,
+    notFound: {
+      en: "Event not found",
+      ja: "このイベントは存在しません"
     } as any,
     editEvent: {
       en: "Edit an event",
