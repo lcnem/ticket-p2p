@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { Group } from '../../../models/group';
+import { Group } from './models/group';
 
 export const _addCapacity = functions.https.onRequest(async (req, res) => {
   try {

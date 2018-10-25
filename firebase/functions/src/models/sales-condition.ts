@@ -1,5 +1,5 @@
-import { Group } from "../../../../models/group";
-import { Sale } from "../../../../models/sale";
+import { Group } from "./group";
+import { Sale } from "./sale";
 
 export class SalesCondition {
   public groups: {

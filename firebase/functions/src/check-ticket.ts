@@ -12,7 +12,7 @@ import {
   NEMLibrary,
   NetworkTypes
 } from 'nem-library';
-import { Sale } from '../../../models/sale';
+import { Sale } from './models/sale';
 
 export const _checkTicket = functions.https.onRequest(async (req, res) => {
   try {

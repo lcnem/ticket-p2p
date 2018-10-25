@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
-import { Event } from '../../../models/event';
+import { Event } from './models/event';
 
 export const _cancelTicket = functions.https.onRequest(async (req, res) => {
   try {

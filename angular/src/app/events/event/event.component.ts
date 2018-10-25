@@ -7,8 +7,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
 import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dialog.component';
-import { Event } from '../../../../../models/event';
-import { Sale } from '../../../../../models/sale';
+import { Event } from '../../../../../firebase/functions/src/models/event';
+import { Sale } from '../../../../../firebase/functions/src/models/sale';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({

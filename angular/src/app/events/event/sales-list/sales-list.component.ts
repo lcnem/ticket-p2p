@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator, PageEvent, MatDialog } from '@angular/material';
 import { AccountHttp, Address } from 'nem-library';
 import { nodes } from '../../../../models/nodes';
-import { Sale } from '../../../../../../models/sale';
+import { Sale } from '../../../../../../firebase/functions/src/models/sale';
 import { GlobalDataService } from '../../../services/global-data.service';
 import { stripeCharge } from 'src/models/stripe';
 import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';

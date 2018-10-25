@@ -8,8 +8,8 @@ import {
 } from 'nem-library';
 
 import { SalesCondition } from './models/sales-condition';
-import { Event } from '../../../models/event';
-import { Sale } from '../../../models/sale';
+import { Event } from './models/event';
+import { Sale } from './models/sale';
 
 export const _issueTickets = functions.https.onRequest(async (req, res) => {
   try {
