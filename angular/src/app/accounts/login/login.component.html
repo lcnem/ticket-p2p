@@ -5,28 +5,28 @@
       <button mat-icon-button>
         <mat-icon>lock_open</mat-icon>
       </button>
-      <span>{{translation.login[global.lang]}}</span>
+      <span>{{translation.login[lang]}}</span>
       <span class="fill-remaining-space"></span>
       <mat-menu #langMenu="matMenu" [overlapTrigger]="false">
-        <button mat-menu-item (click)="global.lang = 'en'">
+        <button mat-menu-item (click)="lang = 'en'">
           English
         </button>
-        <button mat-menu-item (click)="global.lang = 'ja'">
+        <button mat-menu-item (click)="lang = 'ja'">
           日本語
         </button>
       </mat-menu>
       <button mat-icon-button [matMenuTriggerFor]="langMenu" yPosition="below">
-        {{global.lang}}
+        {{lang}}
       </button>
     </mat-toolbar>
     <div class="mat-typography body-container">
       <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
       <ng-template #loaded>
         <iframe [src]="safeSite" fxFill></iframe>
-        <mat-checkbox [(ngModel)]="agree">{{translation.agree[global.lang]}}</mat-checkbox>
+        <mat-checkbox [(ngModel)]="agree">{{translation.agree[lang]}}</mat-checkbox>
         <button mat-raised-button fxFill color="accent" [disabled]="!agree" (click)="login()">
-          <mat-icon class="background-contain" [ngStyle]="{'background-image': 'url(assets/images/google.svg)'}"></mat-icon>
-          　{{translation.login[global.lang]}}
+          <img class="icon" src="assets/images/google.svg" />
+          {{translation.login[lang]}}
         </button>
       </ng-template>
     </div>

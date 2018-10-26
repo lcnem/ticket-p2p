@@ -1,15 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router'
-import { GlobalDataService } from '../../services/global-data.service';
 import { MatDialog, MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
-import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dialog.component';
-import { Event } from '../../../../../firebase/functions/src/models/event';
-import { Sale } from '../../../../../firebase/functions/src/models/sale';
-import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+
+import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
+import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
+import { back } from 'src/models/back';
+import { lang } from 'src/models/lang';
+
+import { Event } from '.src/../../firebase/functions/src/models/event';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { EventsService } from 'src/app/services/events.service';
+import { GroupDialogComponent } from './group-dialog/group-dialog.component';
+import { stripeCharge } from 'src/models/stripe';
 
 @Component({
   selector: 'app-event',
@@ -18,20 +23,20 @@ import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-
 })
 export class EventComponent implements OnInit {
   public loading = true;
+  get lang() { return lang; };
+
+  public id!: string;
   public userId!: string;
-  public event!: {
-    id: string,
-    data: Event,
-    sales: Sale[]
-  };
+
+  public event!: Event;
 
   constructor(
-    public global: GlobalDataService,
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private auth: AngularFireAuth,
-    private firestore: AngularFirestore
+    public auth: AngularFireAuth,
+    public events: EventsService,
+    private http: HttpClient
   ) {
   }
 
@@ -45,36 +50,156 @@ export class EventComponent implements OnInit {
     });
   }
 
-  public async refresh(force?: boolean) {
+  public async refresh() {
     this.loading = true;
 
-    await this.global.refreshEvents(force);
+    await this.events.getEvents();
 
+    this.id = this.route.snapshot.paramMap.get('id') || "";
+
+    this.event = this.events.events![this.id];
+    if (!this.event) {
+      await this.dialog.open(AlertDialogComponent, {
+        data: {
+          title: this.translation.error[this.lang],
+          content: this.translation.notFound[this.lang]
+        }
+      }).afterClosed().toPromise();
+      this.router.navigate([""]);
+      return;
+    }
     this.userId = this.auth.auth.currentUser!.uid;
 
-    let id = this.route.snapshot.paramMap.get('id');
-    let event = this.global.events.find(event => id == event.id);
+    this.loading = false;
+  }
 
-    if (!event) {
+  public back() {
+    back(() => this.router.navigate([""]));
+  }
+
+  public async editEventName() {
+    let eventName: string = await this.dialog.open(PromptDialogComponent, {
+      data: {
+        title: this.translation.edit[this.lang],
+        input: {
+          placeholder: this.translation.eventName[this.lang],
+        }
+      }
+    }).afterClosed().toPromise();
+
+    if (!eventName) {
+      return;
+    }
+
+    await this.events.updateEvent(this.id, { name: eventName } );
+  }
+
+  public async addGroups() {
+    let groups = await this.dialog.open(GroupDialogComponent).afterClosed().toPromise();
+    if (!groups || !groups.length) {
+      return;
+    }
+
+    let capacity = 0;
+    for (let group of groups) {
+      capacity += group.capacity;
+    }
+
+    if (!(window as any).PaymentRequest) {
       this.dialog.open(AlertDialogComponent, {
         data: {
-          title: this.translation.error[this.global.lang],
-          content: ""
+          title: this.translation.error[this.lang],
+          content: this.translation.unsupported[this.lang]
         }
-      }).afterClosed().subscribe(() => {
-        this.router.navigate([""]);
       });
       return;
     }
-    this.event = event;
+    let supportedInstruments: PaymentMethodData[] = [{
+      supportedMethods: ['basic-card'],
+      data: {
+        supportedNetworks: [
+          'visa',
+          'mastercard'
+        ]
+      }
+    }];
 
-    this.loading = false;
+    let details = {
+      displayItems: [
+        {
+          label: `${this.translation.fee[this.lang]}: 50 * ${capacity}`,
+          amount: {
+            currency: "JPY",
+            value: (capacity * 50).toString()
+          }
+        },
+        {
+          label: this.translation.tax[this.lang],
+          amount: {
+            currency: "JPY",
+            value: (capacity * 4).toString()
+          }
+        }
+      ],
+      total: {
+        label: this.translation.total[this.lang],
+        amount: {
+          currency: "JPY",
+          value: (capacity * 54).toString()
+        }
+      }
+    };
+
+    let request = new PaymentRequest(supportedInstruments, details, { requestShipping: false });
+
+    let result = await request.show();
+    if (!result) {
+      return;
+    }
+
+    stripeCharge(result, async (status: any, response: any) => {
+      if (response.error) {
+        result.complete("fail");
+
+        return;
+      }
+
+      try {
+        await this.http.post(
+          "/api/add-capacity",
+          {
+            userId: this.auth.auth.currentUser!.uid,
+            eventId: this.id,
+            token: response.id,
+            test: this.auth.auth.currentUser!.email!.match(/lcnem\.cc$/) ? true : false
+          }
+        ).toPromise();
+
+        result.complete("success");
+
+        await this.dialog.open(AlertDialogComponent, {
+          data: {
+            title: this.translation.completed[this.lang],
+            content: ""
+          }
+        }).afterClosed().toPromise();
+      } catch {
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            title: this.translation.error[this.lang],
+            content: ""
+          }
+        });
+
+        result.complete("fail");
+      }
+    });
   }
 
   public async deleteEvent() {
     let result = await this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: this.translation.deleteEvent[this.global.lang],
+        title: this.translation.deleteEvent[this.lang],
         content: ""
       }
     }).afterClosed().toPromise();
@@ -83,8 +208,7 @@ export class EventComponent implements OnInit {
       return;
     }
 
-    let uid = this.auth.auth.currentUser!.uid;
-    await this.firestore.collection("users").doc(uid).collection("events").doc(this.event.id).delete();
+    await this.events.deleteEvent(this.id);
     this.router.navigate([""]);
   }
 
@@ -92,6 +216,10 @@ export class EventComponent implements OnInit {
     error: {
       en: "Error",
       ja: "エラー"
+    } as any,
+    notFound: {
+      en: "Not found",
+      ja: "イベントが見つかりませんでした。"
     } as any,
     eventDescription: {
       en: "Event description",
@@ -125,14 +253,6 @@ export class EventComponent implements OnInit {
       en: "Event operations",
       ja: "イベントに対する操作"
     } as any,
-    editEventDetails: {
-      en: "Edit event",
-      ja: "イベントの編集"
-    } as any,
-    editEventDetailsBody: {
-      en: "Edit your event details. Once you start selling, you can't change settings of this event.",
-      ja: "イベントの設定を編集します。販売開始後は、イベントの設定を変更することはできません。"
-    } as any,
     deleteEvent: {
       en: "Delete event",
       ja: "イベントの削除"
@@ -149,9 +269,25 @@ export class EventComponent implements OnInit {
       en: "Starting the camera to scan QR-code of tickets.",
       ja: "チケットのQRコードを読み取るためのカメラを起動します。"
     } as any,
-    eventPurchases: {
-      en: "Event Purchases",
-      ja: "購入者"
-    }
+    unsupported: {
+      en: "Request Payment API is not supported in this browser.",
+      ja: "Request Payment APIがこのブラウザではサポートされていません。"
+    } as any,
+    fee: {
+      en: "Fee",
+      ja: "手数料"
+    } as any,
+    tax: {
+      en: "Consumption tax",
+      ja: "消費税"
+    } as any,
+    total: {
+      en: "Total",
+      ja: "合計"
+    } as any,
+    completed: {
+      en: "Completed",
+      ja: "完了"
+    } as any
   };
 }

@@ -2,79 +2,70 @@
   <mat-sidenav></mat-sidenav>
   <mat-sidenav-content>
     <mat-toolbar class="mat-elevation-z4 top-toolbar">
-      <button mat-icon-button (click)="global.back()">
+      <button mat-icon-button (click)="back()">
         <mat-icon>arrow_back</mat-icon>
       </button>
-      <span>{{event && event.data.name}}</span>
+      <span>{{translation.eventDescription[lang]}}</span>
       <span class="fill-remaining-space"></span>
-      <button mat-icon-button (click)="refresh(true)" [disabled]="loading">
-        <mat-icon>refresh</mat-icon>
-      </button>
     </mat-toolbar>
     <div class="mat-typography body-container">
       <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
       <ng-template #loaded>
-        <h3>{{translation.eventDescription[global.lang]}}</h3>
         <mat-card>
           <dl>
-            <dt>{{translation.eventName[global.lang]}}</dt>
-            <dd>{{event.data.name}}</dd>
+            <dt>{{translation.eventName[lang]}}</dt>
+            <dd>
+              {{event.name}}
+              <button mat-icon-button color="accent" (click)="editEventName()"><mat-icon>edit</mat-icon></button>
+            </dd>
           </dl>
           <mat-divider></mat-divider>
           <dl>
-            <dt>{{translation.userId[global.lang]}}</dt>
+            <dt>{{translation.userId[lang]}}</dt>
             <dd>{{userId}}</dd>
           </dl>
           <mat-divider></mat-divider>
           <dl>
-            <dt>{{translation.eventId[global.lang]}}</dt>
-            <dd>{{event.id}}</dd>
+            <dt>{{translation.eventId[lang]}}</dt>
+            <dd>{{id}}</dd>
           </dl>
           <mat-divider></mat-divider>
           <dl>
-            <dt>{{translation.privateKey[global.lang]}}</dt>
-            <dd>{{event.data.privateKey}}</dd>
+            <dt>{{translation.privateKey[lang]}}</dt>
+            <dd>{{event.privateKey}}</dd>
           </dl>
         </mat-card>
-        <br>
-        <h3>{{translation.eventOperations[global.lang]}}</h3>
+        <br />
+        <h3></h3>
+        <mat-card></mat-card>
+        <br />
+        <h3>{{translation.eventOperations[lang]}}</h3>
         <mat-card>
           <ul class="event-operation">
             <li>
               <div class="left-content">
-                <h4>{{translation.editEventDetails[global.lang]}}</h4>
-                <div>{{translation.editEventDetailsBody[global.lang]}}</div>
+                <h4>{{translation.startCamera[lang]}}</h4>
+                <div>{{translation.startCameraBody[lang]}}</div>
               </div>
               <div class="right-content">
-                <button mat-raised-button color="accent" routerLink="/events/{{event.id}}/edit">{{translation.editEventDetails[global.lang]}}</button>
+                <button mat-raised-button color="accent" routerLink="/events/{{id}}/scan" [queryParams]="{ userId: userId }">{{translation.startCamera[lang]}}</button>
               </div>
             </li>
             <mat-divider></mat-divider>
             <li>
               <div class="left-content">
-                <h4>{{translation.startCamera[global.lang]}}</h4>
-                <div>{{translation.startCameraBody[global.lang]}}</div>
+                <h4>{{translation.deleteEvent[lang]}}</h4>
+                <div>{{translation.deleteEventBody[lang]}}</div>
               </div>
               <div class="right-content">
-                <button mat-raised-button color="accent" routerLink="/events/{{event.id}}/scan" [queryParams]="{ userId: userId }">{{translation.startCamera[global.lang]}}</button>
-              </div>
-            </li>
-            <mat-divider></mat-divider>
-            <li>
-              <div class="left-content">
-                <h4>{{translation.deleteEvent[global.lang]}}</h4>
-                <div>{{translation.deleteEventBody[global.lang]}}</div>
-              </div>
-              <div class="right-content">
-                <button mat-raised-button color="accent" (click)="deleteEvent()">{{translation.deleteEvent[global.lang]}}</button>
+                <button mat-raised-button color="accent" (click)="deleteEvent()">{{translation.deleteEvent[lang]}}</button>
               </div>
             </li>
           </ul>
         </mat-card>
         <br />
-        <h3 mat-subheader>{{translation.eventPurchases[global.lang]}}</h3>
         <mat-card>
-          <app-sales-list [sales]="event.sales" [userId]="userId" [eventId]="event.id"></app-sales-list>
+          <app-sales-list [userId]="userId" [eventId]="id"></app-sales-list>
         </mat-card>
       </ng-template>
     </div>

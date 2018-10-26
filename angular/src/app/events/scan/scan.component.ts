@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { GlobalDataService } from '../../services/global-data.service';
 import { HttpClient } from '@angular/common/http';
-import { LoadingDialogComponent } from '../../components/loading-dialog/loading-dialog.component';
-import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
+import { LoadingDialogComponent } from 'src/app/components/loading-dialog/loading-dialog.component';
+import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
+import { lang } from 'src/models/lang';
 
 @Component({
   selector: 'app-scan',
@@ -13,8 +13,10 @@ import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog
   styleUrls: ['./scan.component.css']
 })
 export class ScanComponent implements OnInit {
-  public userId?: string;
-  public eventId?: string;
+  get lang() { return lang; };
+
+  public userId!: string;
+  public eventId!: string;
   public scanning = false;
 
   @ViewChild('scanner')
@@ -27,15 +29,14 @@ export class ScanComponent implements OnInit {
   selected?: number;
 
   constructor(
-    public global: GlobalDataService,
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private http: HttpClient
   ) { }
 
   ngOnInit() {
-    this.userId = this.route.snapshot.queryParamMap.get('userId') || undefined;
-    this.eventId = this.route.snapshot.paramMap.get('eventId') || undefined;
+    this.userId = this.route.snapshot.queryParamMap.get('userId') || "";
+    this.eventId = this.route.snapshot.paramMap.get('eventId') || "";
 
     if (!this.scanner) {
       return;
@@ -58,7 +59,6 @@ export class ScanComponent implements OnInit {
       if(this.scanning) {
         return;
       }
-      console.log(result);
       this.scanning = true;
 
       let dialog = this.dialog.open(LoadingDialogComponent, { disableClose: true });
@@ -75,8 +75,8 @@ export class ScanComponent implements OnInit {
           (value: any) => {
             this.dialog.open(AlertDialogComponent, {
               data: {
-                title: this.translation.completed[this.global.lang],
-                content: `${this.translation.group[this.global.lang]}:${value.group}`
+                title: this.translation.completed[this.lang],
+                content: `${this.translation.group[this.lang]}:${value.group}`
               }
             }).afterClosed().subscribe(() => {
               this.scanning = false;
@@ -85,8 +85,8 @@ export class ScanComponent implements OnInit {
           (error) => {
             this.dialog.open(AlertDialogComponent, {
               data: {
-                title: this.translation.error[this.global.lang],
-                content: this.translation.invalid[this.global.lang]
+                title: this.translation.error[this.lang],
+                content: this.translation.invalid[this.lang]
               }
             }).afterClosed().subscribe(() => {
               this.scanning = false;

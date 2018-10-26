@@ -29,9 +29,7 @@ import {
   MatCheckboxModule,
   MatMenuModule,
   MatTableModule,
-  MatPaginatorModule,
-  MatDatepickerModule,
-  MatProgressBarModule
+  MatPaginatorModule
 } from '@angular/material';
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -50,9 +48,9 @@ import { LoadingDialogComponent } from './components/loading-dialog/loading-dial
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { TermsComponent } from './terms/terms/terms.component';
 import { SalesListComponent } from './events/event/sales-list/sales-list.component';
-import { EditComponent } from './events/edit/edit.component';
-import { GroupListComponent } from './events/group-list/group-list.component';
+import { GroupListComponent } from './events/event/group-list/group-list.component';
 import { PrivacyPolicyComponent } from './terms/privacy-policy/privacy-policy.component';
+import { GroupDialogComponent } from './events/event/group-dialog/group-dialog.component';
 
 @NgModule({
   declarations: [
@@ -68,9 +66,9 @@ import { PrivacyPolicyComponent } from './terms/privacy-policy/privacy-policy.co
     PromptDialogComponent,
     TermsComponent,
     SalesListComponent,
-    EditComponent,
     GroupListComponent,
-    PrivacyPolicyComponent
+    PrivacyPolicyComponent,
+    GroupDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -101,15 +99,14 @@ import { PrivacyPolicyComponent } from './terms/privacy-policy/privacy-policy.co
     MatListModule,
     MatSlideToggleModule,
     MatMenuModule,
-    MatPaginatorModule,
-    MatDatepickerModule,
-    MatProgressBarModule
+    MatPaginatorModule
   ],
   entryComponents: [
     AlertDialogComponent,
     ConfirmDialogComponent,
     LoadingDialogComponent,
-    PromptDialogComponent
+    PromptDialogComponent,
+    GroupDialogComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

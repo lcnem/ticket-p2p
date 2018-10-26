@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GlobalDataService } from '../../services/global-data.service';
-
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { lang } from 'src/models/lang';
 
 @Component({
   selector: 'app-terms',
@@ -9,13 +8,14 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ['./terms.component.css']
 })
 export class TermsComponent implements OnInit {
+  get lang() { return lang; };
+
   public safeSite: SafeResourceUrl;
 
   constructor(
-    public global: GlobalDataService,
     sanitizer: DomSanitizer
   ) {
-    this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/terms/${global.lang}.txt`);
+    this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/terms/${this.lang}.txt`);
   }
 
   ngOnInit() {

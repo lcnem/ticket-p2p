@@ -1,15 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { GlobalDataService } from '../services/global-data.service';
 import { MatDialog, MatTableDataSource } from '@angular/material';
-import { Event } from '../../../../firebase/functions/src/models/event';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
-import { PromptDialogComponent } from '../components/prompt-dialog/prompt-dialog.component';
-import { AlertDialogComponent } from '../components/alert-dialog/alert-dialog.component';
-import { Account, Wallet, SimpleWallet, Password } from 'nem-library';
-import { firestore } from 'firebase';
+import { Account, Wallet, SimpleWallet, Password, NEMLibrary, NetworkTypes } from 'nem-library';
+import * as firebase from 'firebase/app';
+import { EventsService } from 'src/app/services/events.service';
+
+import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
+import { lang, setLang } from 'src/models/lang';
+
+NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
 
 @Component({
   selector: 'app-home',
@@ -18,22 +18,22 @@ import { firestore } from 'firebase';
 })
 export class HomeComponent implements OnInit {
   public loading = true;
-  public progress = 0;
+  get lang() { return lang; };
+  set lang(value: string) { setLang(value); }
 
-  public dataSource?: MatTableDataSource<{
-    id: string,
-    eventName: string,
-    sales: number,
-    capacity: number
-  }>;
-  public displayedColumns = ["eventName", "capacity"];
+  public photoUrl = "";
+
+  public dataSource = new MatTableDataSource<{
+    name: string,
+    id: string
+  }>();
+  public displayedColumns = ["name", "id"];
 
   constructor(
-    public global: GlobalDataService,
     private router: Router,
     private dialog: MatDialog,
-    public auth: AngularFireAuth,
-    private firestore: AngularFirestore
+    private auth: AngularFireAuth,
+    private events: EventsService
   ) { }
 
   ngOnInit() {
@@ -49,50 +49,37 @@ export class HomeComponent implements OnInit {
 
   public async logout() {
     await this.auth.auth.signOut();
-    this.global.refreshed = false;
+    this.events.initialize();
 
-    this.dialog.open(AlertDialogComponent, {
-      data: {
-        title: this.translation.completed[this.global.lang],
-        content: ""
-      }
-    }).afterClosed().subscribe(() => {
-      this.router.navigate(["accounts", "login"]);
-    });
+    this.router.navigate(["accounts", "login"]);
   }
 
   public async refresh(force?: boolean) {
-    this.progress = 0;
     this.loading = true;
+    this.dataSource.data = [];
 
-    this.progress = 10;
-    await this.global.refreshEvents(force);
-    this.progress = 40;
+    await this.events.getEvents(force);
     
-    let tableData = this.global.events.map(event => {
-      let sales = event.sales.length;
+    for(let id in this.events.events!) {
+      let event = this.events.events![id];
+      this.dataSource.data.push({
+        name: event.name,
+        id: id
+      });
+    }
+    this.dataSource.data = this.dataSource.data;
 
-      return {
-        id: event.id,
-        eventName: event.data.name,
-        sales: sales,
-        capacity: event.capacity
-      }
-    })
-    this.progress = 80;
-    this.dataSource = new MatTableDataSource(tableData);
-    this.progress = 90;
-
+    this.photoUrl = this.auth.auth.currentUser!.photoURL!;
+    
     this.loading = false;
-    this.progress = 100;
   }
 
   public async createEvent() {
     let eventName: string = await this.dialog.open(PromptDialogComponent, {
       data: {
-        title: this.translation.createEvent[this.global.lang],
+        title: this.translation.createEvent[this.lang],
         input: {
-          placeholder: this.translation.eventName[this.global.lang],
+          placeholder: this.translation.eventName[this.lang],
         }
       }
     }).afterClosed().toPromise();
@@ -101,20 +88,7 @@ export class HomeComponent implements OnInit {
       return;
     }
 
-    let uid = this.auth.auth.currentUser!.uid;
-
-    let password = new Password(uid);
-    let privateKey = SimpleWallet.create(uid, password).open(password).privateKey;
-
-    let newEvent = await this.firestore.collection("users").doc(uid).collection("events").add({
-      name: eventName,
-      privateKey: privateKey,
-      sellingStarted: false,
-      groups: [],
-      date: firestore.Timestamp.fromDate(new Date())
-    } as Event);
-
-    await this.refresh();
+    let newEvent = await this.events.createEvent(eventName);
     this.router.navigate(["events", newEvent.id]);
   }
 
@@ -126,10 +100,6 @@ export class HomeComponent implements OnInit {
     ticketP2p: {
       en: "Ticket Peer to Peer",
       ja: "ちけっとピアツーピア"
-    } as any,
-    completed: {
-      en: "Completed",
-      ja: "完了"
     } as any,
     logout: {
       en: "Log out",
@@ -158,10 +128,6 @@ export class HomeComponent implements OnInit {
     error: {
       en: "Error",
       ja: "エラー"
-    } as any,
-    capacity: {
-      en: "Capacity",
-      ja: "定員"
     } as any
   };
 }

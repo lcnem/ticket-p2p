@@ -1,14 +1,15 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator, PageEvent, MatDialog } from '@angular/material';
 import { AccountHttp, Address } from 'nem-library';
-import { nodes } from '../../../../models/nodes';
-import { Sale } from '../../../../../../firebase/functions/src/models/sale';
-import { GlobalDataService } from '../../../services/global-data.service';
-import { stripeCharge } from 'src/models/stripe';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
 import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment.prod';
+import { nodes } from 'src/models/nodes';
+import { stripeCharge } from 'src/models/stripe';
+import { lang } from 'src/models/lang';
+import { Sale } from 'src/../../firebase/functions/src/models/sale';
+import { EventsService } from 'src/app/services/events.service';
 
 @Component({
   selector: 'app-sales-list',
@@ -17,46 +18,36 @@ import { environment } from 'src/environments/environment.prod';
 })
 export class SalesListComponent implements OnInit {
   public loading = true;
-  public dataSource?: MatTableDataSource<{
+  get lang() { return lang; };
+
+  public dataSource = new MatTableDataSource<{
     customerId: string,
     address: string,
     group: string,
     reservation: string,
     status: string,
     invalidator: string
-  }>;
+  }>();
   public displayedColumns = ["customerId", "address", "group", "reservation", "status", "invalidator"];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  @Input() sales!: Sale[];
   @Input() userId!: string;
   @Input() eventId!: string;
 
   constructor(
-    public global: GlobalDataService,
     private dialog: MatDialog,
-    private http: HttpClient
+    private auth: AngularFireAuth,
+    private http: HttpClient,
+    private events: EventsService
   ) { }
 
   ngOnInit() {
-    this.initialize();
+    this.refresh();
   }
 
-  public initialize() {
-    let tableData = [];
+  public async refresh() {
+    await this.events.getEventDetails(this.eventId);
 
-    for (let purchase of this.sales) {
-      tableData.push({
-        customerId: purchase.customerId,
-        address: purchase.ticket,
-        group: purchase.group,
-        reservation: purchase.reservation,
-        status: "",
-        invalidator: ""
-      });
-    }
-
-    this.dataSource = new MatTableDataSource(tableData);
     this.dataSource.paginator = this.paginator;
     this.paginator.length = this.dataSource!.data.length;
     this.paginator.pageSize = 10;
@@ -65,7 +56,7 @@ export class SalesListComponent implements OnInit {
       length: this.paginator.length,
       pageIndex: this.paginator.pageIndex,
       pageSize: this.paginator.pageSize
-    });//awaitなしでよい
+    });
   }
 
   public async onPageChanged(pageEvent: PageEvent) {
@@ -74,16 +65,18 @@ export class SalesListComponent implements OnInit {
     let accountHttp = new AccountHttp(nodes);
     const pageSize = 25;
 
+    let sales = this.events.details[this.eventId].sales;
+
     //テーブル表示範囲をiで回す
     for (let i = pageEvent.pageIndex * pageEvent.pageSize; i < (pageEvent.pageIndex + 1) * pageEvent.pageSize && i < pageEvent.length; i++) {
-      let address = this.sales[i].ticket;
+      let address = sales[i].ticket;
       let transactions = await accountHttp.allTransactions(new Address(address), { pageSize: pageSize }).toPromise();
 
       //トランザクション履歴がなければ
       if (transactions.length == 0) {
-        this.dataSource!.data[i].status = this.translation.valid[this.global.lang];
+        this.dataSource!.data[i].status = this.translation.valid[this.lang];
       } else {
-        this.dataSource!.data[i].status = this.translation.invalid[this.global.lang];
+        this.dataSource!.data[i].status = this.translation.invalid[this.lang];
         //ページサイズにデータが詰まってくるのであれば、空きがでるまで回す
         while (transactions.length == pageSize) {
           let hash = transactions[pageSize - 1].getTransactionInfo().hash.data;
@@ -92,7 +85,7 @@ export class SalesListComponent implements OnInit {
         //一番古いトランザクションがわかる
         let invalidator = transactions[transactions.length - 1].signer!.address.plain();
         if (invalidator == "NDFRSC6OVQUOBP6NEHPDDA7ZTYQAS3VNOD6C3DCW") {
-          this.dataSource!.data[i].invalidator = this.translation.thisSystem[this.global.lang];
+          this.dataSource!.data[i].invalidator = this.translation.thisSystem[this.lang];
         } else {
           this.dataSource!.data[i].invalidator = invalidator;
         }
@@ -105,8 +98,8 @@ export class SalesListComponent implements OnInit {
     if (!(window as any).PaymentRequest) {
       this.dialog.open(AlertDialogComponent, {
         data: {
-          title: this.translation.error[this.global.lang],
-          content: this.translation.unsupported[this.global.lang]
+          title: this.translation.error[this.lang],
+          content: this.translation.unsupported[this.lang]
         }
       });
       return;
@@ -114,10 +107,10 @@ export class SalesListComponent implements OnInit {
 
     let amount: number = await this.dialog.open(PromptDialogComponent, {
       data: {
-        title: this.translation.sendReward[this.global.lang],
+        title: this.translation.sendReward[this.lang],
         input: {
           min: 0,
-          placeholder: this.translation.amount[this.global.lang],
+          placeholder: this.translation.amount[this.lang],
           type: "number"
         }
       }
@@ -138,14 +131,14 @@ export class SalesListComponent implements OnInit {
     let details = {
       displayItems: [
         {
-          label: this.translation.reward[this.global.lang],
+          label: this.translation.reward[this.lang],
           amount: {
             currency: "JPY",
             value: amount.toString()
           }
         },
         {
-          label: this.translation.fee[this.global.lang],
+          label: this.translation.fee[this.lang],
           amount: {
             currency: "JPY",
             value: fee.toString()
@@ -153,7 +146,7 @@ export class SalesListComponent implements OnInit {
         }
       ],
       total: {
-        label: this.translation.total[this.global.lang],
+        label: this.translation.total[this.lang],
         amount: {
           currency: "JPY",
           value: (amount + fee).toString()
@@ -185,7 +178,7 @@ export class SalesListComponent implements OnInit {
             fee: fee,
             token: response.id,
             address: address,
-            test: environment.production ? false : true
+            test: this.auth.auth.currentUser!.email!.match(/lcnem\.cc$/) ? true : false
           }
         ).toPromise();
 
@@ -193,16 +186,20 @@ export class SalesListComponent implements OnInit {
 
         await this.dialog.open(AlertDialogComponent, {
           data: {
-            title: this.translation.completed[this.global.lang],
+            title: this.translation.completed[this.lang],
             content: ""
           }
         }).afterClosed().toPromise();
 
-        this.initialize();
+        this.onPageChanged({
+          length: this.paginator.length,
+          pageIndex: this.paginator.pageIndex,
+          pageSize: this.paginator.pageSize
+        });
       } catch {
         this.dialog.open(AlertDialogComponent, {
           data: {
-            title: this.translation.error[this.global.lang],
+            title: this.translation.error[this.lang],
             content: ""
           }
         });

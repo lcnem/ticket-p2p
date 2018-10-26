@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { GlobalDataService } from '../../services/global-data.service';
+import { EventsService } from 'src/app/services/events.service';
+import { lang } from 'src/models/lang';
 
 @Component({
   selector: 'app-group-list',
@@ -8,23 +9,29 @@ import { GlobalDataService } from '../../services/global-data.service';
   styleUrls: ['./group-list.component.css']
 })
 export class GroupListComponent implements OnInit {
-  public dataSource?: MatTableDataSource<{
-    name: string,
-    capacity: number
-  }>;
-  public displayedColumns = ["groupName", "capacity"];
+  public loading = true;
+  get lang() { return lang; };
 
-  @Input() groups!: {
+  public dataSource = new MatTableDataSource<{
     name: string,
     capacity: number
-  }[];
+  }>();
+  public displayedColumns = ["name", "capacity"];
+
+  @Input() userId!: string;
+  @Input() eventId!: string;
 
   constructor(
-    public global: GlobalDataService
+    private events: EventsService
   ) { }
 
   ngOnInit() {
-    this.dataSource = new MatTableDataSource(this.groups);
+    this.refresh();
+  }
+
+  public async refresh() {
+    await this.events.getEventDetails(this.eventId);
+    this.loading = false;
   }
 
   public translation = {
