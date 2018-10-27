@@ -33,7 +33,7 @@ export class EventsService {
     this.details = {};
   }
 
-  public async getEvents(force?: boolean) {
+  public async readEvents(force?: boolean) {
     if(!force && this.events) {
       return;
     }
@@ -46,7 +46,7 @@ export class EventsService {
     }
   }
 
-  public async getEventDetails(id: string, force?: boolean) {
+  public async readEventDetails(id: string, force?: boolean) {
     if(!force && this.details[id]) {
       return;
     }

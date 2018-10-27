@@ -46,7 +46,7 @@ export class SalesListComponent implements OnInit {
   }
 
   public async refresh() {
-    await this.events.getEventDetails(this.eventId);
+    await this.events.readEventDetails(this.eventId);
 
     this.dataSource.paginator = this.paginator;
     this.paginator.length = this.dataSource!.data.length;
