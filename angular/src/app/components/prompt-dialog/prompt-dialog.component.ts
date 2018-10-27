@@ -20,7 +20,7 @@ export class PromptDialogComponent {
         minlength: number,
         pattern: string,
         placeholder: string,
-        value: string
+        value: any
       }
     }
   ) {
