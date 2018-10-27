@@ -58,14 +58,5 @@ h3:hover mat-icon {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-left: 10px;
-}
-
-.mat-line {
-  word-wrap: break-word !important;
-  white-space: pre-wrap !important;
-}
-
-.mat-line.detail {
-  color: #888;
+  margin-left: 1em;
 }

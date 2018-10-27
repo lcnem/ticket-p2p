@@ -1,10 +1,10 @@
 <table mat-table fxFill [dataSource]="dataSource">
-  <ng-container matColumnDef="groupName">
-    <th mat-header-cell *matHeaderCellDef> {{translation.groupName[global.lang]}} </th>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> {{translation.groupName[lang]}} </th>
     <td mat-cell *matCellDef="let element"> {{element.name}} </td>
   </ng-container>
   <ng-container matColumnDef="capacity">
-    <th mat-header-cell *matHeaderCellDef> {{translation.capacity[global.lang]}} </th>
+    <th mat-header-cell *matHeaderCellDef> {{translation.capacity[lang]}} </th>
     <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
