@@ -86,6 +86,7 @@ export class EventComponent implements OnInit {
         }
       }
     }).afterClosed().toPromise();
+    this.event.name = eventName;
 
     if (!eventName) {
       return;
