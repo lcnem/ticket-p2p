@@ -20,14 +20,14 @@ export class PromptDialogComponent {
         minlength: number,
         pattern: string,
         placeholder: string,
-        value: any
+        value: string
       }
     }
   ) {
-    if(!data) {
+    if (!data) {
       data = {} as any;
     }
-    if(!data.input) {
+    if (!data.input) {
       data.input = {} as any;
     }
     this.model = data.input.value;

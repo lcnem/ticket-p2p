@@ -59,8 +59,8 @@ export class HomeComponent implements OnInit {
     this.dataSource.data = [];
 
     await this.events.readEvents(force);
-    
-    for(let id in this.events.events!) {
+
+    for (let id in this.events.events!) {
       let event = this.events.events![id];
       this.dataSource.data.push({
         name: event.name,
@@ -70,7 +70,7 @@ export class HomeComponent implements OnInit {
     this.dataSource.data = this.dataSource.data;
 
     this.photoUrl = this.auth.auth.currentUser!.photoURL!;
-    
+
     this.loading = false;
   }
 
@@ -80,6 +80,7 @@ export class HomeComponent implements OnInit {
         title: this.translation.createEvent[this.lang],
         input: {
           placeholder: this.translation.eventName[this.lang],
+          pattern: "\S+"
         }
       }
     }).afterClosed().toPromise();
