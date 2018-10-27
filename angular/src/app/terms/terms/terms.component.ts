@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { lang } from 'src/models/lang';
+import { back } from 'src/models/back';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-terms',
@@ -13,12 +15,17 @@ export class TermsComponent implements OnInit {
   public safeSite: SafeResourceUrl;
 
   constructor(
+    private router: Router,
     sanitizer: DomSanitizer
   ) {
     this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/terms/${this.lang}.txt`);
   }
 
   ngOnInit() {
+  }
+
+  public back() {
+    back(() => this.router.navigate([""]));
   }
 
   public translation = {

@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { LoadingDialogComponent } from 'src/app/components/loading-dialog/loading-dialog.component';
 import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
 import { lang } from 'src/models/lang';
+import { back } from 'src/models/back';
 
 @Component({
   selector: 'app-scan',
@@ -29,6 +30,7 @@ export class ScanComponent implements OnInit {
   selected?: number;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private http: HttpClient
@@ -98,6 +100,10 @@ export class ScanComponent implements OnInit {
         dialog.close();
       }
     });
+  }
+  
+  public back() {
+    back(() => this.router.navigate(["events", this.eventId]));
   }
 
   public get selectedDevice() {
