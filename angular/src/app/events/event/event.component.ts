@@ -83,16 +83,15 @@ export class EventComponent implements OnInit {
         title: this.translation.edit[this.lang],
         input: {
           placeholder: this.translation.eventName[this.lang],
-          pattern: "\s+",
           value: this.event.name,
         }
       }
     }).afterClosed().toPromise();
-    this.event.name = eventName
+
     if (!eventName) {
       return;
     }
-
+    this.event.name = eventName
     await this.events.updateEvent(this.id, { name: eventName });
   }
 
