@@ -80,7 +80,7 @@ export class HomeComponent implements OnInit {
         title: this.translation.createEvent[this.lang],
         input: {
           placeholder: this.translation.eventName[this.lang],
-          pattern: "\S+"
+          pattern: "\\S+"
         }
       }
     }).afterClosed().toPromise();

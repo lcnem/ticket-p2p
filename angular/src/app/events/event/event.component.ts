@@ -84,6 +84,7 @@ export class EventComponent implements OnInit {
         input: {
           placeholder: this.translation.eventName[this.lang],
           value: this.event.name,
+          pattern: "\\S+"
         }
       }
     }).afterClosed().toPromise();
