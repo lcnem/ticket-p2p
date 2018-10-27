@@ -53,7 +53,7 @@ export class EventComponent implements OnInit {
   public async refresh() {
     this.loading = true;
 
-    await this.events.getEvents();
+    await this.events.readEvents();
 
     this.id = this.route.snapshot.paramMap.get('id') || "";
 

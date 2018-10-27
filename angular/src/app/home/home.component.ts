@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit {
     this.loading = true;
     this.dataSource.data = [];
 
-    await this.events.getEvents(force);
+    await this.events.readEvents(force);
     
     for(let id in this.events.events!) {
       let event = this.events.events![id];
