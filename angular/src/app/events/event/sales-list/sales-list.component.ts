@@ -10,6 +10,7 @@ import { stripeCharge } from 'src/models/stripe';
 import { lang } from 'src/models/lang';
 import { Sale } from 'src/../../firebase/functions/src/models/sale';
 import { EventsService } from 'src/app/services/events.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-sales-list',
@@ -178,7 +179,7 @@ export class SalesListComponent implements OnInit {
             fee: fee,
             token: response.id,
             address: address,
-            test: this.auth.auth.currentUser!.email!.match(/lcnem\.cc$/) ? true : false
+            test: environment.production ? false : true
           }
         ).toPromise();
 

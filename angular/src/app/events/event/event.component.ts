@@ -15,6 +15,7 @@ import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confir
 import { EventsService } from 'src/app/services/events.service';
 import { GroupDialogComponent } from './group-dialog/group-dialog.component';
 import { stripeCharge } from 'src/models/stripe';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-event',
@@ -173,7 +174,7 @@ export class EventComponent implements OnInit {
             userId: this.auth.auth.currentUser!.uid,
             eventId: this.id,
             token: response.id,
-            test: this.auth.auth.currentUser!.email!.match(/lcnem\.cc$/) ? true : false
+            test: environment.production ? false : true
           }
         ).toPromise();
 
