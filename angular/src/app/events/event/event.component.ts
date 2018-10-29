@@ -83,16 +83,17 @@ export class EventComponent implements OnInit {
         title: this.translation.edit[this.lang],
         input: {
           placeholder: this.translation.eventName[this.lang],
+          value: this.event.name,
+          pattern: "\\S+"
         }
       }
     }).afterClosed().toPromise();
-    this.event.name = eventName;
 
     if (!eventName) {
       return;
     }
-
-    await this.events.updateEvent(this.id, { name: eventName } );
+    this.event.name = eventName
+    await this.events.updateEvent(this.id, { name: eventName });
   }
 
   public async addGroups() {
@@ -205,7 +206,7 @@ export class EventComponent implements OnInit {
       }
     }).afterClosed().toPromise();
 
-    if(!result) {
+    if (!result) {
       return;
     }
 
