@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router'
-import { MatDialog, MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router'
+import { MatDialog } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
@@ -16,6 +15,7 @@ import { EventsService } from 'src/app/services/events.service';
 import { GroupDialogComponent } from './group-dialog/group-dialog.component';
 import { stripeCharge } from 'src/models/stripe';
 import { environment } from 'src/environments/environment';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-event',
@@ -35,18 +35,15 @@ export class EventComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    public auth: AngularFireAuth,
-    public events: EventsService,
+    private auth: AngularFireAuth,
+    private user: UserService,
+    private events: EventsService,
     private http: HttpClient
   ) {
   }
 
   ngOnInit() {
-    this.auth.authState.subscribe(async (user) => {
-      if (user == null) {
-        this.router.navigate(["accounts", "login"]);
-        return;
-      }
+    this.user.checkLogin().then(async () => {
       await this.refresh();
     });
   }
