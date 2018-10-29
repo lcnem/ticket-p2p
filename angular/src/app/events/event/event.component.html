@@ -12,56 +12,68 @@
       <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
       <ng-template #loaded>
         <mat-card>
-          <dl>
-            <dt>{{translation.eventName[lang]}}</dt>
-            <dd>
-              {{event.name}}
-              <button mat-icon-button color="accent" (click)="editEventName()"><mat-icon>edit</mat-icon></button>
-            </dd>
-          </dl>
-          <mat-divider></mat-divider>
-          <dl>
-            <dt>{{translation.userId[lang]}}</dt>
-            <dd>{{userId}}</dd>
-          </dl>
-          <mat-divider></mat-divider>
-          <dl>
-            <dt>{{translation.eventId[lang]}}</dt>
-            <dd>{{id}}</dd>
-          </dl>
-          <mat-divider></mat-divider>
-          <dl>
-            <dt>{{translation.privateKey[lang]}}</dt>
-            <dd>{{event.privateKey}}</dd>
-          </dl>
+          <mat-list class="like-dt-dd">
+            <mat-divider></mat-divider>
+            <mat-list-item>
+              <p>{{translation.eventName[lang]}}</p>
+              <span>
+                {{event.name}}
+                <button mat-icon-button color="accent" (click)="editEventName()">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+              <p>{{translation.userId[lang]}}</p>
+              <span>{{userId}}</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+              <p>{{translation.eventId[lang]}}</p>
+              <span>{{id}}</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+              <p>{{translation.privateKey[lang]}}</p>
+              <span>{{event.privateKey}}</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          </mat-list>
         </mat-card>
-        <br />
-        <h3></h3>
-        <mat-card></mat-card>
         <br />
         <h3>{{translation.eventOperations[lang]}}</h3>
         <mat-card>
-          <ul class="event-operation">
-            <li>
-              <div class="left-content">
-                <h4>{{translation.startCamera[lang]}}</h4>
-                <div>{{translation.startCameraBody[lang]}}</div>
-              </div>
-              <div class="right-content">
-                <button mat-raised-button color="accent" routerLink="/events/{{id}}/scan" [queryParams]="{ userId: userId }">{{translation.startCamera[lang]}}</button>
-              </div>
-            </li>
+          <mat-list class="actions">
             <mat-divider></mat-divider>
-            <li>
-              <div class="left-content">
+            <mat-list-item>
+              <span>
+                <h4>{{translation.startCamera[lang]}}</h4>
+                <p>{{translation.startCameraBody[lang]}}</p>
+              </span>
+              <span class="fill-remaining-space"></span>
+              <span>
+                <button mat-raised-button color="accent" routerLink="/events/{{id}}/scan" [queryParams]="{ userId: userId }">{{translation.startCamera[lang]}}</button>
+              </span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+              <span>
                 <h4>{{translation.deleteEvent[lang]}}</h4>
-                <div>{{translation.deleteEventBody[lang]}}</div>
-              </div>
-              <div class="right-content">
+                <p>{{translation.deleteEventBody[lang]}}</p>
+              </span>
+              <span class="fill-remaining-space"></span>
+              <span>
                 <button mat-raised-button color="accent" (click)="deleteEvent()">{{translation.deleteEvent[lang]}}</button>
-              </div>
-            </li>
-          </ul>
+              </span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          </mat-list>
+        </mat-card>
+        <br />
+        <h3>{{translation.capacity[lang]}}</h3>
+        <mat-card>
+          <app-group-list [userId]="userId" [eventId]="id"></app-group-list>
         </mat-card>
         <br />
         <mat-card>
