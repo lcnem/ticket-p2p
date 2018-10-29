@@ -261,6 +261,14 @@ export class EventComponent implements OnInit {
       en: "Delete this event.",
       ja: "イベントを削除します。"
     } as any,
+    addGroups: {
+      en: "Add tickets",
+      ja: "チケットを追加"
+    } as any,
+    addGrouptsBody: {
+      en: "Add Tickets for this event",
+      ja: "イベントのチケット枚数を追加することができます"
+    } as any,
     startCamera: {
       en: "Start the camera",
       ja: "カメラを起動"
