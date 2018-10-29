@@ -48,6 +48,17 @@
             <mat-divider></mat-divider>
             <mat-list-item>
               <span>
+                <h4>{{translation.addGroups[lang]}}</h4>
+                <p>{{translation.addGroupsBody[lang]}}</p>
+              </span>
+              <span class="fill-remaining-space"></span>
+              <span>
+                <button mat-raised-button color="accent" (click)="addGroups()">{{translation.addGroups[lang]}}</button>
+              </span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+              <span>
                 <h4>{{translation.startCamera[lang]}}</h4>
                 <p>{{translation.startCameraBody[lang]}}</p>
               </span>
