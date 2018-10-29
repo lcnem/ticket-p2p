@@ -265,7 +265,7 @@ export class EventComponent implements OnInit {
       en: "Add tickets",
       ja: "チケットを追加"
     } as any,
-    addGrouptsBody: {
+    addGroupsBody: {
       en: "Add Tickets for this event",
       ja: "イベントのチケット枚数を追加することができます"
     } as any,
