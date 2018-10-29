@@ -11,7 +11,8 @@ export const environment = {
     projectId: 'ticket-p2p',
     storageBucket: 'ticket-p2p.appspot.com',
     messagingSenderId: '515853285587'
-  }
+  },
+  stripe: "pk_test_sVIc8W1jrazk2t1LxqAdnls3"
 };
 
 /*

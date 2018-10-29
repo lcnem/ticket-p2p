@@ -30,7 +30,7 @@ export class GroupListComponent implements OnInit {
   }
 
   public async refresh() {
-    await this.events.getEventDetails(this.eventId);
+    await this.events.readEventDetails(this.eventId);
     this.loading = false;
   }
 

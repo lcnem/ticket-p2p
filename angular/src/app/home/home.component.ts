@@ -8,6 +8,7 @@ import { EventsService } from 'src/app/services/events.service';
 
 import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
 import { lang, setLang } from 'src/models/lang';
+import { UserService } from '../services/user.service';
 
 NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
 
@@ -33,34 +34,27 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private auth: AngularFireAuth,
+    private user: UserService,
     private events: EventsService
   ) { }
 
   ngOnInit() {
-    this.auth.authState.subscribe(async (user) => {
-      if (user == null) {
-        this.router.navigate(["accounts", "login"]);
-        return;
-      }
-
+    this.user.checkLogin().then(async () => {
       await this.refresh();
     });
   }
 
   public async logout() {
-    await this.auth.auth.signOut();
-    this.events.initialize();
-
-    this.router.navigate(["accounts", "login"]);
+    await this.user.logout();
   }
 
   public async refresh(force?: boolean) {
     this.loading = true;
     this.dataSource.data = [];
 
-    await this.events.getEvents(force);
-    
-    for(let id in this.events.events!) {
+    await this.events.readEvents(force);
+
+    for (let id in this.events.events!) {
       let event = this.events.events![id];
       this.dataSource.data.push({
         name: event.name,
@@ -70,7 +64,7 @@ export class HomeComponent implements OnInit {
     this.dataSource.data = this.dataSource.data;
 
     this.photoUrl = this.auth.auth.currentUser!.photoURL!;
-    
+
     this.loading = false;
   }
 
@@ -80,6 +74,7 @@ export class HomeComponent implements OnInit {
         title: this.translation.createEvent[this.lang],
         input: {
           placeholder: this.translation.eventName[this.lang],
+          pattern: "\\S+"
         }
       }
     }).afterClosed().toPromise();

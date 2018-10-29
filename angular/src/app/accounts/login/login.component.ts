@@ -2,12 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { AngularFireAuth } from '@angular/fire/auth';
-
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { lang, setLang } from 'src/models/lang';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +11,6 @@ import { lang, setLang } from 'src/models/lang';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  public loading = true;
   get lang() { return lang; };
   set lang(value: string) { setLang(value); }
   public agree = false;
@@ -23,33 +18,17 @@ export class LoginComponent implements OnInit {
 
   constructor(
     public router: Router,
-    private auth: AngularFireAuth,
-    private firestore: AngularFirestore,
+    private user: UserService,
     sanitizer: DomSanitizer
   ) {
     this.safeSite = sanitizer.bypassSecurityTrustResourceUrl(`assets/terms/terms/${this.lang}.txt`);
   }
 
   ngOnInit() {
-    this.auth.authState.subscribe((user) => {
-      if (user) {
-        this.router.navigate([""]);
-        return;
-      }
-      this.loading = false;
-    });
   }
 
   public async login() {
-    await this.auth.auth.signInWithPopup(new firebase.auth!.GoogleAuthProvider);
-
-    let uid = this.auth.auth.currentUser!.uid;
-    let user = await this.firestore.collection("users").doc(uid).ref.get();
-    if (!user.exists) {
-      user.ref.set({});
-    }
-
-    this.router.navigate([""]);
+    await this.user.login();
   }
 
   public translation = {

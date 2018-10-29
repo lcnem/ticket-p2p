@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router'
-import { MatDialog, MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router'
+import { MatDialog } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
@@ -15,6 +14,8 @@ import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confir
 import { EventsService } from 'src/app/services/events.service';
 import { GroupDialogComponent } from './group-dialog/group-dialog.component';
 import { stripeCharge } from 'src/models/stripe';
+import { environment } from 'src/environments/environment';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-event',
@@ -34,18 +35,15 @@ export class EventComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    public auth: AngularFireAuth,
-    public events: EventsService,
+    private auth: AngularFireAuth,
+    private user: UserService,
+    private events: EventsService,
     private http: HttpClient
   ) {
   }
 
   ngOnInit() {
-    this.auth.authState.subscribe(async (user) => {
-      if (user == null) {
-        this.router.navigate(["accounts", "login"]);
-        return;
-      }
+    this.user.checkLogin().then(async () => {
       await this.refresh();
     });
   }
@@ -53,7 +51,7 @@ export class EventComponent implements OnInit {
   public async refresh() {
     this.loading = true;
 
-    await this.events.getEvents();
+    await this.events.readEvents();
 
     this.id = this.route.snapshot.paramMap.get('id') || "";
 
@@ -83,6 +81,8 @@ export class EventComponent implements OnInit {
         title: this.translation.edit[this.lang],
         input: {
           placeholder: this.translation.eventName[this.lang],
+          value: this.event.name,
+          pattern: "\\S+"
         }
       }
     }).afterClosed().toPromise();
@@ -90,8 +90,8 @@ export class EventComponent implements OnInit {
     if (!eventName) {
       return;
     }
-
-    await this.events.updateEvent(this.id, { name: eventName } );
+    this.event.name = eventName
+    await this.events.updateEvent(this.id, { name: eventName });
   }
 
   public async addGroups() {
@@ -171,7 +171,7 @@ export class EventComponent implements OnInit {
             userId: this.auth.auth.currentUser!.uid,
             eventId: this.id,
             token: response.id,
-            test: this.auth.auth.currentUser!.email!.match(/lcnem\.cc$/) ? true : false
+            test: environment.production ? false : true
           }
         ).toPromise();
 
@@ -204,7 +204,7 @@ export class EventComponent implements OnInit {
       }
     }).afterClosed().toPromise();
 
-    if(!result) {
+    if (!result) {
       return;
     }
 
