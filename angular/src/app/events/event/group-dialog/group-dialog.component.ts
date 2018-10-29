@@ -18,10 +18,7 @@ export class GroupDialogComponent implements OnInit {
   }
 
   
-  public addGroup(index: number) {
-    if (index != this.groups.length - 1) {
-      return;
-    }
+  public addGroup() {
     this.groups.push({} as any);
   }
 
