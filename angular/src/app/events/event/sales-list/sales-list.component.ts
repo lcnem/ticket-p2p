@@ -27,7 +27,8 @@ export class SalesListComponent implements OnInit {
     group: string,
     reservation: string,
     status: string,
-    invalidator: string
+    invalidator: string,
+    sale: Sale
   }>();
   public displayedColumns = ["customerId", "address", "group", "reservation", "status", "invalidator"];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -37,7 +38,6 @@ export class SalesListComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private auth: AngularFireAuth,
     private http: HttpClient,
     private events: EventsService
   ) { }
@@ -48,6 +48,18 @@ export class SalesListComponent implements OnInit {
 
   public async refresh() {
     await this.events.readEventDetails(this.eventId);
+
+    this.dataSource.data = this.events.details[this.eventId].sales.map(sale => {
+      return {
+        customerId: sale.customerId,
+        address: sale.ticket,
+        group: sale.group,
+        reservation: sale.reservation,
+        status: "",
+        invalidator: "",
+        sale: sale
+      }
+    });
 
     this.dataSource.paginator = this.paginator;
     this.paginator.length = this.dataSource!.data.length;
@@ -64,31 +76,30 @@ export class SalesListComponent implements OnInit {
     this.loading = true;
 
     let accountHttp = new AccountHttp(nodes);
-    const pageSize = 25;
+    const nemPageSize = 25;
 
-    let sales = this.events.details[this.eventId].sales;
+    let dataSourceRange = this.dataSource.data.slice(pageEvent.pageIndex * pageEvent.pageSize, Math.min((pageEvent.pageIndex + 1) * pageEvent.pageSize, pageEvent.length))
 
-    //テーブル表示範囲をiで回す
-    for (let i = pageEvent.pageIndex * pageEvent.pageSize; i < (pageEvent.pageIndex + 1) * pageEvent.pageSize && i < pageEvent.length; i++) {
-      let address = sales[i].ticket;
-      let transactions = await accountHttp.allTransactions(new Address(address), { pageSize: pageSize }).toPromise();
+    //テーブル表示範囲をi回す
+    for (let data of dataSourceRange) {
+      let transactions = await accountHttp.allTransactions(new Address(data.address), { pageSize: nemPageSize }).toPromise();
 
       //トランザクション履歴がなければ
       if (transactions.length == 0) {
-        this.dataSource!.data[i].status = this.translation.valid[this.lang];
+        data.status = this.translation.valid[this.lang];
       } else {
-        this.dataSource!.data[i].status = this.translation.invalid[this.lang];
+       data.status = this.translation.invalid[this.lang];
         //ページサイズにデータが詰まってくるのであれば、空きがでるまで回す
-        while (transactions.length == pageSize) {
-          let hash = transactions[pageSize - 1].getTransactionInfo().hash.data;
-          transactions = await accountHttp.allTransactions(new Address(address), { pageSize: pageSize, hash: hash }).toPromise();
+        while (transactions.length == nemPageSize) {
+          let hash = transactions[nemPageSize - 1].getTransactionInfo().hash.data;
+          transactions = await accountHttp.allTransactions(new Address(data.address), { pageSize: nemPageSize, hash: hash }).toPromise();
         }
         //一番古いトランザクションがわかる
         let invalidator = transactions[transactions.length - 1].signer!.address.plain();
         if (invalidator == "NDFRSC6OVQUOBP6NEHPDDA7ZTYQAS3VNOD6C3DCW") {
-          this.dataSource!.data[i].invalidator = this.translation.thisSystem[this.lang];
+          data.invalidator = this.translation.thisSystem[this.lang];
         } else {
-          this.dataSource!.data[i].invalidator = invalidator;
+          data.invalidator = invalidator;
         }
       }
     }
@@ -175,26 +186,12 @@ export class SalesListComponent implements OnInit {
 
         result.complete("success");
 
-        await this.dialog.open(AlertDialogComponent, {
-          data: {
-            title: this.translation.completed[this.lang],
-            content: ""
-          }
-        }).afterClosed().toPromise();
-
         this.onPageChanged({
           length: this.paginator.length,
           pageIndex: this.paginator.pageIndex,
           pageSize: this.paginator.pageSize
         });
       } catch {
-        this.dialog.open(AlertDialogComponent, {
-          data: {
-            title: this.translation.error[this.lang],
-            content: ""
-          }
-        });
-
         result.complete("fail");
       }
     });

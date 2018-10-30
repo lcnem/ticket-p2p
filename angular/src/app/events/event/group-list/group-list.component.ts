@@ -31,6 +31,14 @@ export class GroupListComponent implements OnInit {
 
   public async refresh() {
     await this.events.readEventDetails(this.eventId);
+
+    this.dataSource.data = this.events.details[this.eventId].groups.map(group => {
+      return {
+        name: group.name,
+        capacity: group.capacity
+      }
+    });
+
     this.loading = false;
   }
 
