@@ -13,7 +13,7 @@ import { Event } from '.src/../../firebase/functions/src/models/event';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { EventsService } from 'src/app/services/events.service';
 import { GroupDialogComponent } from './group-dialog/group-dialog.component';
-import { stripeCharge } from 'src/models/stripe';
+import { stripeCharge, supportedInstruments } from 'src/models/stripe';
 import { environment } from 'src/environments/environment';
 import { UserService } from 'src/app/services/user.service';
 
@@ -114,15 +114,6 @@ export class EventComponent implements OnInit {
       });
       return;
     }
-    let supportedInstruments: PaymentMethodData[] = [{
-      supportedMethods: ['basic-card'],
-      data: {
-        supportedNetworks: [
-          'visa',
-          'mastercard'
-        ]
-      }
-    }];
 
     let details = {
       displayItems: [
@@ -171,7 +162,8 @@ export class EventComponent implements OnInit {
             userId: this.auth.auth.currentUser!.uid,
             eventId: this.id,
             token: response.id,
-            test: environment.production ? false : true
+            group: groups,
+            test: environment.stripe.test
           }
         ).toPromise();
 
