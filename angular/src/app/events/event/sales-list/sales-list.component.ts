@@ -179,7 +179,7 @@ export class SalesListComponent implements OnInit {
             fee: fee,
             token: response.id,
             address: address,
-            test: environment.production ? false : true
+            test: environment.stripe.test
           }
         ).toPromise();
 
