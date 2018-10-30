@@ -168,21 +168,7 @@ export class EventComponent implements OnInit {
         ).toPromise();
 
         result.complete("success");
-
-        await this.dialog.open(AlertDialogComponent, {
-          data: {
-            title: this.translation.completed[this.lang],
-            content: ""
-          }
-        }).afterClosed().toPromise();
       } catch {
-        this.dialog.open(AlertDialogComponent, {
-          data: {
-            title: this.translation.error[this.lang],
-            content: ""
-          }
-        });
-
         result.complete("fail");
       }
     });
@@ -284,10 +270,6 @@ export class EventComponent implements OnInit {
     total: {
       en: "Total",
       ja: "合計"
-    } as any,
-    completed: {
-      en: "Completed",
-      ja: "完了"
     } as any
   };
 }

@@ -32,9 +32,7 @@ export const _addCapacity = functions.https.onRequest(async (req, res) => {
     };
     await stripe.charges.create(query);
 
-    for (const group of groups) {
-      await event.ref.collection("groups").add(group);
-    }
+    await Promise.all(groups.map(group => event.ref.collection("groups").add(group)))
 
     res.status(200).send();
   } catch (e) {
