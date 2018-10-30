@@ -6,7 +6,7 @@ import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dial
 import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
 import { HttpClient } from '@angular/common/http';
 import { nodes } from 'src/models/nodes';
-import { stripeCharge } from 'src/models/stripe';
+import { stripeCharge, supportedInstruments } from 'src/models/stripe';
 import { lang } from 'src/models/lang';
 import { Sale } from 'src/../../firebase/functions/src/models/sale';
 import { EventsService } from 'src/app/services/events.service';
@@ -116,16 +116,6 @@ export class SalesListComponent implements OnInit {
         }
       }
     }).afterClosed().toPromise();
-
-    let supportedInstruments: PaymentMethodData[] = [{
-      supportedMethods: ['basic-card'],
-      data: {
-        supportedNetworks: [
-          'visa',
-          'mastercard'
-        ]
-      }
-    }];
 
     let fee = Math.floor(amount * 0.05);
 

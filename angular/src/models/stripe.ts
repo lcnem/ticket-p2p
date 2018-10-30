@@ -11,3 +11,13 @@ export function stripeCharge(result: PaymentResponse, callback: (status: any, re
     exp_year: result.details.expiryYear
   }, callback);
 }
+
+export const supportedInstruments: PaymentMethodData[] = [{
+  supportedMethods: ['basic-card'],
+  data: {
+    supportedNetworks: [
+      'visa',
+      'mastercard'
+    ]
+  }
+}];
