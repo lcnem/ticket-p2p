@@ -22,23 +22,23 @@ export let addCapacity: functions.HttpsFunction;
 export let cancelTicket: functions.HttpsFunction;
 export let checkTicket: functions.HttpsFunction;
 export let issueTickets: functions.HttpsFunction;
-export let salesConsitions: functions.HttpsFunction;
+export let salesConditions: functions.HttpsFunction;
 export let sendReward: functions.HttpsFunction;
 
 if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "addCapacity") {
   addCapacity = _addCapacity;
 }
-if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "cancelTicket") {
-  cancelTicket = _cancelTicket;
-}
-if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "checkTicket") {
-  checkTicket = _checkTicket;
+if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "salesConditions") {
+  salesConditions = _salesConditions;
 }
 if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "issueTickets") {
   issueTickets = _issueTickets;
 }
-if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "salesConsitions") {
-  salesConsitions = _salesConditions;
+if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "checkTicket") {
+  checkTicket = _checkTicket;
+}
+if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "cancelTicket") {
+  cancelTicket = _cancelTicket;
 }
 if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === "sendReward") {
   sendReward = _sendReward;

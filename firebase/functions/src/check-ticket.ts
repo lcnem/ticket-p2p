@@ -17,7 +17,7 @@ import { Sale } from './models/sale';
 export const _checkTicket = functions.https.onRequest(async (req, res) => {
   try {
     NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
-  } catch {}
+  } catch { }
   try {
     const userId = req.body.userId as string;
     const eventId = req.body.eventId as string;
@@ -57,15 +57,19 @@ export const _checkTicket = functions.https.onRequest(async (req, res) => {
       res.status(400).send("USED_TICKET");
     }
 
-    const account = Account.createWithPrivateKey(functions.config().nem.private_key);
+    try {
+      const account = Account.createWithPrivateKey(functions.config().nem.private_key);
 
-    const signed = account.signTransaction(TransferTransaction.create(
-      TimeWindow.createWithDeadline(),
-      address,
-      new XEM(0),
-      EmptyMessage
-    ));
-    await transactionHttp.announceTransaction(signed).toPromise();
+      const signed = account.signTransaction(TransferTransaction.create(
+        TimeWindow.createWithDeadline(),
+        address,
+        new XEM(0),
+        EmptyMessage
+      ));
+      await transactionHttp.announceTransaction(signed).toPromise();
+    } catch (e) {
+      console.log(e.message);
+    }
 
     res.status(200).send(JSON.stringify({ group: sale.group }));
   } catch (e) {

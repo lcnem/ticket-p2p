@@ -19,7 +19,7 @@ export const _issueTickets = functions.https.onRequest(async (req, res) => {
     const userId = req.body.userId as string;
     const eventId = req.body.eventId as string;
     const privateKey = req.body.privateKey as string;
-    const customerId = req.body.customerId as string;
+    let customerId = req.body.customerId as string;
     const requests = req.body.request as {
       group: string,
       reservation: string
@@ -27,6 +27,9 @@ export const _issueTickets = functions.https.onRequest(async (req, res) => {
 
     if (!userId || !eventId || !requests) {
       throw Error("INVALID_PARAMETERS");
+    }
+    if(!customerId) {
+      customerId = "";
     }
 
     const event = await admin.firestore().collection("users").doc(userId).collection("events").doc(eventId).get();
@@ -47,6 +50,13 @@ export const _issueTickets = functions.https.onRequest(async (req, res) => {
         throw Error("CAPACITY_OVER");
       }
     }
+    
+    const ret: {
+      ticket: string,
+      qrUrl: string,
+      group: string,
+      reservation: string
+    }[] = [];
 
     //検証
     for (const request of requests) {
@@ -59,26 +69,28 @@ export const _issueTickets = functions.https.onRequest(async (req, res) => {
       if (salesCondition.reservations.find(r => r === request.reservation)) {
         throw Error("ALREADY_RESERVED");
       }
-    }
 
-    const ret: {
-      ticket: string,
-      qrUrl: string
-    }[] = [];
-    for (const request of requests) {
+      if(!request.reservation) {
+        request.reservation = "";
+      }
+
       const address = SimpleWallet.create(userId, new Password(userId)).address.plain();
       ret.push({
         ticket: address,
-        qrUrl: `http://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=${address}`
-      });
-
-      await admin.firestore().collection("users").doc(userId).collection("events").doc(eventId).collection("sales").add({
-        ticket: address,
+        qrUrl: `https://chart.apis.google.com/chart?chs=300x300&cht=qr&chl=${address}`,
         group: request.group,
         reservation: request.reservation,
+      });
+    }
+
+    await Promise.all(ret.map(async r => {
+      await admin.firestore().collection("users").doc(userId).collection("events").doc(eventId).collection("sales").add({
+        ticket: r.ticket,
+        group: r.group,
+        reservation: r.reservation,
         customerId: customerId
       } as Sale);
-    }
+    }));
 
     res.status(200).send(JSON.stringify(ret));
   } catch (e) {
