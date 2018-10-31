@@ -162,7 +162,7 @@ export class EventComponent implements OnInit {
             userId: this.auth.auth.currentUser!.uid,
             eventId: this.id,
             token: response.id,
-            group: groups,
+            groups: groups,
             test: environment.stripe.test
           }
         ).toPromise();
