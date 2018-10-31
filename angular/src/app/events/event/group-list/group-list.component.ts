@@ -50,6 +50,10 @@ export class GroupListComponent implements OnInit {
     capacity: {
       en: "Capacity",
       ja: "定員"
+    } as any,
+    noGroups: {
+      en: "There is no capacity group.",
+      ja: "定員区分はありません。"
     } as any
   };
 }

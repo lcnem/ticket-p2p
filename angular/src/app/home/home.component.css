@@ -3,3 +3,10 @@
   text-align: center;
   margin: 1em;
 }
+.table-container {
+  overflow: auto;
+  white-space: nowrap;
+}
+th, td {
+  padding: 0 0.5em !important;
+}

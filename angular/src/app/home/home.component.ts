@@ -84,6 +84,7 @@ export class HomeComponent implements OnInit {
     }
 
     let newEvent = await this.events.createEvent(eventName);
+    await this.refresh(true);
     this.router.navigate(["events", newEvent.id]);
   }
 
