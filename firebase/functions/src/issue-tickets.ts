@@ -14,13 +14,13 @@ import { Sale } from './models/sale';
 export const _issueTickets = functions.https.onRequest(async (req, res) => {
   try {
     NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
-  } catch {}
+  } catch { }
   try {
     const userId = req.body.userId as string;
     const eventId = req.body.eventId as string;
     const privateKey = req.body.privateKey as string;
     let customerId = req.body.customerId as string;
-    const requests = req.body.request as {
+    const requests = req.body.requests as {
       group: string,
       reservation: string
     }[];
@@ -28,7 +28,7 @@ export const _issueTickets = functions.https.onRequest(async (req, res) => {
     if (!userId || !eventId || !requests) {
       throw Error("INVALID_PARAMETERS");
     }
-    if(!customerId) {
+    if (!customerId) {
       customerId = "";
     }
 
@@ -46,11 +46,11 @@ export const _issueTickets = functions.https.onRequest(async (req, res) => {
 
     for (const group of salesCondition.groups) {
       const filtered = requests.filter(r => r.group === group.name);
-      if(filtered.length + group.sales > group.capacity) {
+      if (filtered.length + group.sales > group.capacity) {
         throw Error("CAPACITY_OVER");
       }
     }
-    
+
     const ret: {
       ticket: string,
       qrUrl: string,
@@ -70,7 +70,7 @@ export const _issueTickets = functions.https.onRequest(async (req, res) => {
         throw Error("ALREADY_RESERVED");
       }
 
-      if(!request.reservation) {
+      if (!request.reservation) {
         request.reservation = "";
       }
 
