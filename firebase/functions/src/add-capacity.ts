@@ -21,7 +21,8 @@ export const _addCapacity = functions.https.onRequest(async (req, res) => {
 
     let capacity = 0;
     for (const group of groups) {
-      capacity += group.capacity;
+      group.capacity = Number(group.capacity)
+      capacity += group.capacity
     }
 
     //クレジット決済
