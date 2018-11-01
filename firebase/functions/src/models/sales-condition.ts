@@ -15,23 +15,23 @@ export class SalesCondition {
 
     const sales = await eventRef.collection("sales").get();
     const salesData = sales.docs.map(sale => sale.data() as Sale);
-    
+
     const ret: SalesCondition = {
       groups: [],
       reservations: salesData.map(sale => sale.reservation)
     }
 
-    for(const group of groupsData) {
+    for (const group of groupsData) {
       const index = ret.groups.findIndex(g => g.name === group.name);
-      if(index !== -1) {
-        ret.groups[index].capacity += group.capacity;
+      if (index !== -1) {
+        ret.groups[index].capacity += Number(group.capacity);
         continue;
       }
 
       ret.groups.push({
         name: group.name,
         sales: salesData.filter(sale => sale.group === group.name).length,
-        capacity: group.capacity
+        capacity: Number(group.capacity)
       });
     }
 
