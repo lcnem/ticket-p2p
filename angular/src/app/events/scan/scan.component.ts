@@ -58,11 +58,11 @@ export class ScanComponent implements OnInit {
     });
 
     this.scanner.scanSuccess.subscribe((result: any) => {
-      if(this.scanning) {
+      if (this.scanning) {
         return;
       }
       this.scanning = true;
-
+      console.log(result)
       let dialog = this.dialog.open(LoadingDialogComponent, { disableClose: true });
 
       try {
@@ -71,7 +71,7 @@ export class ScanComponent implements OnInit {
           {
             userId: this.userId,
             eventId: this.eventId,
-            nemAddress: result
+            ticket: result
           }
         ).subscribe(
           (value: any) => {
@@ -101,7 +101,7 @@ export class ScanComponent implements OnInit {
       }
     });
   }
-  
+
   public back() {
     back(() => this.router.navigate(["events", this.eventId]));
   }
