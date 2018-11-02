@@ -11,6 +11,7 @@ import { lang } from 'src/models/lang';
 import { Sale } from 'src/../../firebase/functions/src/models/sale';
 import { EventsService } from 'src/app/services/events.service';
 import { environment } from 'src/environments/environment';
+import { ConstantPool } from '@angular/compiler';
 
 @Component({
   selector: 'app-sales-list',
@@ -88,7 +89,7 @@ export class SalesListComponent implements OnInit {
       if (transactions.length == 0) {
         data.status = this.translation.valid[this.lang];
       } else {
-       data.status = this.translation.invalid[this.lang];
+        data.status = this.translation.invalid[this.lang];
         //ページサイズにデータが詰まってくるのであれば、空きがでるまで回す
         while (transactions.length == nemPageSize) {
           let hash = transactions[nemPageSize - 1].getTransactionInfo().hash.data;
@@ -169,6 +170,12 @@ export class SalesListComponent implements OnInit {
 
         return;
       }
+      console.log(this.userId)
+      console.log(this.eventId)
+      console.log(amount)
+      console.log(fee)
+      console.log(response.id)
+      console.log(address)
 
       try {
         await this.http.post(
