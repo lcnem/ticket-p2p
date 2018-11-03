@@ -207,7 +207,7 @@ export class EventComponent implements OnInit {
       en: "Event name",
       ja: "イベント名"
     } as any,
-    capacityaAddHistory: {
+    capacityAddHistory: {
       en: "Capacity Add History",
       ja: "定員追加履歴"
     } as any,
