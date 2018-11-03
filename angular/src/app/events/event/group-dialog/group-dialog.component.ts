@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { lang } from 'src/models/lang';
-import { Group } from 'src/../../firebase/functions/src/models/group';
+import { lang } from '../../../../models/lang';
+import { Group } from '../../../../../../firebase/functions/src/models/group';
 
 @Component({
   selector: 'app-group-dialog',
