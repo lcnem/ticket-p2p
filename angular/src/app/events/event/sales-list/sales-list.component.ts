@@ -121,9 +121,8 @@ export class SalesListComponent implements OnInit {
       data: {
         title: this.translation.sendReward[this.lang],
         input: {
-          minlength: 100,
-          placeholder: this.translation.amount[this.lang],
-          type: "number"
+          minlength: 3,
+          placeholder: this.translation.amount[this.lang]
         }
       }
     }).afterClosed().toPromise();
