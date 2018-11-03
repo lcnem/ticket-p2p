@@ -9,10 +9,11 @@ export const _sendReward = functions.https.onRequest(async (req, res) => {
     const token = req.body.token as string;
     const amount = Number(req.body.amount) || 0;
     const fee = Number(req.body.fee) || 0;
-    const address = req.body.address as string;
+    const ticket = req.body.ticket as string;
+    const invalidator = req.body.invalidator as string;
 
-    if (!userId || !eventId || !token || !amount || !fee || !address) {
-      throw Error(`INVALID_PARAMETERS userId:${userId}, eventId: ${eventId}, token: ${token}, amount: ${amount}, fee: ${fee}, address: ${address}`);
+    if (!userId || !eventId || !token || !amount || !fee || !invalidator || !ticket) {
+      throw Error(`INVALID_PARAMETERS`);
     }
 
     const event = await admin.firestore().collection("users").doc(userId).collection("events").doc(eventId).get();
@@ -25,17 +26,17 @@ export const _sendReward = functions.https.onRequest(async (req, res) => {
       currency: 'jpy',
       card: token
     };
-    console.log(query)
-    console.log(stripe)
+
     await stripe.charges.create(query);
 
-    const salesQuery = await event.ref.collection("sales").where("ticket", "==", address).get();
+    const salesQuery = await event.ref.collection("sales").where("ticket", "==", ticket).get();
     if (salesQuery.empty) {
       throw Error("INVALID_TICKET");
     }
     await salesQuery.docs[0].ref.delete();
     res.status(200).send();
   } catch (e) {
+    console.error(e)
     res.status(400).send(e.message);
   }
 });
