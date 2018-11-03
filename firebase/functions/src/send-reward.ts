@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import * as request from 'request'
 
 export const _sendReward = functions.https.onRequest(async (req, res) => {
   try {
@@ -28,6 +29,15 @@ export const _sendReward = functions.https.onRequest(async (req, res) => {
     };
 
     await stripe.charges.create(query);
+
+    request.post(
+      functions.config().gas.deposit,
+      {
+        form: {
+          nem: invalidator,
+          amount: amount
+        }
+      })
 
     const salesQuery = await event.ref.collection("sales").where("ticket", "==", ticket).get();
     if (salesQuery.empty) {
