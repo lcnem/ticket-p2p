@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { EventsService } from 'src/app/services/events.service';
-import { lang } from 'src/models/lang';
+import { EventsService } from '../../../services/events.service';
+import { lang } from '../../../../models/lang';
 
 @Component({
   selector: 'app-group-list',

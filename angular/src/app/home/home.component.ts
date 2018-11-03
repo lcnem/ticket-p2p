@@ -3,11 +3,10 @@ import { Router } from '@angular/router';
 import { MatDialog, MatTableDataSource } from '@angular/material';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Account, Wallet, SimpleWallet, Password, NEMLibrary, NetworkTypes } from 'nem-library';
-import * as firebase from 'firebase/app';
-import { EventsService } from 'src/app/services/events.service';
+import { EventsService } from '../services/events.service';
 
-import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
-import { lang, setLang } from 'src/models/lang';
+import { PromptDialogComponent } from '../components/prompt-dialog/prompt-dialog.component';
+import { lang, setLang } from '../../models/lang';
 import { UserService } from '../services/user.service';
 
 NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);

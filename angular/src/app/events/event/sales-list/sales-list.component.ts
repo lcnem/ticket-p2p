@@ -5,13 +5,12 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
 import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
 import { HttpClient } from '@angular/common/http';
-import { nodes } from 'src/models/nodes';
-import { stripeCharge, supportedInstruments } from 'src/models/stripe';
-import { lang } from 'src/models/lang';
-import { Sale } from 'src/../../firebase/functions/src/models/sale';
-import { EventsService } from 'src/app/services/events.service';
-import { environment } from 'src/environments/environment';
-import { ConstantPool } from '@angular/compiler';
+import { nodes } from '../../../../models/nodes';
+import { stripeCharge, supportedInstruments } from '../../../../models/stripe';
+import { lang } from '../../../../models/lang';
+import { Sale } from '../../../../../../firebase/functions/src/models/sale';
+import { EventsService } from '../../../services/events.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-sales-list',

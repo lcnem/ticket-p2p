@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { lang } from 'src/models/lang';
-import { Group } from 'src/../../firebase/functions/src/models/group';
+import { lang } from '../../../../models/lang';
+import { Group } from '../../../../../../firebase/functions/src/models/group';
 
 @Component({
   selector: 'app-group-dialog',
@@ -18,11 +18,13 @@ export class GroupDialogComponent implements OnInit {
   }
 
   
-  public addGroup() {
-    this.groups.push({} as any);
-  }
+  public addGroup = () => this.groups.push({} as any);
 
-  public deleteGroup(index: number) {
+  public deleteGroup = (index: number) => {
+    if(this.groups.length == 1) {
+      this.groups[0] = {} as any;
+      return;
+    }
     this.groups.splice(index, 1);
   }
 

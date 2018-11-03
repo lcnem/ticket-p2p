@@ -1,4 +1,5 @@
-<div class="table-container">
+<mat-spinner *ngIf="loading"></mat-spinner>
+<div class="table-container" [hidden]="loading">
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>{{translation.groupName[lang]}}</th>
@@ -11,5 +12,5 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+  <p *ngIf="!dataSource.data.length" class="empty">{{translation.noGroups[lang]}}</p>
 </div>
-<p *ngIf="!dataSource || !dataSource.data.length" class="empty">{{translation.noGroups[lang]}}</p>

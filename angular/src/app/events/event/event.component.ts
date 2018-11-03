@@ -4,18 +4,18 @@ import { MatDialog } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 
-import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
-import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
-import { back } from 'src/models/back';
-import { lang } from 'src/models/lang';
+import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
+import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dialog.component';
+import { back } from '../../../models/back';
+import { lang } from '../../../models/lang';
 
-import { Event } from '.src/../../firebase/functions/src/models/event';
-import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
-import { EventsService } from 'src/app/services/events.service';
+import { Event } from '../../../../../firebase/functions/src/models/event';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { EventsService } from '../../services/events.service';
 import { GroupDialogComponent } from './group-dialog/group-dialog.component';
-import { stripeCharge, supportedInstruments } from 'src/models/stripe';
+import { stripeCharge, supportedInstruments } from '../../../models/stripe';
 import { environment } from 'src/environments/environment';
-import { UserService } from 'src/app/services/user.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-event',
