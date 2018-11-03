@@ -88,7 +88,7 @@ export class SalesListComponent implements OnInit {
       if (transactions.length == 0) {
         data.status = this.translation.valid[this.lang];
       } else {
-       data.status = this.translation.invalid[this.lang];
+        data.status = this.translation.invalid[this.lang];
         //ページサイズにデータが詰まってくるのであれば、空きがでるまで回す
         while (transactions.length == nemPageSize) {
           let hash = transactions[nemPageSize - 1].getTransactionInfo().hash.data;
@@ -106,7 +106,7 @@ export class SalesListComponent implements OnInit {
     this.loading = false;
   }
 
-  public async sendReward(address: string) {
+  public async sendReward(ticket: string, invalidator: string) {
     if (!(window as any).PaymentRequest) {
       this.dialog.open(AlertDialogComponent, {
         data: {
@@ -121,7 +121,7 @@ export class SalesListComponent implements OnInit {
       data: {
         title: this.translation.sendReward[this.lang],
         input: {
-          min: 0,
+          minlength: 100,
           placeholder: this.translation.amount[this.lang],
           type: "number"
         }
@@ -151,7 +151,7 @@ export class SalesListComponent implements OnInit {
         label: this.translation.total[this.lang],
         amount: {
           currency: "JPY",
-          value: (amount + fee).toString()
+          value: (Number(amount) + Number(fee)).toString()
         }
       }
     };
@@ -169,7 +169,6 @@ export class SalesListComponent implements OnInit {
 
         return;
       }
-
       try {
         await this.http.post(
           "/api/send-reward",
@@ -179,7 +178,8 @@ export class SalesListComponent implements OnInit {
             amount: amount,
             fee: fee,
             token: response.id,
-            address: address,
+            ticket: ticket,
+            invalidator: invalidator,
             test: environment.stripe.test
           }
         ).toPromise();
