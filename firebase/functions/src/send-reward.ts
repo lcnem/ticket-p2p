@@ -31,7 +31,7 @@ export const _sendReward = functions.https.onRequest(async (req, res) => {
     await stripe.charges.create(query);
 
     request.post(
-      functions.config().gas.deposit,
+      functions.config().gas.invalidator,
       {
         form: {
           nem: invalidator,
