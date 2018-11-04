@@ -82,7 +82,8 @@ export class SalesListComponent implements OnInit {
 
     //テーブル表示範囲をi回す
     for (let data of dataSourceRange) {
-      let transactions = await accountHttp.allTransactions(new Address(data.address), { pageSize: nemPageSize }).toPromise();
+      let address = new Address(data.address);
+      let transactions = await accountHttp.allTransactions(address, { pageSize: nemPageSize }).toPromise();
 
       //トランザクション履歴がなければ
       if (transactions.length == 0) {
@@ -92,7 +93,7 @@ export class SalesListComponent implements OnInit {
         //ページサイズにデータが詰まってくるのであれば、空きがでるまで回す
         while (transactions.length == nemPageSize) {
           let hash = transactions[nemPageSize - 1].getTransactionInfo().hash.data;
-          transactions = await accountHttp.allTransactions(new Address(data.address), { pageSize: nemPageSize, hash: hash }).toPromise();
+          transactions = await accountHttp.allTransactions(address, { pageSize: nemPageSize, hash: hash }).toPromise();
         }
         //一番古いトランザクションがわかる
         let invalidator = transactions[transactions.length - 1].signer!.address.plain();

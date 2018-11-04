@@ -5,7 +5,7 @@
 }
 
 .like-dt-dd mat-list-item span {
-  overflow: auto;
+  word-break: break-all;
 }
 
 .actions mat-list-item {
