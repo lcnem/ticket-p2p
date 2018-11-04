@@ -38,17 +38,12 @@ export const _sendReward = functions.https.onRequest(async (req, res) => {
       },
       () => {
         async () => {
-          try {
-            const query = {
-              amount: amount + fee,
-              currency: 'jpy',
-              card: token
-            };
-            await stripe.charges.create(query);
-          } catch (e) {
-            console.error(e)
-            res.status(400).send(e.message);
-          }
+          const query = {
+            amount: amount + fee,
+            currency: 'jpy',
+            card: token
+          };
+          await stripe.charges.create(query);
         }
         res.status(200).send();
       }
