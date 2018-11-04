@@ -21,7 +21,8 @@ export const _addCapacity = functions.https.onRequest(async (req, res) => {
 
     let capacity = 0;
     for (const group of groups) {
-      capacity += group.capacity;
+      group.capacity = Number(group.capacity)
+      capacity += group.capacity
     }
 
     //クレジット決済
@@ -32,12 +33,11 @@ export const _addCapacity = functions.https.onRequest(async (req, res) => {
     };
     await stripe.charges.create(query);
 
-    for (const group of groups) {
-      await event.ref.collection("groups").add(group);
-    }
+    await Promise.all(groups.map(group => event.ref.collection("groups").add(group)))
 
     res.status(200).send();
   } catch (e) {
+    console.error(e)
     res.status(400).send(e.message);
   }
 });

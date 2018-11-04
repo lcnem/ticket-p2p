@@ -3,10 +3,10 @@ import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { LoadingDialogComponent } from 'src/app/components/loading-dialog/loading-dialog.component';
-import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
-import { lang } from 'src/models/lang';
-import { back } from 'src/models/back';
+import { LoadingDialogComponent } from '../../components/loading-dialog/loading-dialog.component';
+import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
+import { lang } from '../../../models/lang';
+import { back } from '../../../models/back';
 
 @Component({
   selector: 'app-scan',
@@ -58,11 +58,11 @@ export class ScanComponent implements OnInit {
     });
 
     this.scanner.scanSuccess.subscribe((result: any) => {
-      if(this.scanning) {
+      if (this.scanning) {
         return;
       }
       this.scanning = true;
-
+      console.log(result)
       let dialog = this.dialog.open(LoadingDialogComponent, { disableClose: true });
 
       try {
@@ -71,7 +71,7 @@ export class ScanComponent implements OnInit {
           {
             userId: this.userId,
             eventId: this.eventId,
-            nemAddress: result
+            ticket: result
           }
         ).subscribe(
           (value: any) => {
@@ -101,7 +101,7 @@ export class ScanComponent implements OnInit {
       }
     });
   }
-  
+
   public back() {
     back(() => this.router.navigate(["events", this.eventId]));
   }

@@ -8,5 +8,8 @@ export const environment = {
     storageBucket: 'ticket-p2p.appspot.com',
     messagingSenderId: '515853285587'
   },
-  stripe: "pk_live_U7J2IacDFZyCvYILl45onao9"
+  stripe: {
+    pk: "pk_live_U7J2IacDFZyCvYILl45onao9",
+    test: ""
+  }
 };

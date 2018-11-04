@@ -1,62 +1,23 @@
-mat-card {
-  border-radius: 5px;
-  padding: 0 24px;
-}
 
-dl {
-  display: flex;
+.like-dt-dd mat-list-item p {
   margin: 0;
-  padding: 16px 0;
+  width: 120px;
 }
 
-dt {
-  width: 30%;
-  max-width: 120px;
+.like-dt-dd mat-list-item span {
+  word-break: break-all;
 }
 
-dd {
-  width: 70%;
-  overflow: auto;
+.actions mat-list-item {
+  height: initial;
 }
 
-h3 a {
-  text-decoration: none;
-  cursor: pointer;
+.actions mat-list-item h4 {
+  margin: 0.5em auto;
 }
 
-h3 mat-icon {
-  font-size: 20px;
-  vertical-align: sub;
-  transition-duration: .2s;
-}
-
-h3:hover mat-icon {
-  opacity: .7;
-}
-
-.event-operation {
-  padding: 0;
-}
-
-.event-operation li {
-  list-style: none;
-  padding: 16px 0;
-  display: flex;
-  justify-content: space-between;
-}
-
-.event-operation h4 {
-  margin: 0;
-  margin-bottom: 2px;
-}
-
-.event-operation .left-content div {
-  color: #777;
-}
-
-.event-operation .right-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 1em;
+.actions mat-list-item p {
+  color: gray;
+  font-size: 0.8em;
+  margin-bottom: 0.5em;
 }

@@ -5,12 +5,12 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
 import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
 import { HttpClient } from '@angular/common/http';
-import { nodes } from 'src/models/nodes';
-import { stripeCharge } from 'src/models/stripe';
-import { lang } from 'src/models/lang';
-import { Sale } from 'src/../../firebase/functions/src/models/sale';
-import { EventsService } from 'src/app/services/events.service';
-import { environment } from 'src/environments/environment';
+import { nodes } from '../../../../models/nodes';
+import { stripeCharge, supportedInstruments } from '../../../../models/stripe';
+import { lang } from '../../../../models/lang';
+import { Sale } from '../../../../../../firebase/functions/src/models/sale';
+import { EventsService } from '../../../services/events.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-sales-list',
@@ -27,7 +27,8 @@ export class SalesListComponent implements OnInit {
     group: string,
     reservation: string,
     status: string,
-    invalidator: string
+    invalidator: string,
+    sale: Sale
   }>();
   public displayedColumns = ["customerId", "address", "group", "reservation", "status", "invalidator"];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -37,7 +38,6 @@ export class SalesListComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private auth: AngularFireAuth,
     private http: HttpClient,
     private events: EventsService
   ) { }
@@ -48,6 +48,18 @@ export class SalesListComponent implements OnInit {
 
   public async refresh() {
     await this.events.readEventDetails(this.eventId);
+
+    this.dataSource.data = this.events.details[this.eventId].sales.map(sale => {
+      return {
+        customerId: sale.customerId,
+        address: sale.ticket,
+        group: sale.group,
+        reservation: sale.reservation,
+        status: "",
+        invalidator: "",
+        sale: sale
+      }
+    });
 
     this.dataSource.paginator = this.paginator;
     this.paginator.length = this.dataSource!.data.length;
@@ -64,38 +76,38 @@ export class SalesListComponent implements OnInit {
     this.loading = true;
 
     let accountHttp = new AccountHttp(nodes);
-    const pageSize = 25;
+    const nemPageSize = 25;
 
-    let sales = this.events.details[this.eventId].sales;
+    let dataSourceRange = this.dataSource.data.slice(pageEvent.pageIndex * pageEvent.pageSize, Math.min((pageEvent.pageIndex + 1) * pageEvent.pageSize, pageEvent.length))
 
-    //テーブル表示範囲をiで回す
-    for (let i = pageEvent.pageIndex * pageEvent.pageSize; i < (pageEvent.pageIndex + 1) * pageEvent.pageSize && i < pageEvent.length; i++) {
-      let address = sales[i].ticket;
-      let transactions = await accountHttp.allTransactions(new Address(address), { pageSize: pageSize }).toPromise();
+    //テーブル表示範囲をi回す
+    for (let data of dataSourceRange) {
+      let address = new Address(data.address);
+      let transactions = await accountHttp.allTransactions(address, { pageSize: nemPageSize }).toPromise();
 
       //トランザクション履歴がなければ
       if (transactions.length == 0) {
-        this.dataSource!.data[i].status = this.translation.valid[this.lang];
+        data.status = this.translation.valid[this.lang];
       } else {
-        this.dataSource!.data[i].status = this.translation.invalid[this.lang];
+        data.status = this.translation.invalid[this.lang];
         //ページサイズにデータが詰まってくるのであれば、空きがでるまで回す
-        while (transactions.length == pageSize) {
-          let hash = transactions[pageSize - 1].getTransactionInfo().hash.data;
-          transactions = await accountHttp.allTransactions(new Address(address), { pageSize: pageSize, hash: hash }).toPromise();
+        while (transactions.length == nemPageSize) {
+          let hash = transactions[nemPageSize - 1].getTransactionInfo().hash.data;
+          transactions = await accountHttp.allTransactions(address, { pageSize: nemPageSize, hash: hash }).toPromise();
         }
         //一番古いトランザクションがわかる
         let invalidator = transactions[transactions.length - 1].signer!.address.plain();
         if (invalidator == "NDFRSC6OVQUOBP6NEHPDDA7ZTYQAS3VNOD6C3DCW") {
-          this.dataSource!.data[i].invalidator = this.translation.thisSystem[this.lang];
+          data.invalidator = this.translation.thisSystem[this.lang];
         } else {
-          this.dataSource!.data[i].invalidator = invalidator;
+          data.invalidator = invalidator;
         }
       }
     }
     this.loading = false;
   }
 
-  public async sendReward(address: string) {
+  public async sendReward(ticket: string, invalidator: string) {
     if (!(window as any).PaymentRequest) {
       this.dialog.open(AlertDialogComponent, {
         data: {
@@ -110,22 +122,12 @@ export class SalesListComponent implements OnInit {
       data: {
         title: this.translation.sendReward[this.lang],
         input: {
-          min: 0,
+          minlength: 100,
           placeholder: this.translation.amount[this.lang],
           type: "number"
         }
       }
     }).afterClosed().toPromise();
-
-    let supportedInstruments: PaymentMethodData[] = [{
-      supportedMethods: ['basic-card'],
-      data: {
-        supportedNetworks: [
-          'visa',
-          'mastercard'
-        ]
-      }
-    }];
 
     let fee = Math.floor(amount * 0.05);
 
@@ -150,7 +152,7 @@ export class SalesListComponent implements OnInit {
         label: this.translation.total[this.lang],
         amount: {
           currency: "JPY",
-          value: (amount + fee).toString()
+          value: (Number(amount) + Number(fee)).toString()
         }
       }
     };
@@ -168,7 +170,6 @@ export class SalesListComponent implements OnInit {
 
         return;
       }
-
       try {
         await this.http.post(
           "/api/send-reward",
@@ -178,19 +179,13 @@ export class SalesListComponent implements OnInit {
             amount: amount,
             fee: fee,
             token: response.id,
-            address: address,
-            test: environment.production ? false : true
+            ticket: ticket,
+            invalidator: invalidator,
+            test: environment.stripe.test
           }
         ).toPromise();
 
         result.complete("success");
-
-        await this.dialog.open(AlertDialogComponent, {
-          data: {
-            title: this.translation.completed[this.lang],
-            content: ""
-          }
-        }).afterClosed().toPromise();
 
         this.onPageChanged({
           length: this.paginator.length,
@@ -198,13 +193,6 @@ export class SalesListComponent implements OnInit {
           pageSize: this.paginator.pageSize
         });
       } catch {
-        this.dialog.open(AlertDialogComponent, {
-          data: {
-            title: this.translation.error[this.lang],
-            content: ""
-          }
-        });
-
         result.complete("fail");
       }
     });

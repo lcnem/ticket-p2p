@@ -1,20 +1,24 @@
 <form #form="ngForm">
+  <div fxLayout="row">
+    <span class="fill-remaining-space"></span>
+    <button mat-icon-button color="accent" type="button" (click)="addGroup()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
   <h2 mat-dialog-title>{{translation.addGroups[lang]}}</h2>
   <mat-dialog-content>
-    <div *ngFor="let group of groups; let i = index; let l = last" fxLayout="row">
-      <mat-form-field fxFlex="50">
-        <input matInput color="accent" placeholder="{{translation.groupName[lang]}}" [(ngModel)]="group.name"
-          name="group{{i}}-name" id="group{{i}}-name" required="{{!l || groups.length == 1}}" (focus)="addGroup(i)" />
+    <div *ngFor="let group of groups; let i = index" fxLayout="row">
+      <mat-form-field class="fill-remaining-space">
+        <input matInput color="accent" placeholder="{{translation.groupName[lang]}}" [(ngModel)]="group.name" name="group{{i}}-name"
+          id="group{{i}}-name" required />
       </mat-form-field>
-      <ng-container *ngIf="!l">
-        <mat-form-field class="fill-remaining-space">
-          <input matInput color="accent" type="number" placeholder="{{translation.capacity[lang]}}"
-            [(ngModel)]="group.capacity" name="group{{i}}-capacity" required min="1" minlength="1" pattern="[1-9]\d*" />
-        </mat-form-field>
-        <button mat-icon-button color="warn" type="button" (click)="deleteGroup(i)">
-          <mat-icon>clear</mat-icon>
-        </button>
-      </ng-container>
+      <mat-form-field class="fill-remaining-space">
+        <input matInput color="accent" placeholder="{{translation.capacity[lang]}}" [(ngModel)]="group.capacity" name="group{{i}}-capacity"
+          required pattern="[1-9]\d*" />
+      </mat-form-field>
+      <button mat-icon-button color="warn" type="button" (click)="deleteGroup(i)">
+        <mat-icon>clear</mat-icon>
+      </button>
     </div>
   </mat-dialog-content>
   <mat-dialog-actions>

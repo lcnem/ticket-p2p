@@ -4,18 +4,18 @@ import { MatDialog } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 
-import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
-import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
-import { back } from 'src/models/back';
-import { lang } from 'src/models/lang';
+import { AlertDialogComponent } from '../../components/alert-dialog/alert-dialog.component';
+import { PromptDialogComponent } from '../../components/prompt-dialog/prompt-dialog.component';
+import { back } from '../../../models/back';
+import { lang } from '../../../models/lang';
 
-import { Event } from '.src/../../firebase/functions/src/models/event';
-import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
-import { EventsService } from 'src/app/services/events.service';
+import { Event } from '../../../../../firebase/functions/src/models/event';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { EventsService } from '../../services/events.service';
 import { GroupDialogComponent } from './group-dialog/group-dialog.component';
-import { stripeCharge } from 'src/models/stripe';
+import { stripeCharge, supportedInstruments } from '../../../models/stripe';
 import { environment } from 'src/environments/environment';
-import { UserService } from 'src/app/services/user.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-event',
@@ -114,15 +114,6 @@ export class EventComponent implements OnInit {
       });
       return;
     }
-    let supportedInstruments: PaymentMethodData[] = [{
-      supportedMethods: ['basic-card'],
-      data: {
-        supportedNetworks: [
-          'visa',
-          'mastercard'
-        ]
-      }
-    }];
 
     let details = {
       displayItems: [
@@ -171,26 +162,13 @@ export class EventComponent implements OnInit {
             userId: this.auth.auth.currentUser!.uid,
             eventId: this.id,
             token: response.id,
-            test: environment.production ? false : true
+            groups: groups,
+            test: environment.stripe.test
           }
         ).toPromise();
 
         result.complete("success");
-
-        await this.dialog.open(AlertDialogComponent, {
-          data: {
-            title: this.translation.completed[this.lang],
-            content: ""
-          }
-        }).afterClosed().toPromise();
       } catch {
-        this.dialog.open(AlertDialogComponent, {
-          data: {
-            title: this.translation.error[this.lang],
-            content: ""
-          }
-        });
-
         result.complete("fail");
       }
     });
@@ -229,9 +207,9 @@ export class EventComponent implements OnInit {
       en: "Event name",
       ja: "イベント名"
     } as any,
-    capacity: {
-      en: "Capacity",
-      ja: "定員"
+    capacityAddHistory: {
+      en: "Capacity Add History",
+      ja: "定員追加履歴"
     } as any,
     edit: {
       en: "Edit",
@@ -261,6 +239,14 @@ export class EventComponent implements OnInit {
       en: "Delete this event.",
       ja: "イベントを削除します。"
     } as any,
+    addGroups: {
+      en: "Add tickets",
+      ja: "チケットを追加"
+    } as any,
+    addGroupsBody: {
+      en: "Add Tickets for this event",
+      ja: "イベントのチケット枚数を追加することができます"
+    } as any,
     startCamera: {
       en: "Start the camera",
       ja: "カメラを起動"
@@ -284,10 +270,6 @@ export class EventComponent implements OnInit {
     total: {
       en: "Total",
       ja: "合計"
-    } as any,
-    completed: {
-      en: "Completed",
-      ja: "完了"
     } as any
   };
 }

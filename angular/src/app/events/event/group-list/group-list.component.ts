@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { EventsService } from 'src/app/services/events.service';
-import { lang } from 'src/models/lang';
+import { EventsService } from '../../../services/events.service';
+import { lang } from '../../../../models/lang';
 
 @Component({
   selector: 'app-group-list',
@@ -31,6 +31,14 @@ export class GroupListComponent implements OnInit {
 
   public async refresh() {
     await this.events.readEventDetails(this.eventId);
+
+    this.dataSource.data = this.events.details[this.eventId].groups.map(group => {
+      return {
+        name: group.name,
+        capacity: group.capacity
+      }
+    });
+
     this.loading = false;
   }
 
@@ -42,6 +50,10 @@ export class GroupListComponent implements OnInit {
     capacity: {
       en: "Capacity",
       ja: "定員"
+    } as any,
+    noGroups: {
+      en: "There is no capacity group.",
+      ja: "定員区分はありません。"
     } as any
   };
 }

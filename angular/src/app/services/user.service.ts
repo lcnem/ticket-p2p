@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EventsService } from './events.service';
 import { Router } from '@angular/router';
 
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -33,20 +33,20 @@ export class UserService {
     if (!user.exists) {
       await user.ref.set({});
     }
-    this.router.navigate([""]);
+    await this.router.navigate([""]);
   }
 
   public async logout() {
     await this.auth.auth.signOut();
     this.initialize();
 
-    this.router.navigate(["accounts", "login"]);
+    await this.router.navigate(["accounts", "login"]);
   }
 
   public async checkLogin() {
     let user = await this.auth.authState.pipe(first()).toPromise();
     if (user == null) {
-      this.router.navigate(["accounts", "login"]);
+      await this.router.navigate(["accounts", "login"]);
     }
   }
 }
