@@ -30,21 +30,24 @@ export const _sendReward = functions.https.onRequest(async (req, res) => {
 
     await stripe.charges.create(query);
 
-    await request.post(
+    const salesQuery = await event.ref.collection("sales").where("ticket", "==", ticket).get();
+    if (salesQuery.empty) {
+      throw Error("INVALID_TICKET");
+    }
+    await salesQuery.docs[0].ref.delete();
+
+    request.post(
       functions.config().gas.send_reward,
       {
         form: {
           nem: invalidator,
           amount: amount
         }
-      })
-
-    const salesQuery = await event.ref.collection("sales").where("ticket", "==", ticket).get();
-    if (salesQuery.empty) {
-      throw Error("INVALID_TICKET");
-    }
-    await salesQuery.docs[0].ref.delete();
-    res.status(200).send();
+      },
+      () => {
+        res.status(200).send();
+      }
+    );
   } catch (e) {
     console.error(e)
     res.status(400).send(e.message);
