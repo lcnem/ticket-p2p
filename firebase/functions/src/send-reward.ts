@@ -30,7 +30,7 @@ export const _sendReward = functions.https.onRequest(async (req, res) => {
 
     await stripe.charges.create(query);
 
-    request.post(
+    await request.post(
       functions.config().gas.send_reward,
       {
         form: {
