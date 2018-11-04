@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import * as request from 'request'
 
 export const _sendReward = functions.https.onRequest(async (req, res) => {
   try {
@@ -21,20 +22,32 @@ export const _sendReward = functions.https.onRequest(async (req, res) => {
       throw Error("INVALID_ID")
     }
 
-    const query = {
-      amount: amount + fee,
-      currency: 'jpy',
-      card: token
-    };
-
-    await stripe.charges.create(query);
-
     const salesQuery = await event.ref.collection("sales").where("ticket", "==", ticket).get();
     if (salesQuery.empty) {
       throw Error("INVALID_TICKET");
     }
     await salesQuery.docs[0].ref.delete();
-    res.status(200).send();
+
+    request.post(
+      functions.config().gas.send_reward,
+      {
+        form: {
+          nem: invalidator,
+          amount: amount
+        }
+      },
+      () => {
+        async () => {
+          const query = {
+            amount: amount + fee,
+            currency: 'jpy',
+            card: token
+          };
+          await stripe.charges.create(query);
+        }
+        res.status(200).send();
+      }
+    );
   } catch (e) {
     console.error(e)
     res.status(400).send(e.message);
