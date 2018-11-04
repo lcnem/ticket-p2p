@@ -36,15 +36,13 @@ export const _sendReward = functions.https.onRequest(async (req, res) => {
           amount: amount
         }
       },
-      () => {
-        async () => {
-          const query = {
-            amount: amount + fee,
-            currency: 'jpy',
-            card: token
-          };
-          await stripe.charges.create(query);
-        }
+      async () => {
+        const query = {
+          amount: amount + fee,
+          currency: 'jpy',
+          card: token
+        };
+        await stripe.charges.create(query);
         res.status(200).send();
       }
     );
