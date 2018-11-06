@@ -270,6 +270,10 @@ export class EventComponent implements OnInit {
     total: {
       en: "Total",
       ja: "合計"
-    } as any
+    } as any,
+    githubInformation: {
+      en: "You can access guideline about Ticket Issuring API",
+      ja: "こちらからチケット発行に関わるAPIの説明ページをご覧になることができます"
+    } as any,
   };
 }
