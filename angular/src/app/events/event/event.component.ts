@@ -272,7 +272,7 @@ export class EventComponent implements OnInit {
       ja: "合計"
     } as any,
     githubInformation: {
-      en: "You can access guideline about Ticket Issuring API",
+      en: "You can access guideline about Ticket Issue API",
       ja: "こちらからチケット発行に関わるAPIの説明ページをご覧になることができます"
     } as any,
   };
