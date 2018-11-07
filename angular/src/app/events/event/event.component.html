@@ -7,6 +7,10 @@
       </button>
       <span>{{translation.eventDescription[lang]}}</span>
       <span class="fill-remaining-space"></span>
+      <a mat-icon-button href="https://github.com/lcnem/ticket-p2p/wiki" target="_blank">
+        <mat-icon matTooltip="{{translation.githubInformation[lang]}}">info</mat-icon>
+      </a>
+
     </mat-toolbar>
     <div class="mat-typography body-container">
       <mat-spinner *ngIf="loading; else loaded"></mat-spinner>
