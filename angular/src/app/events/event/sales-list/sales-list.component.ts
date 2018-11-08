@@ -186,6 +186,8 @@ export class SalesListComponent implements OnInit {
 
         result.complete("success");
 
+        await this.refresh()
+
         this.onPageChanged({
           length: this.paginator.length,
           pageIndex: this.paginator.pageIndex,
