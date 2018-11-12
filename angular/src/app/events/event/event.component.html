@@ -86,6 +86,26 @@
           </mat-list>
         </mat-card>
         <br />
+
+        <h3>{{translation.capacityAll[lang]}}</h3>
+        <mat-card>
+          <div class="table-container">
+            <table mat-table [dataSource]="dataSource">
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>{{translation.groupName[lang]}}</th>
+                <td mat-cell *matCellDef="let element">{{element.name}}</td>
+              </ng-container>
+              <ng-container matColumnDef="capacity">
+                <th mat-header-cell *matHeaderCellDef>{{translation.capacity[lang]}}</th>
+                <td mat-cell *matCellDef="let element">{{element.capacity}}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <p *ngIf="!dataSource.data.length" class="empty">{{translation.noGroups[lang]}}</p>
+          </div>
+        </mat-card>
+
         <h3>{{translation.capacityAddHistory[lang]}}</h3>
         <mat-card>
           <app-group-list [userId]="userId" [eventId]="id"></app-group-list>
