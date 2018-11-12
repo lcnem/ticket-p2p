@@ -21,3 +21,9 @@
   font-size: 0.8em;
   margin-bottom: 0.5em;
 }
+
+.empty {
+  color: gray;
+  text-align: center;
+  margin: 1em;
+}

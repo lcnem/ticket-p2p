@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatTableDataSource } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 
@@ -30,6 +30,17 @@ export class EventComponent implements OnInit {
   public userId!: string;
 
   public event!: Event;
+
+  public totalCapacity: {
+    name:string,
+    capacity:number
+  }[] = [];
+
+  public dataSource = new MatTableDataSource<{
+    name: string,
+    capacity: number
+  }>();
+  public displayedColumns = ["name", "capacity"];
 
   constructor(
     private router: Router,
@@ -67,6 +78,30 @@ export class EventComponent implements OnInit {
       return;
     }
     this.userId = this.auth.auth.currentUser!.uid;
+
+    await this.events.readEventDetails(this.id);
+    const historyData = this.events.details[this.id].groups.map(group => {
+      return {
+        name: group.name,
+        capacity: group.capacity
+      }
+    });
+    
+    for (let group of historyData) {
+      const findResult = this.totalCapacity.find(f => f.name === group.name);
+      if (!findResult) {
+        this.totalCapacity.push(group);
+      } else {
+        this.totalCapacity = this.totalCapacity.map((item) => {
+          if (item.name === group.name) {
+            item.capacity += group.capacity;
+          }
+          return item;
+        });
+      }
+    }
+
+    this.dataSource.data = this.totalCapacity;
 
     this.loading = false;
   }
@@ -166,6 +201,20 @@ export class EventComponent implements OnInit {
             test: environment.stripe.test
           }
         ).toPromise();
+        for (let group of groups) {
+          const findResult = this.totalCapacity.find(f => f.name === group.name);
+          if (!findResult) {
+            this.totalCapacity.push(group);
+          } else {
+            this.totalCapacity = this.totalCapacity.map((item) => {
+              if (item.name === group.name) {
+                item.capacity += group.capacity;
+              }
+              return item;
+            });
+          }
+        }
+        this.dataSource.data = this.totalCapacity;
 
         result.complete("success");
       } catch {
@@ -206,6 +255,10 @@ export class EventComponent implements OnInit {
     eventName: {
       en: "Event name",
       ja: "イベント名"
+    } as any,
+    capacityAll: {
+      en: "Group capacity",
+      ja: "グループ合計人数"
     } as any,
     capacityAddHistory: {
       en: "Capacity Add History",
@@ -275,5 +328,17 @@ export class EventComponent implements OnInit {
       en: "You can access guideline about Ticket Issue API",
       ja: "こちらからチケット発行に関わるAPIの説明ページをご覧になることができます"
     } as any,
+    groupName: {
+      en: "Group name",
+      ja: "グループ名"
+    } as any,
+    capacity: {
+      en: "Capacity",
+      ja: "定員"
+    } as any,
+    noGroups: {
+      en: "There is no capacity group.",
+      ja: "グループが登録されていません。"
+    } as any
   };
 }
