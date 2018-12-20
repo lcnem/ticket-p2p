@@ -1,0 +1,22 @@
+{
+  "name": "ticket-p2p",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "blockchain",
+    "nem"
+  ],
+  "author": "LCNEM, Inc.",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "nem-library": "^2.0.0-RC3",
+    "rxjs": "^6.3.3"
+  },
+  "devDependencies": {
+    "typescript": "^3.2.2"
+  }
+}
