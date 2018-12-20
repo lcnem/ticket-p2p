@@ -1,10 +1,11 @@
 import { Account, TransactionHttp, AccountHttp, Transaction, TransferTransaction, TimeWindow, XEM, EmptyMessage, TransactionTypes, PublicAccount } from 'nem-library'
 import { map, catchError } from 'rxjs/operators'
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs'
+import { sha3_256 } from 'js-sha3'
 
 export function registerPhoneNumber(privateKey: string, ticketId: string, phone: string): Observable<void> {
   const account = Account.createWithPrivateKey(privateKey)
-  const hashedId = ""
+  const hashedId = sha3_256(ticketId)
   const publicAccount = Account.createWithPrivateKey(hashedId) as PublicAccount
 
   const message = account.encryptMessage(phone, publicAccount)
@@ -30,7 +31,7 @@ export function registerPhoneNumber(privateKey: string, ticketId: string, phone:
 
 export function extractPhoneNumber(privateKey: string, ticketId: string): Observable<string> {
   const account = Account.createWithPrivateKey(privateKey)
-  const hashedId = ""
+  const hashedId = sha3_256(ticketId)
   const publicAccount = Account.createWithPrivateKey(hashedId) as PublicAccount
 
   const accountHttp = new AccountHttp()
@@ -61,7 +62,7 @@ export function extractPhoneNumber(privateKey: string, ticketId: string): Observ
 
 export function reportResellerPhoneNumber(privateKey: string, ticketId: string): Observable<void> {
   const account = Account.createWithPrivateKey(privateKey)
-  const hashedId = ""
+  const hashedId = sha3_256(ticketId)
   const address = Account.createWithPrivateKey(hashedId).address
 
   const transaction = TransferTransaction.createWithAssets(
@@ -85,7 +86,7 @@ export function reportResellerPhoneNumber(privateKey: string, ticketId: string):
 
 export function punchTicket(privateKey: string, ticketId: string): Observable<void> {
   const account = Account.createWithPrivateKey(privateKey)
-  const hashedHashedId = ""
+  const hashedHashedId = sha3_256(sha3_256(ticketId))
   const address = Account.createWithPrivateKey(hashedHashedId).address
 
   const transaction = TransferTransaction.createWithAssets(
